@@ -16,7 +16,7 @@ export default function Main() {
 		setAgencyName(dagency.name);
 
 		//update API to only query relevant agency.
-		let data = await fetch(`${process.env.REACT_APP_DEFAULT_AGENCY_API}/vendors/0x${wallet.address}`).then(r => {
+		let data = await fetch(`${process.env.REACT_APP_DEFAULT_AGENCY_API}/mobilizers/0x${wallet.address}`).then(r => {
 			if (!r.ok) throw Error(r.message);
 			return r.json();
 		});

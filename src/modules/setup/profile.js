@@ -7,7 +7,7 @@ import DataService from '../../services/db';
 
 export default function Main() {
 	const history = useHistory();
-	const [profile, setProfile] = useState({ name: '', phone: '', address: '', email: '' });
+	const [profile, setProfile] = useState({ name: '', phone: '', address: '', email: '', organization: '' });
 
 	const save = async event => {
 		event.preventDefault();
@@ -88,6 +88,23 @@ export default function Main() {
 										name="address"
 										placeholder="Enter your address"
 										value={profile.address}
+										onChange={updateProfile}
+										required
+									/>
+									<i className="clear-input">
+										<IoCloseCircle className="ion-icon" />
+									</i>
+								</div>
+							</div>
+							<div className="form-group basic">
+								<div className="input-wrapper">
+									<label className="label">Organization</label>
+									<Form.Control
+										type="text"
+										className="form-control"
+										name="organization"
+										placeholder="Organization name"
+										value={profile.organization}
 										onChange={updateProfile}
 										required
 									/>

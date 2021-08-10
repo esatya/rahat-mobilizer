@@ -31,7 +31,7 @@ export default function Main() {
 	};
 
 	const registerWithAgency = async data => {
-		let appData = await fetch(`${process.env.REACT_APP_DEFAULT_AGENCY_API}/app/settings`).then(r => {
+		let appData = await fetch(`${process.env.REACT_APP_DEFAULT_AGENCY_API}/app/settings`).then(async r => {
 			if (!r.ok) throw Error(r.message);
 			return r.json();
 		});
@@ -50,7 +50,7 @@ export default function Main() {
 		setAgency(agencyData);
 		if (!data.email) delete data.email;
 
-		await fetch(`${process.env.REACT_APP_DEFAULT_AGENCY_API}/vendors/register`, {
+		await fetch(`${process.env.REACT_APP_DEFAULT_AGENCY_API}/mobilizers/register`, {
 			method: 'post',
 			headers: {
 				Accept: 'application/json',
@@ -93,6 +93,7 @@ export default function Main() {
 					phone: profile.phone,
 					email: profile.email,
 					address: profile.address,
+					organization: profile.organization,
 					photo: profileImage,
 					govt_id_image: previewImage
 				});
@@ -104,7 +105,6 @@ export default function Main() {
 				history.push('/pending');
 			}
 		} catch (err) {
-			console.log(err);
 			Swal.fire('ERROR', err.message, 'error');
 			showLoading(null);
 		}

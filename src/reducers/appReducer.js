@@ -61,6 +61,18 @@ const AppReducer = (state, action) => {
 				sendingTokenName: action.data
 			};
 
+		case APP_ACTIONS.SET_PROJECT:
+			return {
+				...state,
+				project: action.data
+			};
+
+		case APP_ACTIONS.SET_TOTAL_BENEFICIARIES:
+			return {
+				...state,
+				beneficiaryCount: action.data
+			};
+
 		default:
 			return state;
 	}

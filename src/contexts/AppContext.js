@@ -14,7 +14,9 @@ const initialState = {
 	hasWallet: true,
 	tokenBalance: 0,
 	scannedEthAddress: '',
-	scannedAmount: null
+	scannedAmount: null,
+	project: null,
+	beneficiaryCount: 0
 };
 
 export const AppContext = createContext(initialState);
@@ -57,6 +59,12 @@ export const AppContextProvider = ({ children }) => {
 	function setWallet(wallet) {
 		dispatch({ type: APP_ACTIONS.SET_WALLET, data: wallet });
 	}
+	function setProject(project) {
+		dispatch({ type: APP_ACTIONS.SET_PROJECT, data: project });
+	}
+	function setTotalBeneficiaries(beneficiaryCount) {
+		dispatch({ type: APP_ACTIONS.SET_TOTAL_BENEFICIARIES, data: beneficiaryCount });
+	}
 
 	function setNetwork(network) {
 		dispatch({ type: APP_ACTIONS.SET_NETWORK, data: network });
@@ -84,6 +92,8 @@ export const AppContextProvider = ({ children }) => {
 				hasWallet: state.hasWallet,
 				network: state.network,
 				wallet: state.wallet,
+				project: state.project,
+				beneficiaryCount: state.beneficiaryCount,
 				recentTx,
 				initApp,
 				setAgency,
@@ -92,8 +102,10 @@ export const AppContextProvider = ({ children }) => {
 				setHasWallet,
 				setNetwork,
 				setWallet,
+				setProject,
 				dispatch,
-				addRecentTx
+				addRecentTx,
+				setTotalBeneficiaries
 			}}
 		>
 			{children}

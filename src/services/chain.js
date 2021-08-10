@@ -39,6 +39,12 @@ const RahatService = (agencyAddress, wallet) => {
 			const tx = await contract.createClaim(Number(phone), Number(amount));
 			return tx.wait();
 		},
+		async getProjectBalance(projectId) {
+			const contract = await this.getContract();
+			const hashId = ethers.utils.solidityKeccak256(['string'], [projectId]);
+			const balance = await contract.getProjectBalance(hashId);
+			return balance.toNumber();
+		},
 		async verifyCharge(phone, otp) {
 			const contract = await this.getContract();
 			const tx = await contract.getTokensFromClaim(Number(phone), otp);
