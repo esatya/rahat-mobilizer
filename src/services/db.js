@@ -7,10 +7,11 @@ const db = new Dexie(DB.NAME);
 db.version(DB.VERSION).stores({
 	data: 'name,data',
 	documents: 'hash,type,name,file,encryptedFile,createdAt,inIpfs',
-	beneficiaries: 'id,name,location,phone,age,gender,familySize,address,createdAt',
+	beneficiaries: 'phone,name,address,createdAt',
 	assets: 'address,type,name,symbol,decimal,balance,network',
 	agencies: 'address,name,api,network,rahatAddress,tokenAddress,adminAddress,phone,email,logo,isApproved',
-	transactions: 'hash,type,timestamp,amount,to,from,status,image'
+	transactions: 'hash,type,timestamp,amount,to,from,status,image',
+	projects: 'id,name'
 });
 
 const DataService = {
@@ -117,6 +118,19 @@ const DataService = {
 		return db.agencies.get(address);
 	},
 
+	addProject(project) {
+		return db.projects.put(project);
+	},
+
+	listProjects() {
+		return db.projects.toArray();
+	},
+	async getDefaultProject() {
+		let projects = await this.listProjects();
+		if (!projects) return null;
+		return projects[0];
+	},
+
 	async updateAgency(key, data) {
 		return db.agencies.update(key, data);
 	},
@@ -154,7 +168,7 @@ const DataService = {
 
 	listBeneficiaries(type) {
 		if (!type) return db.beneficiaries.orderBy('name').reverse().toArray();
-		return db.beneficiaries.get({ type }).orderBy('name').reverse();
+		return db.beneficiaries.get({ type }).orderBy('timestamp').reverse();
 	},
 
 	async saveDocuments(docs) {

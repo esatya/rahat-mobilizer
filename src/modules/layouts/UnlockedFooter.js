@@ -1,6 +1,9 @@
 import React, { useState, useContext } from 'react';
+import { Redirect } from 'react-router-dom';
+
 import { Link } from 'react-router-dom';
 import { GiReceiveMoney } from 'react-icons/gi';
+import { RiUserAddFill } from 'react-icons/ri';
 import { GrGroup } from 'react-icons/gr';
 import { useIcon } from '../../utils/react-utils';
 import { isOffline } from '../../utils';
@@ -31,11 +34,12 @@ export default function UnlockedFooter() {
 						onClick={() => {
 							if (isOffline()) return;
 							setActiveSheet('qrcode-reader');
+							//return <Redirect to="/beneficiary/register" />;
 						}}
 					>
 						<div className="col">
 							<div className="action-button large">
-								<GiReceiveMoney className="ion-icon" />
+								<RiUserAddFill className="ion-icon" />
 							</div>
 						</div>
 					</a>

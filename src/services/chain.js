@@ -49,6 +49,16 @@ const RahatService = (agencyAddress, wallet) => {
 			const contract = await this.getContract();
 			const tx = await contract.getTokensFromClaim(Number(phone), otp);
 			return tx.wait();
+		},
+		async issueToken(projectId, phone, tokenAmount) {
+			const contract = await this.getContract();
+			const tx = await contract.issueToken(projectId, Number(phone), tokenAmount);
+			return tx.wait();
+		},
+		async getBeneficiaryToken(phone) {
+			const contract = await this.getContract();
+			const balance = await contract.tokenBalance(Number(phone));
+			return balance.toNumber();
 		}
 	};
 };

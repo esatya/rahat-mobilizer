@@ -54,25 +54,28 @@ export default function LockedFooter() {
 		// 	}
 		// );
 		const signature = await getAuthSignature(wallet);
-		const projectBeneficiary = await Service.getProjectBeneficiaries(signature, projectId);
-		if (projectBeneficiary && projectBeneficiary.data.length) setTotalBeneficiaries(projectBeneficiary.total);
-		projectBeneficiary.data.map(el => {
-			let beneficiary = {
-				id: el._id,
-				name: el.name,
-				location: el.address || null,
-				phone: el.phone || null,
-				age: el.age || null,
-				gender: el.gender || null,
-				familySize: el.familySize || null,
-				address: el.address || null,
-				createdAt: el.created_at || null
-				//	id,name,location,phone,age,gender,familySize,address,createdAt
-			};
-			DataService.addBeneficiary(beneficiary);
-		});
-		const beneficiaries = await DataService.listBeneficiaries();
-		return projectBeneficiary;
+		const totalBen = await DataService.listBeneficiaries();
+		setTotalBeneficiaries(totalBen.length);
+		// const projectBeneficiary = await Service.getProjectBeneficiaries(signature, projectId);
+		// if (projectBeneficiary && projectBeneficiary.data.length) setTotalBeneficiaries(projectBeneficiary.total);
+
+		// projectBeneficiary.data.map(el => {
+		// 	let beneficiary = {
+		// 		id: el._id,
+		// 		name: el.name,
+		// 		location: el.address || null,
+		// 		phone: el.phone || null,
+		// 		age: el.age || null,
+		// 		gender: el.gender || null,
+		// 		familySize: el.familySize || null,
+		// 		address: el.address || null,
+		// 		createdAt: el.created_at || null
+		// 		//	id,name,location,phone,age,gender,familySize,address,createdAt
+		// 	};
+		// 	DataService.addBeneficiary(beneficiary);
+		// });
+		// const beneficiaries = await DataService.listBeneficiaries();
+		// return projectBeneficiary;
 	};
 
 	const handleUnlockClick = async () => {
@@ -83,7 +86,6 @@ export default function LockedFooter() {
 		// );
 		let encryptedWallet = await DataService.getWallet();
 		const wallet = await Wallet.loadFromJson(profile.phone, encryptedWallet);
-		console.log(wallet.privateKey);
 		setWallet(wallet);
 		await checkMobilizerStatus(wallet);
 		//		checkProjectStatus(project.id);

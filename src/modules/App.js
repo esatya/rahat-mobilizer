@@ -15,29 +15,32 @@ import RestoreFromMnemonic from '../modules/wallet/restoreMnemonic';
 
 import { AppContextProvider } from '../contexts/AppContext';
 import { ActionSheetContextProvider } from '../contexts/ActionSheetContext';
+import { RegisterBeneficiaryContextProvider } from '../contexts/registerBeneficiaryContext';
 
 function App() {
 	return (
 		<>
 			<AppContextProvider>
-				<ActionSheetContextProvider>
-					<BrowserRouter>
-						<Switch>
-							<Route exact path="/setup" component={Setup} />
-							<Route exact path="/setup/profile" component={SetupProfile} />
-							<Route exact path="/setup/selfie" component={SetupSelfie} />
-							<Route exact path="/setup/idcard" component={SetupIdCard} />
-							<Route exact path="/setup/pending" component={SetupPending} />
-							<Route exact path="/create" component={CreateWallet} />
-							<Route exact path="/unlock" component={UnlockWallet} />
-							<Route exact path="/google/restore" component={GoogleRestore} />
-							<Route exact path="/mnemonic/restore" component={RestoreFromMnemonic} />
-							<Route exact path="/reset" component={ResetWallet} />
-							<Route path="/" component={Home} />
-							<Route path="*" component={Home} />
-						</Switch>
-					</BrowserRouter>
-				</ActionSheetContextProvider>
+				<RegisterBeneficiaryContextProvider>
+					<ActionSheetContextProvider>
+						<BrowserRouter>
+							<Switch>
+								<Route exact path="/setup" component={Setup} />
+								<Route exact path="/setup/profile" component={SetupProfile} />
+								<Route exact path="/setup/selfie" component={SetupSelfie} />
+								<Route exact path="/setup/idcard" component={SetupIdCard} />
+								<Route exact path="/setup/pending" component={SetupPending} />
+								<Route exact path="/create" component={CreateWallet} />
+								<Route exact path="/unlock" component={UnlockWallet} />
+								<Route exact path="/google/restore" component={GoogleRestore} />
+								<Route exact path="/mnemonic/restore" component={RestoreFromMnemonic} />
+								<Route exact path="/reset" component={ResetWallet} />
+								<Route path="/" component={Home} />
+								<Route path="*" component={Home} />
+							</Switch>
+						</BrowserRouter>
+					</ActionSheetContextProvider>
+				</RegisterBeneficiaryContextProvider>
 			</AppContextProvider>
 		</>
 	);

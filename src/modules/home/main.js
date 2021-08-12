@@ -25,7 +25,8 @@ export default function Main() {
 		setProject,
 		agency,
 		project,
-		beneficiaryCount
+		beneficiaryCount,
+		setTotalBeneficiaries
 	} = useContext(AppContext);
 	const [showPageLoader, setShowPageLoader] = useState(true);
 	const [loading, showLoading] = useState(null);
@@ -38,7 +39,7 @@ export default function Main() {
 		else return 280;
 	};
 
-	const checkMobilizerStatus = async wallet => {
+	const checkMobilizerStatus = async () => {
 		//update API to only query relevant agency.
 		if (!wallet) return;
 		// let data = await fetch(`${process.env.REACT_APP_DEFAULT_AGENCY_API}/mobilizers/${wallet.address}`).then(r => {
@@ -48,9 +49,15 @@ export default function Main() {
 		// });
 		const signature = await getAuthSignature(wallet);
 		const data = await Service.getMobilizerByWallet(signature, wallet.address);
+		let defaultAgency = await DataService.getDefaultAgency();
 		if (data && data.projects.length) {
-			setProject({ name: data.projects[0].project.name, id: data.projects[0].project.id });
-			checkProjectBeneficiaries(wallet, data.projects[0].project.id);
+			//	setProject({ name: data.projects[0].project.name, id: data.projects[0].project.id });
+			await checkProjectBeneficiaries(wallet, data.projects[0].project.id);
+			RahatService(defaultAgency.address, wallet)
+				.getProjectBalance(data.projects[0].project.id)
+				.then(bal => {
+					setProject({ name: data.projects[0].project.name, id: data.projects[0].project.id, balance: bal });
+				});
 		}
 		if (!data.agencies.length) return history.push('/setup/idcard');
 		let status = data.agencies[0].status;
@@ -62,27 +69,29 @@ export default function Main() {
 		}
 	};
 
-	const checkProjectBeneficiaries = async (wallet, projectId) => {
-		const signature = await getAuthSignature(wallet);
-		const projectBeneficiary = await Service.getProjectBeneficiaries(signature, projectId);
-		if (projectBeneficiary && projectBeneficiary.data.length) setTotalBeneficiaries(projectBeneficiary.total);
-		projectBeneficiary.data.map(el => {
-			let beneficiary = {
-				id: el._id,
-				name: el.name,
-				location: el.address || null,
-				phone: el.phone || null,
-				age: el.age || null,
-				gender: el.gender || null,
-				familySize: el.familySize || null,
-				address: el.address || null,
-				createdAt: el.created_at || null
-				//	id,name,location,phone,age,gender,familySize,address,createdAt
-			};
-			DataService.addBeneficiary(beneficiary);
-		});
-		const beneficiaries = await DataService.listBeneficiaries();
-		return projectBeneficiary;
+	const checkProjectBeneficiaries = async projectId => {
+		const totalBen = await DataService.listBeneficiaries();
+		setTotalBeneficiaries(totalBen.length);
+		// const signature = await getAuthSignature(wallet);
+		// const projectBeneficiary = await Service.getProjectBeneficiaries(signature, projectId);
+		// if (projectBeneficiary && projectBeneficiary.data.length) setTotalBeneficiaries(projectBeneficiary.total);
+		// projectBeneficiary.data.map(el => {
+		// 	let beneficiary = {
+		// 		id: el._id,
+		// 		name: el.name,
+		// 		location: el.address || null,
+		// 		phone: el.phone || null,
+		// 		age: el.age || null,
+		// 		gender: el.gender || null,
+		// 		familySize: el.familySize || null,
+		// 		address: el.address || null,
+		// 		createdAt: el.created_at || null
+		// 		//	id,name,location,phone,age,gender,familySize,address,createdAt
+		// 	};
+		// 	DataService.addBeneficiary(beneficiary);
+		// });
+		// const beneficiaries = await DataService.listBeneficiaries();
+		// return projectBeneficiary;
 	};
 
 	useEffect(() => {

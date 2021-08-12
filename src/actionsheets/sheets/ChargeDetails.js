@@ -23,7 +23,6 @@ export default function ChargeDetails(props) {
 			setData({ chargeTxHash: receipt.transactionHash });
 			setActiveSheet('otp');
 		} catch (e) {
-			console.log(e);
 			Swal.fire('Error', 'Transaction cancelled. Please try again.', 'error');
 		} finally {
 			showLoading(null);
