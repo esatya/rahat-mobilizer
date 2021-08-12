@@ -15,6 +15,7 @@ import Transfer from '../transfer';
 import Transactions from '../transactions';
 import Beneficiary from '../beneficiary';
 import BeneficiaryAdd from '../beneficiary/add';
+import BeneficiaryDetail from '../beneficiary/detail';
 import TxDetails from '../transactions/details';
 import GoogleBackup from '../misc/googleBackup';
 
@@ -36,6 +37,7 @@ function App() {
 				<PrivateRoute exact path="/tx/:hash" component={TxDetails} wallet={wallet} />
 				<PrivateRoute exact path="/beneficiary" component={Beneficiary} wallet={wallet} />
 				<PrivateRoute exact path="/beneficiary/add" component={BeneficiaryAdd} wallet={wallet} />
+				<PrivateRoute exact path="/beneficiary/detail" component={BeneficiaryDetail} wallet={wallet} />
 				<PrivateRoute exact path="/backup" component={BackupWallet} wallet={wallet} />
 				<PrivateRoute exact path="/networks" component={NetworkSettings} wallet={wallet} />
 				<PrivateRoute exact path="/profile" component={Profile} wallet={wallet} />

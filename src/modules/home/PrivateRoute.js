@@ -6,11 +6,11 @@ function PrivateRoute({ component: Component, wallet, ...rest }) {
 		<Route
 			{...rest}
 			render={props => {
-				if (wallet != null) {
-					return <Component {...props} {...rest} />;
-				} else {
-					return <Redirect to={{ pathname: '/', state: { from: props.location } }} />;
-				}
+				// if (wallet != null) {
+				return <Component {...props} {...rest} />;
+				// } else {
+				// 	return <Redirect to={{ pathname: '/', state: { from: props.location } }} />;
+				// }
 			}}
 		/>
 	);
