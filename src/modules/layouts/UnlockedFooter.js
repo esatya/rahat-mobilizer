@@ -1,8 +1,6 @@
-import React, { useState, useContext } from 'react';
-import { Redirect } from 'react-router-dom';
+import React, { useContext } from 'react';
 
 import { Link } from 'react-router-dom';
-import { GiReceiveMoney } from 'react-icons/gi';
 import { RiUserAddFill } from 'react-icons/ri';
 import { GrGroup } from 'react-icons/gr';
 import { useIcon } from '../../utils/react-utils';

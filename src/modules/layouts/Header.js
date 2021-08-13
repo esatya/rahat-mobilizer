@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { useHistory, Link } from 'react-router-dom';
-import { IoHomeOutline, IoPersonOutline, IoLockClosedOutline, IoSendOutline } from 'react-icons/io5';
+import { useHistory } from 'react-router-dom';
+import { IoHomeOutline, IoPersonOutline, IoLockClosedOutline } from 'react-icons/io5';
 import { Dropdown } from 'react-bootstrap';
 import { AppContext } from '../../contexts/AppContext';
-import * as io5 from 'react-icons/io5';
 
 import DataService from '../../services/db';
 

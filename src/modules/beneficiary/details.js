@@ -1,23 +1,19 @@
 import React, { useEffect, useState, useContext } from 'react';
 import Moment from 'react-moment';
 import { Button } from 'react-bootstrap';
-
-import { IoArrowDownOutline, IoArrowForwardOutline } from 'react-icons/io5';
-import { GiReceiveMoney, GiMoneyStack } from 'react-icons/gi';
-import { BiError } from 'react-icons/bi';
+import { GiReceiveMoney } from 'react-icons/gi';
 
 import AppHeader from '../layouts/AppHeader';
 import DataService from '../../services/db';
 import { RahatService } from '../../services/chain';
-import Swal from 'sweetalert2';
-import { useHistory, Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { RegisterBeneficiaryContext } from '../../contexts/registerBeneficiaryContext';
 import { AppContext } from '../../contexts/AppContext';
 
 export default function Main(props) {
 	const history = useHistory();
 	const phone = props.match.params.phone;
-	const { setBeneficiaryPhone } = useContext(RegisterBeneficiaryContext);
+	const { setBeneficiaryPhone, setBeneficiaryDetails } = useContext(RegisterBeneficiaryContext);
 	const { wallet } = useContext(AppContext);
 
 	const [beneficiary, setBeneficiary] = useState({});
@@ -26,6 +22,7 @@ export default function Main(props) {
 	const handleTokenIssue = async e => {
 		e.preventDefault();
 		setBeneficiaryPhone(phone);
+		setBeneficiaryDetails({ name: beneficiary.name });
 		history.push('/beneficiary/token');
 		//return addBeneficiary(signature);
 	};

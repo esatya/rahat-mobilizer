@@ -1,24 +1,29 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import { Form, Button } from 'react-bootstrap';
-import { IoCloseCircle } from 'react-icons/io5';
+import { IoCloseCircle, IoHomeOutline } from 'react-icons/io5';
 import { RegisterBeneficiaryContext } from '../../contexts/registerBeneficiaryContext';
 import { AppContext } from '../../contexts/AppContext';
 import { getAuthSignature } from '../../utils';
-import { useHistory, Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import DataService from '../../services/db';
+import AppHeader from '../layouts/AppHeader';
+import { Link } from 'react-router-dom';
 
 const RegisterBeneficiary = () => {
 	const history = useHistory();
-	const { phone, amount, setBeneficiaryDetails, setBeneficiaryPhone, addBeneficiary, name, address, email, govt_id } =
+	const { phone, setBeneficiaryDetails, setBeneficiaryPhone, addBeneficiary, name, address, email, govt_id } =
 		useContext(RegisterBeneficiaryContext);
 	const { wallet } = useContext(AppContext);
-	const [beneficiaryData, setBeneficiaryData] = useState({ name: '', address: '', email: '', govt_id: '' });
 
 	const updateBeneficiaryData = e => {
 		let formData = new FormData(e.target.form);
 		let data = {};
-		formData.forEach((value, key) => (data[key] = value));
+		formData.forEach((value, key) => {
+			data[key] = value;
+			if (data[key] === '') data[key] = null;
+			// return (data[key] = value)
+		});
 		if (data.phone) setBeneficiaryPhone(data.phone);
 		setBeneficiaryDetails(data);
 	};
@@ -40,7 +45,7 @@ const RegisterBeneficiary = () => {
 				createdAt: Date.now()
 				//	id,name,location,phone,age,gender,familySize,address,createdAt
 			};
-			let db = await DataService.addBeneficiary(beneficiary);
+			await DataService.addBeneficiary(beneficiary);
 			history.push('/beneficiary/token');
 		} catch (e) {
 			alert('Invalid beneficiary');
@@ -49,6 +54,15 @@ const RegisterBeneficiary = () => {
 
 	return (
 		<>
+			<AppHeader
+				currentMenu="Beneficiaries"
+				actionButton={
+					<Link to="/" className="headerButton">
+						<IoHomeOutline className="ion-icon" />
+					</Link>
+				}
+			/>
+
 			<div id="appCapsule">
 				<div class="section mt-2 text-center">
 					<h1>Register Beneficiary</h1>
@@ -143,7 +157,6 @@ const RegisterBeneficiary = () => {
 											placeholder="Enter your address"
 											value={govt_id}
 											onChange={updateBeneficiaryData}
-											required
 										/>
 										<i className="clear-input">
 											<IoCloseCircle className="ion-icon" />

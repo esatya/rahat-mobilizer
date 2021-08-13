@@ -17,9 +17,20 @@ export async function registerToAgency(payload) {
 		throw Error(e);
 	}
 }
-export async function getMobilizerByWallet(signature, walletAddress) {
+export async function getMobilizerByWallet(walletAddress) {
 	try {
 		const res = await fetch(`${API.MOBILIZERS}/${walletAddress}`, {
+			method: 'GET'
+		});
+		return res.json();
+	} catch (e) {
+		throw Error(e);
+	}
+}
+
+export async function getBeneficiaryById(signature, id) {
+	try {
+		const res = await fetch(`${API.BENEFICIARIES}/${id}`, {
 			method: 'GET',
 			headers: {
 				auth_signature: signature

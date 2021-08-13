@@ -8,23 +8,17 @@ import DataService from '../../services/db';
 import { AppContext } from '../../contexts/AppContext';
 import * as Service from '../../services';
 import { RahatService } from '../../services/chain';
-import { getAuthSignature } from '../../utils';
 
 export default function LockedFooter() {
 	let history = useHistory();
-	const { setWallet, wallet, setProject, project, setTotalBeneficiaries, agency } = useContext(AppContext);
+	const { setWallet, setProject, setTotalBeneficiaries, agency } = useContext(AppContext);
 	const [loadingModal, setLoadingModal] = useState(false);
 
 	const checkMobilizerStatus = async wallet => {
 		//update API to only query relevant agency.
 		if (!wallet) return;
-		// let data = await fetch(`${process.env.REACT_APP_DEFAULT_AGENCY_API}/mobilizers/${wallet.address}`).then(r => {
-		// 	console.log(r);
-		// 	if (!r.ok) throw Error(r.message);
-		// 	return r.json();
-		// });
-		const signature = await getAuthSignature(wallet);
-		const data = await Service.getMobilizerByWallet(signature, wallet.address);
+
+		const data = await Service.getMobilizerByWallet(wallet.address);
 		let defaultAgency = await DataService.getDefaultAgency();
 		if (data && data.projects.length) {
 			//	setProject({ name: data.projects[0].project.name, id: data.projects[0].project.id });
@@ -46,36 +40,8 @@ export default function LockedFooter() {
 	};
 
 	const checkProjectBeneficiaries = async (wallet, projectId) => {
-		// let data = await fetch(`${process.env.REACT_APP_DEFAULT_AGENCY_API}/projects/${projectId}/beneficiaries`).then(
-		// 	r => {
-		// 		console.log(r);
-		// 		if (!r.ok) throw Error(r.message);
-		// 		return r.json();
-		// 	}
-		// );
-		const signature = await getAuthSignature(wallet);
 		const totalBen = await DataService.listBeneficiaries();
 		setTotalBeneficiaries(totalBen.length);
-		// const projectBeneficiary = await Service.getProjectBeneficiaries(signature, projectId);
-		// if (projectBeneficiary && projectBeneficiary.data.length) setTotalBeneficiaries(projectBeneficiary.total);
-
-		// projectBeneficiary.data.map(el => {
-		// 	let beneficiary = {
-		// 		id: el._id,
-		// 		name: el.name,
-		// 		location: el.address || null,
-		// 		phone: el.phone || null,
-		// 		age: el.age || null,
-		// 		gender: el.gender || null,
-		// 		familySize: el.familySize || null,
-		// 		address: el.address || null,
-		// 		createdAt: el.created_at || null
-		// 		//	id,name,location,phone,age,gender,familySize,address,createdAt
-		// 	};
-		// 	DataService.addBeneficiary(beneficiary);
-		// });
-		// const beneficiaries = await DataService.listBeneficiaries();
-		// return projectBeneficiary;
 	};
 
 	const handleUnlockClick = async () => {
