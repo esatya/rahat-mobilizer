@@ -11,7 +11,7 @@ export default function Main() {
 			<AppHeader
 				currentMenu="Beneficiaries"
 				actionButton={
-					<Link to="/beneficiary/add" className="headerButton">
+					<Link to="/beneficiary/register" className="headerButton">
 						<IoSendOutline className="ion-icon" />
 					</Link>
 				}

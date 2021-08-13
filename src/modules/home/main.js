@@ -6,6 +6,8 @@ import { useResize } from '../../utils/react-utils';
 import * as Service from '../../services';
 import { isOffline, getAuthSignature } from '../../utils';
 import { AppContext } from '../../contexts/AppContext';
+import { RegisterBeneficiaryContext } from '../../contexts/registerBeneficiaryContext';
+
 import TransactionList from '../transactions/list';
 import DataService from '../../services/db';
 import { TokenService, RahatService } from '../../services/chain';
@@ -28,6 +30,7 @@ export default function Main() {
 		beneficiaryCount,
 		setTotalBeneficiaries
 	} = useContext(AppContext);
+	const { resetBeneficiary } = useContext(RegisterBeneficiaryContext);
 	const [showPageLoader, setShowPageLoader] = useState(true);
 	const [loading, showLoading] = useState(null);
 
@@ -96,6 +99,7 @@ export default function Main() {
 
 	useEffect(() => {
 		checkMobilizerStatus();
+		resetBeneficiary();
 		if (agency) {
 			// console.log('GETTING TOKENS', agency.address, project.id);
 			// RahatService(agency.address)
