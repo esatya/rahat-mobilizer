@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Form, Button } from 'react-bootstrap';
-import { IoCloseCircle } from 'react-icons/io5';
+import { IoCloseCircle, IoHomeOutline } from 'react-icons/io5';
 import { RegisterBeneficiaryContext } from '../../contexts/registerBeneficiaryContext';
 import { AppContext } from '../../contexts/AppContext';
 import { getAuthSignature } from '../../utils';
 import { useHistory, Redirect } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import DataService from '../../services/db';
+import AppHeader from '../layouts/AppHeader';
+import { Link } from 'react-router-dom';
 
 const RegisterBeneficiary = () => {
 	const history = useHistory();
@@ -49,6 +51,15 @@ const RegisterBeneficiary = () => {
 
 	return (
 		<>
+			<AppHeader
+				currentMenu="Beneficiaries"
+				actionButton={
+					<Link to="/" className="headerButton">
+						<IoHomeOutline className="ion-icon" />
+					</Link>
+				}
+			/>
+
 			<div id="appCapsule">
 				<div class="section mt-2 text-center">
 					<h1>Register Beneficiary</h1>

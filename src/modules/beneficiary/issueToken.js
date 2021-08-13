@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Form, Button } from 'react-bootstrap';
-import { IoCloseCircle } from 'react-icons/io5';
+import { IoCloseCircle, IoHomeOutline } from 'react-icons/io5';
 import { RegisterBeneficiaryContext } from '../../contexts/registerBeneficiaryContext';
 import { AppContext } from '../../contexts/AppContext';
 import { getAuthSignature } from '../../utils';
@@ -8,6 +8,8 @@ import { RahatService } from '../../services/chain';
 import DataService from '../../services/db';
 import Swal from 'sweetalert2';
 import { useHistory, Redirect } from 'react-router-dom';
+import AppHeader from '../layouts/AppHeader';
+import { Link } from 'react-router-dom';
 
 const RegisterBeneficiary = () => {
 	const history = useHistory();
@@ -72,6 +74,15 @@ const RegisterBeneficiary = () => {
 
 	return (
 		<>
+			<AppHeader
+				currentMenu="Beneficiaries"
+				actionButton={
+					<Link to="/" className="headerButton">
+						<IoHomeOutline className="ion-icon" />
+					</Link>
+				}
+			/>
+
 			{loading !== null && (
 				<div
 					style={{
