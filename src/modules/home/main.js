@@ -114,7 +114,7 @@ export default function Main() {
 		let timer1 = null;
 		(async () => {
 			let txs = await DataService.listTx();
-			addRecentTx(txs.slice(0, 3));
+			if (txs) addRecentTx(txs.slice(0, 3));
 			const timer = setTimeout(() => {
 				setShowPageLoader(false);
 			}, 300);
