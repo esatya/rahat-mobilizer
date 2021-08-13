@@ -20,7 +20,11 @@ const RegisterBeneficiary = () => {
 	const updateBeneficiaryData = e => {
 		let formData = new FormData(e.target.form);
 		let data = {};
-		formData.forEach((value, key) => (data[key] = value));
+		formData.forEach((value, key) => {
+			data[key] = value;
+			if (data[key] === '') data[key] = null;
+			// return (data[key] = value)
+		});
 		if (data.phone) setBeneficiaryPhone(data.phone);
 		setBeneficiaryDetails(data);
 	};
@@ -154,7 +158,6 @@ const RegisterBeneficiary = () => {
 											placeholder="Enter your address"
 											value={govt_id}
 											onChange={updateBeneficiaryData}
-											required
 										/>
 										<i className="clear-input">
 											<IoCloseCircle className="ion-icon" />
