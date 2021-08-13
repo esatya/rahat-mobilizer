@@ -3,30 +3,24 @@ import { Form, Button } from 'react-bootstrap';
 import { IoCloseCircle, IoHomeOutline } from 'react-icons/io5';
 import { RegisterBeneficiaryContext } from '../../contexts/registerBeneficiaryContext';
 import { AppContext } from '../../contexts/AppContext';
-import { getAuthSignature } from '../../utils';
 import { RahatService } from '../../services/chain';
 import DataService from '../../services/db';
 import Swal from 'sweetalert2';
-import { useHistory, Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import AppHeader from '../layouts/AppHeader';
 import { Link } from 'react-router-dom';
 
 const RegisterBeneficiary = () => {
 	const history = useHistory();
 
-	const { phone, setBeneficiaryToken, addBeneficiary, name, token, resetBeneficiary } =
-		useContext(RegisterBeneficiaryContext);
+	const { phone, setBeneficiaryToken, name, token, resetBeneficiary } = useContext(RegisterBeneficiaryContext);
 	const { wallet } = useContext(AppContext);
-	const [beneficiaryData, setBeneficiaryData] = useState({ name: '', address: '', email: '', govt_id: '' });
 	const [loading, showLoading] = useState(null);
 	const [remainingToken, setRemainingToken] = useState('loading...');
 
 	const updateBeneficiaryData = e => {
 		let formData = new FormData(e.target.form);
-		// let data = {};
-		// formData.forEach((value, key) => (data[key] = value));
-		// console.log({ data });
-		// if (data.phone) setBeneficiaryPhone(data.phone);
+
 		let tokenAmount = formData.get('token');
 		setBeneficiaryToken(tokenAmount);
 	};
@@ -37,7 +31,6 @@ const RegisterBeneficiary = () => {
 		try {
 			const agency = await DataService.getDefaultAgency();
 			const project = await DataService.getDefaultProject();
-			const signature = await getAuthSignature(wallet);
 			const rahat = RahatService(agency.address, wallet);
 			let receipt = await rahat.issueToken(project.id, phone, token);
 			const tx = {

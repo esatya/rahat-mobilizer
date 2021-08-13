@@ -1,16 +1,12 @@
 import React, { useEffect, useState, useContext } from 'react';
 import Moment from 'react-moment';
 import { Button } from 'react-bootstrap';
-
-import { IoArrowDownOutline, IoArrowForwardOutline } from 'react-icons/io5';
-import { GiReceiveMoney, GiMoneyStack } from 'react-icons/gi';
-import { BiError } from 'react-icons/bi';
+import { GiReceiveMoney } from 'react-icons/gi';
 
 import AppHeader from '../layouts/AppHeader';
 import DataService from '../../services/db';
 import { RahatService } from '../../services/chain';
-import Swal from 'sweetalert2';
-import { useHistory, Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { RegisterBeneficiaryContext } from '../../contexts/registerBeneficiaryContext';
 import { AppContext } from '../../contexts/AppContext';
 

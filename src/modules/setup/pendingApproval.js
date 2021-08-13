@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import DataService from '../../services/db';
-import { isOffline, getAuthSignature } from '../../utils';
-import Wallet from '../../utils/blockchain/wallet';
+
 import * as Service from '../../services';
 
 export default function Main() {
@@ -12,22 +11,13 @@ export default function Main() {
 
 	const checkForApproval = async () => {
 		let encryptedWallet = await DataService.getWallet();
-		let profile = await DataService.get('profile');
+
 		if (!encryptedWallet) history.push('/setup');
-		//	wallet = JSON.parse(wallet);
+		let wallet = JSON.parse(encryptedWallet);
 		let dagency = await DataService.getDefaultAgency();
 		if (!dagency) history.push('/setup');
 		setAgencyName(dagency.name);
-
-		//update API to only query relevant agency.
-		// let data = await fetch(`${process.env.REACT_APP_DEFAULT_AGENCY_API}/mobilizers/0x${wallet.address}`).then(r => {
-		// 	if (!r.ok) throw Error(r.message);
-		// 	return r.json();
-		// });
-		const wallet = await Wallet.loadFromJson(profile.phone, encryptedWallet);
-
-		const signature = await getAuthSignature(wallet);
-		const data = await Service.getMobilizerByWallet(signature, wallet.address);
+		const data = await Service.getMobilizerByWallet(`0x${wallet.address}`);
 		if (!data.agencies.length) return history.push('/setup/idcard');
 		let status = data.agencies[0].status;
 		if (status === 'active') {

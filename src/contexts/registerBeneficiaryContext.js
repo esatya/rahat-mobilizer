@@ -1,4 +1,4 @@
-import React, { createContext, useState, useReducer } from 'react';
+import React, { createContext, useReducer } from 'react';
 import BenificiaryReduce from '../reducers/beneficiaryReducer';
 import BENEFICIARY_ACTIONS from '../actions/beneficiaryActions';
 import * as Service from '../services';
@@ -22,11 +22,6 @@ export const RegisterBeneficiaryContext = createContext(initialState);
 export const RegisterBeneficiaryContextProvider = ({ children }) => {
 	const [state, dispatch] = useReducer(BenificiaryReduce, initialState);
 	//const [data, updateData] = useState(initialState);
-
-	const showLoading = msg => {
-		//setState({ ...state, loading: msg });
-		dispatch({ type: BENEFICIARY_ACTIONS.SET_LOADING, loading: msg });
-	};
 
 	const setBeneficiaryDetails = beneficiary => {
 		dispatch({ type: BENEFICIARY_ACTIONS.SET_BENEFICIARY_DETAILS, data: beneficiary });

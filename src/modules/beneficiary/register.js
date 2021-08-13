@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { IoCloseCircle, IoHomeOutline } from 'react-icons/io5';
 import { RegisterBeneficiaryContext } from '../../contexts/registerBeneficiaryContext';
 import { AppContext } from '../../contexts/AppContext';
 import { getAuthSignature } from '../../utils';
-import { useHistory, Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import DataService from '../../services/db';
 import AppHeader from '../layouts/AppHeader';
@@ -12,10 +12,9 @@ import { Link } from 'react-router-dom';
 
 const RegisterBeneficiary = () => {
 	const history = useHistory();
-	const { phone, amount, setBeneficiaryDetails, setBeneficiaryPhone, addBeneficiary, name, address, email, govt_id } =
+	const { phone, setBeneficiaryDetails, setBeneficiaryPhone, addBeneficiary, name, address, email, govt_id } =
 		useContext(RegisterBeneficiaryContext);
 	const { wallet } = useContext(AppContext);
-	const [beneficiaryData, setBeneficiaryData] = useState({ name: '', address: '', email: '', govt_id: '' });
 
 	const updateBeneficiaryData = e => {
 		let formData = new FormData(e.target.form);
@@ -46,7 +45,7 @@ const RegisterBeneficiary = () => {
 				createdAt: Date.now()
 				//	id,name,location,phone,age,gender,familySize,address,createdAt
 			};
-			let db = await DataService.addBeneficiary(beneficiary);
+			await DataService.addBeneficiary(beneficiary);
 			history.push('/beneficiary/token');
 		} catch (e) {
 			alert('Invalid beneficiary');

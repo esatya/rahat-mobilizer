@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useEffect, useContext, useCallback } from 'react';
 import { ChargeDetails, OTP, QrcodeReader } from './sheets';
 import { ActionSheetContext } from '../contexts/ActionSheetContext';
 

@@ -17,13 +17,10 @@ export async function registerToAgency(payload) {
 		throw Error(e);
 	}
 }
-export async function getMobilizerByWallet(signature, walletAddress) {
+export async function getMobilizerByWallet(walletAddress) {
 	try {
 		const res = await fetch(`${API.MOBILIZERS}/${walletAddress}`, {
-			method: 'GET',
-			headers: {
-				auth_signature: signature
-			}
+			method: 'GET'
 		});
 		return res.json();
 	} catch (e) {
