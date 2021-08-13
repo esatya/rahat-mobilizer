@@ -17,7 +17,7 @@ import { AppContext } from '../../contexts/AppContext';
 export default function Main(props) {
 	const history = useHistory();
 	const phone = props.match.params.phone;
-	const { setBeneficiaryPhone } = useContext(RegisterBeneficiaryContext);
+	const { setBeneficiaryPhone, setBeneficiaryDetails } = useContext(RegisterBeneficiaryContext);
 	const { wallet } = useContext(AppContext);
 
 	const [beneficiary, setBeneficiary] = useState({});
@@ -26,6 +26,7 @@ export default function Main(props) {
 	const handleTokenIssue = async e => {
 		e.preventDefault();
 		setBeneficiaryPhone(phone);
+		setBeneficiaryDetails({ name: beneficiary.name });
 		history.push('/beneficiary/token');
 		//return addBeneficiary(signature);
 	};

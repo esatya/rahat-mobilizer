@@ -16,7 +16,8 @@ const TxList = ({ limit, transactions = [] }) => {
 			if (limit) txs = txs.slice(0, limit);
 			for (let t of txs) {
 				if (t.type === 'issued') {
-					t.name = `Token sent to ${t.to}`;
+					t.name = `Token sent to:`;
+					t.phone = `${t.to}`;
 					t.icon = (
 						<div className="icon-box bg-success">
 							<GiTwoCoins className="ion-icon" />
@@ -80,6 +81,8 @@ const TxList = ({ limit, transactions = [] }) => {
 										<div>
 											<div className="mb-05">
 												<strong>{tx.name}</strong>
+												<br />
+												<strong>{tx.phone}</strong>
 											</div>
 											<div className="text-xsmall">
 												<Moment date={tx.timestamp} format="YYYY/MM/DD hh:mm a" />

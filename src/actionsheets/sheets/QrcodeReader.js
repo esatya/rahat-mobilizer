@@ -11,6 +11,9 @@ import { ActionSheetContext } from '../../contexts/ActionSheetContext';
 import { RegisterBeneficiaryContext } from '../../contexts/registerBeneficiaryContext';
 import ActionSheet from './ActionSheet';
 import { APP_CONSTANTS } from '../../constants';
+import * as Service from '../../services';
+import { getAuthSignature } from '../../utils';
+import { SET_BENEFICIARY_DETAILS } from '../../actions/beneficiaryActions';
 const { SCAN_DELAY, SCANNER_PREVIEW_STYLE } = APP_CONSTANTS;
 
 export default function Camera(props) {
@@ -19,7 +22,7 @@ export default function Camera(props) {
 	const { modalSize, onHide, showModal } = props;
 	const { wallet } = useContext(AppContext);
 	const { showLoading, loading, setData, setActiveSheet } = useContext(ActionSheetContext);
-	const { setBeneficiaryPhone, setBeneficiaryToken } = useContext(RegisterBeneficiaryContext);
+	const { setBeneficiaryPhone, setBeneficiaryToken, setBeneficiaryDetails } = useContext(RegisterBeneficiaryContext);
 
 	const handleScanError = err => {
 		alert('Oops, scanning failed. Please try again');
@@ -28,14 +31,23 @@ export default function Camera(props) {
 	const handleScanSuccess = async data => {
 		if (data) {
 			showLoading('Processing...');
+			let test = data.split(':');
 			try {
 				let phone =
 					data.indexOf('+977') > -1
 						? data.split('+977').pop().split('?')[0]
 						: data.split(':').pop().split('?')[0];
-				let amount = parseInt(data.split('amount=').pop().split('&')[0], 10);
+				let amount = parseInt(data.split('amount=').pop());
 				setBeneficiaryPhone(phone);
 				if (amount) setBeneficiaryToken(amount);
+				const signature = await getAuthSignature(wallet);
+				const beneficiary = await Service.getBeneficiaryById(signature, phone);
+				if (beneficiary) {
+					setActiveSheet(null);
+					setBeneficiaryToken(null);
+					setBeneficiaryDetails({ name: beneficiary.name, address: beneficiary.address });
+					return history.push('/beneficiary/token');
+				}
 				// if (!amount) {
 				// 	setData({ phone, amount: '' });
 				// 	return setActiveSheet('charge-details');
@@ -46,7 +58,7 @@ export default function Camera(props) {
 				// setData({ phone, amount, chargeTxHash: receipt.transactionHash });
 				// setActiveSheet('otp');
 				setActiveSheet(null);
-				history.push('/beneficiary/register');
+				return history.push('/beneficiary/register');
 				//return <Redirect to="/beneficiary/register" />;
 			} catch (e) {
 				setData({ phone: '', amount: '', chargeTxHash: null });

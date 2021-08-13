@@ -17,6 +17,7 @@ const RegisterBeneficiary = () => {
 	const { wallet } = useContext(AppContext);
 	const [beneficiaryData, setBeneficiaryData] = useState({ name: '', address: '', email: '', govt_id: '' });
 	const [loading, showLoading] = useState(null);
+	const [remainingToken, setRemainingToken] = useState('loading...');
 
 	const updateBeneficiaryData = e => {
 		let formData = new FormData(e.target.form);
@@ -60,6 +61,15 @@ const RegisterBeneficiary = () => {
 		//return addBeneficiary(signature);
 	};
 
+	useEffect(() => {
+		(async () => {
+			const agency = await DataService.getDefaultAgency();
+			const rahat = RahatService(agency.address, wallet);
+			const remainingToken = await rahat.getBeneficiaryToken(phone);
+			setRemainingToken(remainingToken);
+		})();
+	}, []);
+
 	return (
 		<>
 			{loading !== null && (
@@ -100,6 +110,21 @@ const RegisterBeneficiary = () => {
 				</div>
 
 				<div class="section mt-2 mb-5 p-3">
+					<ul className="listview flush transparent simple-listview no-space mt-3">
+						<li>
+							<strong>Name</strong>
+							<span>{name}</span>
+						</li>
+						<li>
+							<strong>Phone</strong>
+							<span style={{ overflow: 'hidden' }}>{phone}</span>
+						</li>
+						<li>
+							<strong>Token Balance</strong>
+							<h3 className="m-0">{remainingToken}</h3>
+						</li>
+					</ul>
+
 					<Form onSubmit={save}>
 						<div className="card">
 							<div className="card-body">
