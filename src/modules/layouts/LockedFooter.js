@@ -56,7 +56,6 @@ export default function LockedFooter() {
 			setWallet(wallet);
 			await checkMobilizerStatus(wallet);
 		}
-		//		checkProjectStatus(project.id);
 		history.push('/');
 		setLoadingModal(false);
 	};

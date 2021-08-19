@@ -24,7 +24,7 @@ const RegisterBeneficiary = () => {
 			if (data[key] === '') data[key] = null;
 			// return (data[key] = value)
 		});
-		if (data.phone) setBeneficiaryPhone(data.phone);
+		setBeneficiaryPhone(data.phone);
 		setBeneficiaryDetails(data);
 	};
 
