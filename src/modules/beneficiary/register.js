@@ -6,14 +6,13 @@ import { AppContext } from '../../contexts/AppContext';
 import { getAuthSignature } from '../../utils';
 import { useHistory } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import DataService from '../../services/db';
 import AppHeader from '../layouts/AppHeader';
 import { Link } from 'react-router-dom';
 import * as Service from '../../services';
 
 const RegisterBeneficiary = () => {
 	const history = useHistory();
-	const { phone, setBeneficiaryDetails, setBeneficiaryPhone, addBeneficiary, name, address, email, govt_id } =
+	const { phone, setBeneficiaryDetails, setBeneficiaryPhone, name, address, email, govt_id } =
 		useContext(RegisterBeneficiaryContext);
 	const { wallet } = useContext(AppContext);
 

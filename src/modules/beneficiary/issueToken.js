@@ -10,12 +10,23 @@ import { useHistory } from 'react-router-dom';
 import AppHeader from '../layouts/AppHeader';
 import { Link } from 'react-router-dom';
 import { getAuthSignature } from '../../utils';
+import * as Service from '../../services';
 
 const RegisterBeneficiary = () => {
 	const history = useHistory();
 
-	const { phone, setBeneficiaryToken, name, token, resetBeneficiary, addBeneficiary, address, govt_id } =
-		useContext(RegisterBeneficiaryContext);
+	const {
+		phone,
+		setBeneficiaryToken,
+		name,
+		token,
+		resetBeneficiary,
+		addBeneficiary,
+		address,
+		govt_id,
+		photo,
+		govt_id_image
+	} = useContext(RegisterBeneficiaryContext);
 	const { wallet } = useContext(AppContext);
 	const [loading, showLoading] = useState(null);
 	const [remainingToken, setRemainingToken] = useState('loading...');
@@ -31,26 +42,30 @@ const RegisterBeneficiary = () => {
 		e.preventDefault();
 		showLoading('Issuing Tokens..');
 		try {
+			const signature = await getAuthSignature(wallet);
+			const benExists = await Service.getBeneficiaryById(signature, phone);
 			const agency = await DataService.getDefaultAgency();
 			const project = await DataService.getDefaultProject();
 			const rahat = RahatService(agency.address, wallet);
 
-			const signature = await getAuthSignature(wallet);
-			const ben = await addBeneficiary(signature);
-			console.log({ ben });
-			if (!ben) {
-				Swal.fire('Error', 'Invalid Beneficiary, Please enter valid details.', 'error');
-				return;
+			if (!benExists) {
+				const ben = await addBeneficiary(signature);
+				if (!ben) {
+					Swal.fire('Error', 'Invalid Beneficiary, Please enter valid details.', 'error');
+					return;
+				}
+				let beneficiary = {
+					name: name,
+					address: address || null,
+					phone: phone || null,
+					govt_id: govt_id || null,
+					photo: photo,
+					govt_id_image: govt_id_image,
+					createdAt: Date.now()
+					//	id,name,location,phone,age,gender,familySize,address,createdAt
+				};
+				await DataService.addBeneficiary(beneficiary);
 			}
-			let beneficiary = {
-				name: name,
-				address: address || null,
-				phone: phone || null,
-				govt_id: govt_id || null,
-				createdAt: Date.now()
-				//	id,name,location,phone,age,gender,familySize,address,createdAt
-			};
-			await DataService.addBeneficiary(beneficiary);
 
 			let receipt = await rahat.issueToken(project.id, phone, token);
 			const tx = {
@@ -131,6 +146,7 @@ const RegisterBeneficiary = () => {
 				<div class="section mt-2 text-center">
 					<h1>Issue Token</h1>
 					<h4>Enter Amount to Issue Token</h4>
+					<img className="video-flipped circleSelfie " alt="preview" src={photo} />
 				</div>
 
 				<div class="section mt-2 mb-5 p-3">
