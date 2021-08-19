@@ -9,11 +9,13 @@ import Swal from 'sweetalert2';
 import { useHistory } from 'react-router-dom';
 import AppHeader from '../layouts/AppHeader';
 import { Link } from 'react-router-dom';
+import { getAuthSignature } from '../../utils';
 
 const RegisterBeneficiary = () => {
 	const history = useHistory();
 
-	const { phone, setBeneficiaryToken, name, token, resetBeneficiary } = useContext(RegisterBeneficiaryContext);
+	const { phone, setBeneficiaryToken, name, token, resetBeneficiary, addBeneficiary, address, govt_id } =
+		useContext(RegisterBeneficiaryContext);
 	const { wallet } = useContext(AppContext);
 	const [loading, showLoading] = useState(null);
 	const [remainingToken, setRemainingToken] = useState('loading...');
@@ -32,6 +34,24 @@ const RegisterBeneficiary = () => {
 			const agency = await DataService.getDefaultAgency();
 			const project = await DataService.getDefaultProject();
 			const rahat = RahatService(agency.address, wallet);
+
+			const signature = await getAuthSignature(wallet);
+			const ben = await addBeneficiary(signature);
+			console.log({ ben });
+			if (!ben) {
+				Swal.fire('Error', 'Invalid Beneficiary, Please enter valid details.', 'error');
+				return;
+			}
+			let beneficiary = {
+				name: name,
+				address: address || null,
+				phone: phone || null,
+				govt_id: govt_id || null,
+				createdAt: Date.now()
+				//	id,name,location,phone,age,gender,familySize,address,createdAt
+			};
+			await DataService.addBeneficiary(beneficiary);
+
 			let receipt = await rahat.issueToken(project.id, phone, token);
 			const tx = {
 				hash: receipt.transactionHash,

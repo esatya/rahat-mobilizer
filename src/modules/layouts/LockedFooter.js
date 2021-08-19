@@ -50,10 +50,12 @@ export default function LockedFooter() {
 		// const wallet = await Wallet.loadFromPrivateKey(
 		// 	'0x387e176cf5a5016a38f552abc0c3370a733a4f232061957d76d8f5e9a8b0b729'
 		// );
-		let encryptedWallet = await DataService.getWallet();
-		const wallet = await Wallet.loadFromJson(profile.phone, encryptedWallet);
-		setWallet(wallet);
-		await checkMobilizerStatus(wallet);
+		if (profile) {
+			let encryptedWallet = await DataService.getWallet();
+			const wallet = await Wallet.loadFromJson(profile.phone, encryptedWallet);
+			setWallet(wallet);
+			await checkMobilizerStatus(wallet);
+		}
 		//		checkProjectStatus(project.id);
 		history.push('/');
 		setLoadingModal(false);
