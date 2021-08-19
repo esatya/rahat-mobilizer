@@ -36,7 +36,11 @@ export const RegisterBeneficiaryContextProvider = ({ children }) => {
 	};
 
 	const setBeneficiaryPhoto = photo => {
-		dispatch({ type: BENEFICIARY_ACTIONS.SET_TOKEN, photo: photo });
+		dispatch({ type: BENEFICIARY_ACTIONS.SET_PHOTO, photo: photo });
+	};
+
+	const setBeneficiaryIdImage = idImage => {
+		dispatch({ type: BENEFICIARY_ACTIONS.SET_ID_IMAGE, idImage: idImage });
 	};
 
 	const resetBeneficiary = () => {
@@ -45,7 +49,7 @@ export const RegisterBeneficiaryContextProvider = ({ children }) => {
 
 	const addBeneficiary = async signature => {
 		const project = await DataService.getDefaultProject();
-		return Service.registerBeneficiary(signature, { ...state, project_id: project.id });
+		return Service.registerBeneficiary(signature, { ...state, projects: project.id });
 	};
 
 	// const initData = defaultData => {
@@ -63,7 +67,8 @@ export const RegisterBeneficiaryContextProvider = ({ children }) => {
 				setBeneficiaryPhoto,
 				setBeneficiaryToken,
 				resetBeneficiary,
-				addBeneficiary
+				addBeneficiary,
+				setBeneficiaryIdImage
 			}}
 		>
 			{children}

@@ -33,6 +33,12 @@ const AppReducer = (state, action) => {
 				photo: action.photo
 			};
 
+		case APP_ACTIONS.SET_ID_IMAGE:
+			return {
+				...state,
+				govt_id_image: action.idImage
+			};
+
 		case APP_ACTIONS.SET_LOADING:
 			return {
 				...state,
