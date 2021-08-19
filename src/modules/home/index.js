@@ -14,8 +14,9 @@ import Profile from '../settings/profile';
 import Transfer from '../transfer';
 import Transactions from '../transactions';
 import Beneficiary from '../beneficiary';
-import BeneficiaryAdd from '../beneficiary/add';
 import BeneficiaryRegister from '../beneficiary/register';
+import BeneficiaryPhoto from '../beneficiary/photo';
+import BeneficiaryId from '../beneficiary/idCard';
 import BeneficiaryTokenIssue from '../beneficiary/issueToken';
 import BeneficairyDetails from '../beneficiary/details';
 import TxDetails from '../transactions/details';
@@ -38,8 +39,9 @@ function App() {
 				<PrivateRoute exact path="/tx" component={Transactions} wallet={wallet} />
 				<PrivateRoute exact path="/tx/:hash" component={TxDetails} wallet={wallet} />
 				<PrivateRoute exact path="/beneficiary" component={Beneficiary} wallet={wallet} />
-				<PrivateRoute exact path="/beneficiary/add" component={BeneficiaryAdd} wallet={wallet} />
 				<PrivateRoute exact path="/beneficiary/register" component={BeneficiaryRegister} wallet={wallet} />
+				<PrivateRoute exact path="/beneficiary/photo" component={BeneficiaryPhoto} wallet={wallet} />
+				<PrivateRoute exact path="/beneficiary/idcard" component={BeneficiaryId} wallet={wallet} />
 				<PrivateRoute exact path="/beneficiary/token" component={BeneficiaryTokenIssue} wallet={wallet} />
 				<PrivateRoute exact path="/beneficiary/:phone" component={BeneficairyDetails} wallet={wallet} />
 				<PrivateRoute exact path="/backup" component={BackupWallet} wallet={wallet} />

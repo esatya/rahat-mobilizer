@@ -12,6 +12,7 @@ const TxList = ({ limit, transactions = [] }) => {
 
 	useEffect(() => {
 		(async () => {
+			setTx([]);
 			let txs = transactions.length ? transactions : await DataService.listTx();
 			if (limit) txs = txs.slice(0, limit);
 			for (let t of txs) {
