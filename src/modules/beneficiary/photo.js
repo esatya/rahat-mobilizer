@@ -7,7 +7,6 @@ import AppHeader from '../layouts/AppHeader';
 import { Link } from 'react-router-dom';
 import { IoChevronBackOutline, IoHomeOutline } from 'react-icons/io5';
 
-import DataService from '../../services/db';
 import { RegisterBeneficiaryContext } from '../../contexts/registerBeneficiaryContext';
 
 export default function Main() {

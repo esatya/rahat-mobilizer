@@ -98,7 +98,7 @@ export default function Main() {
 						<div className="title">{project ? project.name : '...'}</div>
 						<div className="balance">
 							<div className="left">
-								<span className="title">Token Balance</span>
+								<span className="title">Project Balance</span>
 								<h1 className="total">{project ? project.balance : 0}</h1>
 							</div>
 							<div className="right">
