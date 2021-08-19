@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import Moment from 'react-moment';
-import { IoArrowDownOutline, IoArrowForwardOutline } from 'react-icons/io5';
-import { GiReceiveMoney, GiMoneyStack } from 'react-icons/gi';
-import { BiError } from 'react-icons/bi';
 
 import AppHeader from '../layouts/AppHeader';
 import DataService from '../../services/db';
@@ -15,47 +12,11 @@ export default function Main(props) {
 	useEffect(() => {
 		(async () => {
 			const t = await DataService.getTx(hash);
-			if (t.type === 'charge') {
-				t.name = `Charge to ${t.from}`;
-				t.icon = (
-					<div className="iconbox bg-success">
-						<GiReceiveMoney className="ion-icon" />
-					</div>
-				);
-			}
-			if (t.type === 'send') {
-				t.name = 'Send Tokens';
-				t.icon = (
-					<div className="iconbox bg-warning">
-						<IoArrowForwardOutline className="ion-icon" />
-					</div>
-				);
-			}
-			if (t.type === 'receive') {
-				t.name = 'Received Tokens';
-				t.icon = (
-					<div className="iconbox bg-primary">
-						<IoArrowDownOutline className="ion-icon" />
-					</div>
-				);
-			}
-			if (t.type === 'redeem') {
-				t.name = 'Redeem Tokens';
-				t.icon = (
-					<div className="iconbox bg-primary">
-						<GiMoneyStack className="ion-icon" />
-					</div>
-				);
-			}
-			if (t.status === 'error' || t.status === 'fail') {
-				t.icon = (
-					<div className="iconbox bg-danger">
-						<BiError className="ion-icon" />
-					</div>
-				);
-			}
+			const ben = await DataService.getBeneficiary(t.to);
+			console.log(ben);
+
 			t.hash = `${t.hash.slice(0, 10)}....`;
-			t.to = `${t.to.slice(0, 10)}....`;
+			t.beneficiaryName = ben.name;
 			setTx(t);
 		})();
 	}, [hash]);
@@ -81,8 +42,12 @@ export default function Main(props) {
 							</span>
 						</li>
 						<li>
-							<strong>To</strong>
+							<strong>Beneficiary Phone</strong>
 							<span>{tx.to}</span>
+						</li>
+						<li>
+							<strong>Beneficiary Name</strong>
+							<span>{tx.beneficiaryName}</span>
 						</li>
 						<li>
 							<strong>Tx Hash</strong>
