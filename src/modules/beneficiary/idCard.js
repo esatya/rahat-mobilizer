@@ -1,14 +1,11 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { IoCamera, IoCameraReverse } from 'react-icons/io5';
+import { IoCamera } from 'react-icons/io5';
 import { BiReset } from 'react-icons/bi';
 import Webcam from 'react-webcam';
 import Swal from 'sweetalert2';
 
 import Loading from '../global/Loading';
-import Wallet from '../../utils/blockchain/wallet';
-import { AppContext } from '../../contexts/AppContext';
-import DataService from '../../services/db';
 import AppHeader from '../layouts/AppHeader';
 import { Link } from 'react-router-dom';
 import { IoChevronBackOutline, IoHomeOutline } from 'react-icons/io5';
@@ -16,7 +13,6 @@ import { RegisterBeneficiaryContext } from '../../contexts/registerBeneficiaryCo
 
 export default function Main() {
 	const history = useHistory();
-	const { setHasWallet, setWallet, setAgency } = useContext(AppContext);
 	const [loading, showLoading] = useState(null);
 	const [videoConstraints, setVideoConstraints] = useState({
 		facingMode: 'environment',
@@ -69,7 +65,7 @@ export default function Main() {
 			<AppHeader
 				currentMenu="Beneficiaries"
 				backButton={
-					<Link to="/beneficiary/register" className="headerButton goBack">
+					<Link to="/beneficiary/photo" className="headerButton goBack">
 						<IoChevronBackOutline className="ion-icon" />
 					</Link>
 				}
