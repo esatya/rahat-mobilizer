@@ -72,21 +72,16 @@ export default function Main() {
 				}
 			/>
 
-			<div className="section">
+			<div className="section mt-5">
 				<div className="card1">
 					<div className="card-body text-center" ref={camContainerRef}>
-						<h3 className="mb-2">
-							Take a photo of beneficiary
-							<small>
-								<br />
-								Remember to smile :-)
-							</small>
-						</h3>
+						<h2 className="mt-4">Take a photo of beneficiary</h2>
+						<span>Remember to smile :-)</span>
 
 						{previewImage ? (
-							<img className="video-flipped circleSelfie" alt="preview" src={previewImage} />
+							<img className="video-flipped circleSelfie mt-4" alt="preview" src={previewImage} />
 						) : (
-							<div className="selfieWrapper">
+							<div className="selfieWrapper mt-4">
 								<Webcam
 									audio={false}
 									ref={webcamRef}
@@ -99,7 +94,7 @@ export default function Main() {
 
 								<button
 									type="button"
-									className="btn btn-text-primary rounded shadowed mr-1 mb-1"
+									className="btn btn-text-primary rounded shadowed mt-2 mb-1"
 									onClick={handleFaceChange}
 								>
 									&nbsp; &nbsp; <IoCameraReverse className="ion-icon" />
@@ -111,21 +106,20 @@ export default function Main() {
 				<div className="pl-5 pr-5">
 					{previewImage ? (
 						<div className="text-center">
-							<button type="button" className="btn btn-lg btn-block btn-success mt-1" onClick={save}>
-								Continue to next step
-							</button>
 							<button
 								type="button"
-								className="btn btn btn-block btn-outline-secondary mt-5"
-								style={{ width: 200 }}
+								className="btn btn-lg btn-block btn-outline-primary mt-1"
 								onClick={() => setPreviewImage(null)}
 							>
 								<BiReset className="ion-icon" />
 								Retake Picture
 							</button>
+							<button type="button" className="btn btn-lg btn-block btn-success mt-3" onClick={save}>
+								Continue to next step
+							</button>
 						</div>
 					) : (
-						<button type="button" className="btn btn-lg btn-block btn-dark mt-1" onClick={capture}>
+						<button type="button" className="btn btn-lg btn-block btn-primary mt-1" onClick={capture}>
 							<IoCamera className="ion-icon" />
 							Take Picture
 						</button>

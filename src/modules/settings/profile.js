@@ -8,12 +8,9 @@ export default function Index() {
 		<>
 			<AppHeader currentMenu="Profile" />
 			<div id="appCapsule">
-				<div className="section mt-3 text-center">
-					<h2>
-						Please contact administrator to change your profile. <br />
-						<br />
-						team@rumsan.com
-					</h2>
+				<div className="section mt-5 text-center align-middle">
+					<h2>Please contact administrator to change your profile.</h2>
+					<span>team@rumsan.com</span>
 				</div>
 			</div>
 		</>
