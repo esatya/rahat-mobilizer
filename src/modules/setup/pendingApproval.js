@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import DataService from '../../services/db';
@@ -8,8 +8,11 @@ import * as Service from '../../services';
 export default function Main() {
 	const history = useHistory();
 	const [agencyName, setAgencyName] = useState('the agency');
+	const [loading, setLoading] = useState(null);
 
-	const checkForApproval = async () => {
+	const checkForApproval = useCallback(async () => {
+		console.log('checking');
+		setLoading('Redirecting to homepage...');
 		let encryptedWallet = await DataService.getWallet();
 
 		if (!encryptedWallet) history.push('/setup');
@@ -20,6 +23,7 @@ export default function Main() {
 		const data = await Service.getMobilizerByWallet(`0x${wallet.address}`);
 		if (!data.agencies.length) return history.push('/setup/idcard');
 		let status = data.agencies[0].status;
+		console.log(status);
 		if (status === 'active') {
 			dagency.isApproved = true;
 			await DataService.updateAgency(dagency.address, dagency);
@@ -27,20 +31,12 @@ export default function Main() {
 
 			return history.push('/');
 		}
-	};
+		setLoading(null);
+	}, [history]);
 
 	useEffect(() => {
-		(async () => {
-			await checkForApproval();
-			// const timer = setInterval(async () => {
-			// 	await checkForApproval();
-			// }, 20000);
-			return () => {
-				//clearInterval(timer);
-			};
-		})();
-		return function cleanup() {};
-	}, []);
+		checkForApproval();
+	}, [checkForApproval]);
 
 	return (
 		<>
@@ -54,13 +50,24 @@ export default function Main() {
 					this system. Please check again later.
 				</p>
 				<div className="p-3">
-					<button
-						type="button"
-						className="btn btn-lg btn-block btn-success mt-1"
-						onClick={() => checkForApproval()}
-					>
-						Check for approval
-					</button>
+					{loading ? (
+						<button class="btn btn-lg btn-block btn-primary" type="button" disabled="">
+							<span
+								class="spinner-border spinner-border-sm me-05"
+								role="status"
+								aria-hidden="true"
+							></span>
+							{loading}
+						</button>
+					) : (
+						<button
+							type="button"
+							className="btn btn-lg btn-block btn-success mt-1"
+							onClick={() => checkForApproval()}
+						>
+							Check for approval
+						</button>
+					)}
 				</div>
 			</div>
 		</>

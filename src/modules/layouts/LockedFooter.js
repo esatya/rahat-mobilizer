@@ -14,13 +14,10 @@ export default function LockedFooter() {
 	const { setWallet, setProject, setTotalBeneficiaries, agency } = useContext(AppContext);
 	const [loadingModal, setLoadingModal] = useState(false);
 
-	const checkProjectBeneficiaries = useCallback(
-		async (wallet, projectId) => {
-			const totalBen = await DataService.listBeneficiaries();
-			setTotalBeneficiaries(totalBen.length);
-		},
-		[setTotalBeneficiaries]
-	);
+	const checkProjectBeneficiaries = useCallback(async () => {
+		const totalBen = await DataService.listBeneficiaries();
+		setTotalBeneficiaries(totalBen.length);
+	}, [setTotalBeneficiaries]);
 
 	const checkMobilizerStatus = useCallback(
 		async wallet => {
