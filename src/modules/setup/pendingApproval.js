@@ -11,7 +11,6 @@ export default function Main() {
 	const [loading, setLoading] = useState(null);
 
 	const checkForApproval = useCallback(async () => {
-		console.log('checking');
 		setLoading('Redirecting to homepage...');
 		let encryptedWallet = await DataService.getWallet();
 
@@ -23,7 +22,6 @@ export default function Main() {
 		const data = await Service.getMobilizerByWallet(`0x${wallet.address}`);
 		if (!data.agencies.length) return history.push('/setup/idcard');
 		let status = data.agencies[0].status;
-		console.log(status);
 		if (status === 'active') {
 			dagency.isApproved = true;
 			await DataService.updateAgency(dagency.address, dagency);
