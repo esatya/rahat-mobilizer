@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { IoCloseCircle, IoHomeOutline } from 'react-icons/io5';
 import { RegisterBeneficiaryContext } from '../../contexts/registerBeneficiaryContext';
@@ -91,14 +91,22 @@ const RegisterBeneficiary = () => {
 		//return addBeneficiary(signature);
 	};
 
+	const updateTokenDetails = useCallback(async () => {
+		const agency = await DataService.getDefaultAgency();
+		const rahat = RahatService(agency.address, wallet);
+		const remainingToken = await rahat.getBeneficiaryToken(phone);
+		setRemainingToken(remainingToken);
+	}, [phone, wallet]);
+
 	useEffect(() => {
-		(async () => {
-			const agency = await DataService.getDefaultAgency();
-			const rahat = RahatService(agency.address, wallet);
-			const remainingToken = await rahat.getBeneficiaryToken(phone);
-			setRemainingToken(remainingToken);
-		})();
-	}, []);
+		// (async () => {
+		// 	const agency = await DataService.getDefaultAgency();
+		// 	const rahat = RahatService(agency.address, wallet);
+		// 	const remainingToken = await rahat.getBeneficiaryToken(phone);
+		// 	setRemainingToken(remainingToken);
+		// })();
+		updateTokenDetails();
+	}, [updateTokenDetails]);
 
 	return (
 		<>

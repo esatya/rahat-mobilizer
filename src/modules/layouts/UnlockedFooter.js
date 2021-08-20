@@ -9,10 +9,7 @@ import ChargeActionSheet from '../../actionsheets/Charge';
 import { ActionSheetContext } from '../../contexts/ActionSheetContext';
 
 export default function UnlockedFooter() {
-	const { setActiveSheet, showLoading } = useContext(ActionSheetContext);
-	//const [showChargeAction, setShowChargeAction] = useState(false);
-
-	//const handleChargeActionToggle = () => setShowChargeAction(!showChargeAction);
+	const { setActiveSheet } = useContext(ActionSheetContext);
 
 	return (
 		<>

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { IoLockClosed } from 'react-icons/io5';
 
@@ -14,37 +14,44 @@ export default function LockedFooter() {
 	const { setWallet, setProject, setTotalBeneficiaries, agency } = useContext(AppContext);
 	const [loadingModal, setLoadingModal] = useState(false);
 
-	const checkMobilizerStatus = async wallet => {
-		//update API to only query relevant agency.
-		if (!wallet) return;
-
-		const data = await Service.getMobilizerByWallet(wallet.address);
-		let defaultAgency = await DataService.getDefaultAgency();
-		if (data && data.projects.length) {
-			//	setProject({ name: data.projects[0].project.name, id: data.projects[0].project.id });
-			await checkProjectBeneficiaries(wallet, data.projects[0].project.id);
-			RahatService(defaultAgency.address, wallet)
-				.getProjectBalance(data.projects[0].project.id)
-				.then(bal => {
-					setProject({ name: data.projects[0].project.name, id: data.projects[0].project.id, balance: bal });
-				});
-		}
-		if (!data.agencies.length) return history.push('/setup/idcard');
-		let status = data.agencies[0].status;
-
-		if (status !== 'active') {
-			let dagency = Object.assign(agency, { isApproved: false });
-			await DataService.updateAgency(dagency.address, dagency);
-			history.push('/setup/pending');
-		}
-	};
-
-	const checkProjectBeneficiaries = async (wallet, projectId) => {
+	const checkProjectBeneficiaries = useCallback(async () => {
 		const totalBen = await DataService.listBeneficiaries();
 		setTotalBeneficiaries(totalBen.length);
-	};
+	}, [setTotalBeneficiaries]);
 
-	const handleUnlockClick = async () => {
+	const checkMobilizerStatus = useCallback(
+		async wallet => {
+			//update API to only query relevant agency.
+			if (!wallet) return;
+
+			const data = await Service.getMobilizerByWallet(wallet.address);
+			let defaultAgency = await DataService.getDefaultAgency();
+			if (data && data.projects.length) {
+				//	setProject({ name: data.projects[0].project.name, id: data.projects[0].project.id });
+				await checkProjectBeneficiaries(wallet, data.projects[0].project.id);
+				RahatService(defaultAgency.address, wallet)
+					.getProjectBalance(data.projects[0].project.id)
+					.then(bal => {
+						setProject({
+							name: data.projects[0].project.name,
+							id: data.projects[0].project.id,
+							balance: bal
+						});
+					});
+			}
+			if (!data.agencies.length) return history.push('/setup/idcard');
+			let status = data.agencies[0].status;
+
+			if (status !== 'active') {
+				let dagency = Object.assign(agency, { isApproved: false });
+				await DataService.updateAgency(dagency.address, dagency);
+				history.push('/setup/pending');
+			}
+		},
+		[agency, checkProjectBeneficiaries, history, setProject]
+	);
+
+	const handleUnlockClick = useCallback(async () => {
 		setLoadingModal(true);
 		let profile = await DataService.get('profile');
 		// const wallet = await Wallet.loadFromPrivateKey(
@@ -56,17 +63,16 @@ export default function LockedFooter() {
 			setWallet(wallet);
 			await checkMobilizerStatus(wallet);
 		}
-		//		checkProjectStatus(project.id);
 		history.push('/');
 		setLoadingModal(false);
-	};
+	}, [checkMobilizerStatus, setWallet, history]);
 
 	useEffect(() => {
 		const timer = setTimeout(() => {
 			handleUnlockClick();
 		}, 1000);
 		return () => clearTimeout(timer);
-	}, []);
+	}, [handleUnlockClick]);
 
 	return (
 		<>
