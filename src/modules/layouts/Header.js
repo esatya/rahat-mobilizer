@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import { IoHomeOutline, IoPersonOutline, IoLockClosedOutline, IoSendOutline } from 'react-icons/io5';
+import { IoHomeOutline, IoPersonOutline, IoLockClosedOutline } from 'react-icons/io5';
 import { Dropdown } from 'react-bootstrap';
 import { AppContext } from '../../contexts/AppContext';
 
@@ -21,11 +21,16 @@ export default function Header() {
 	return (
 		<div>
 			<div className="appHeader bg-primary scrolled">
-				<div className="left d-none">
+				<div className="left">
+					{/* <Link to="/" className="headerButton goBack">
+						<io5.IoChevronBackOutline className="ion-icon" />
+					</Link> */}
+				</div>
+				{/* <div className="left d-none">
 					<a href="fake_value" className="headerButton" data-toggle="modal" data-target="#sidebarPanel">
 						<IoHomeOutline className="ion-icon" />
 					</a>
-				</div>
+				</div> */}
 				<div className="pageTitle">
 					<img src="assets/img/brand/icon-white-128.png" width="22" alt="logo" className="logo" />
 					&nbsp; Rahat Social Mobilizer
@@ -37,9 +42,9 @@ export default function Header() {
 						</Dropdown.Toggle>
 
 						<Dropdown.Menu>
-							<Dropdown.Item onClick={() => history.push('/transfer')}>
-								<IoSendOutline className="ion-icon" />
-								Transfer
+							<Dropdown.Item onClick={() => history.push('/')}>
+								<IoHomeOutline className="ion-icon" />
+								Home
 							</Dropdown.Item>
 							<Dropdown.Item onClick={() => history.push('/settings')}>
 								<IoPersonOutline className="ion-icon" />

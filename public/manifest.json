@@ -1,6 +1,6 @@
 {
-  "name": "Rahat Vendor",
-  "short_name": "Rahat Vendor",
+  "name": "Rahat Mobilizer",
+  "short_name": "Rahat Mobilizer",
   "start_url": ".",
   "display": "standalone",
   "scope" : ".",

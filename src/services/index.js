@@ -17,9 +17,20 @@ export async function registerToAgency(payload) {
 		throw Error(e);
 	}
 }
-export async function getMobilizerByWallet(signature, walletAddress) {
+export async function getMobilizerByWallet(walletAddress) {
 	try {
 		const res = await fetch(`${API.MOBILIZERS}/${walletAddress}`, {
+			method: 'GET'
+		});
+		return res.json();
+	} catch (e) {
+		throw Error(e);
+	}
+}
+
+export async function getBeneficiaryById(signature, id) {
+	try {
+		const res = await fetch(`${API.BENEFICIARIES}/${id}`, {
 			method: 'GET',
 			headers: {
 				auth_signature: signature
@@ -54,6 +65,41 @@ export async function getProjectBeneficiaries(signature, projectId) {
 			}
 		});
 		return res.json();
+	} catch (e) {
+		throw Error(e);
+	}
+}
+
+export async function registerBeneficiary(signature, payload) {
+	payload = Object.entries(payload).reduce((a, [k, v]) => (v == null ? a : ((a[k] = v), a)), {});
+	if (!payload.wallet_address) payload.wallet_address = payload.phone;
+	if (payload.token) delete payload.token;
+	// try {
+	// 	const res = await fetch(`${API.BENEFICIARIES}`, {
+	// 		method: 'POST',
+	// 		headers: {
+	// 			auth_signature: signature
+	// 		},
+	// 		body: payload
+	// 	});
+	// 	console.log(res);
+	// 	const d = await res.json();
+	// 	console.log({ d });
+	// 	return { res: res.data };
+	// } catch (e) {
+	// 	console.log(e);
+	// 	throw Error(e);
+	// }
+	try {
+		const data = await axios({
+			url: API.BENEFICIARIES,
+			method: 'post',
+			headers: {
+				auth_signature: signature
+			},
+			data: payload
+		});
+		return data;
 	} catch (e) {
 		throw Error(e);
 	}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { IoArrowDownOutline, IoArrowForwardOutline } from 'react-icons/io5';
-import { GiReceiveMoney, GiMoneyStack } from 'react-icons/gi';
+import { GiTwoCoins } from 'react-icons/gi';
 import { BiError } from 'react-icons/bi';
 import Moment from 'react-moment';
 
@@ -12,17 +12,27 @@ const TxList = ({ limit, transactions = [] }) => {
 
 	useEffect(() => {
 		(async () => {
+			setTx([]);
 			let txs = transactions.length ? transactions : await DataService.listTx();
 			if (limit) txs = txs.slice(0, limit);
 			for (let t of txs) {
-				if (t.type === 'charge') {
-					t.name = `Charge to ${t.from}`;
+				if (t.type === 'issued') {
+					t.name = `Token sent to:`;
+					t.phone = `${t.to}`;
 					t.icon = (
 						<div className="icon-box bg-success">
-							<GiReceiveMoney className="ion-icon" />
+							<GiTwoCoins className="ion-icon" />
 						</div>
 					);
 				}
+				// if (t.type === 'charge') {
+				// 	t.name = `Charge to ${t.from}`;
+				// 	t.icon = (
+				// 		<div className="icon-box bg-success">
+				// 			<GiReceiveMoney className="ion-icon" />
+				// 		</div>
+				// 	);
+				// }
 				if (t.type === 'send') {
 					t.name = 'Send Tokens';
 					t.icon = (
@@ -39,14 +49,14 @@ const TxList = ({ limit, transactions = [] }) => {
 						</div>
 					);
 				}
-				if (t.type === 'redeem') {
-					t.name = 'Redeem Tokens';
-					t.icon = (
-						<div className="icon-box bg-primary">
-							<GiMoneyStack className="ion-icon" />
-						</div>
-					);
-				}
+				// if (t.type === 'redeem') {
+				// 	t.name = 'Redeem Tokens';
+				// 	t.icon = (
+				// 		<div className="icon-box bg-primary">
+				// 			<GiMoneyStack className="ion-icon" />
+				// 		</div>
+				// 	);
+				// }
 				if (t.status === 'error' || t.status === 'fail') {
 					t.icon = (
 						<div className="icon-box bg-danger">
@@ -72,6 +82,8 @@ const TxList = ({ limit, transactions = [] }) => {
 										<div>
 											<div className="mb-05">
 												<strong>{tx.name}</strong>
+												<br />
+												<strong>{tx.phone}</strong>
 											</div>
 											<div className="text-xsmall">
 												<Moment date={tx.timestamp} format="YYYY/MM/DD hh:mm a" />

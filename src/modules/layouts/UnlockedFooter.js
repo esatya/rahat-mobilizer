@@ -1,6 +1,7 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
+
 import { Link } from 'react-router-dom';
-import { GiReceiveMoney } from 'react-icons/gi';
+import { RiUserAddFill } from 'react-icons/ri';
 import { GrGroup } from 'react-icons/gr';
 import { useIcon } from '../../utils/react-utils';
 import { isOffline } from '../../utils';
@@ -8,7 +9,7 @@ import ChargeActionSheet from '../../actionsheets/Charge';
 import { ActionSheetContext } from '../../contexts/ActionSheetContext';
 
 export default function UnlockedFooter() {
-	const { setActiveSheet, showLoading } = useContext(ActionSheetContext);
+	const { setActiveSheet } = useContext(ActionSheetContext);
 	//const [showChargeAction, setShowChargeAction] = useState(false);
 
 	//const handleChargeActionToggle = () => setShowChargeAction(!showChargeAction);
@@ -31,11 +32,12 @@ export default function UnlockedFooter() {
 						onClick={() => {
 							if (isOffline()) return;
 							setActiveSheet('qrcode-reader');
+							//return <Redirect to="/beneficiary/register" />;
 						}}
 					>
 						<div className="col">
 							<div className="action-button large">
-								<GiReceiveMoney className="ion-icon" />
+								<RiUserAddFill className="ion-icon" />
 							</div>
 						</div>
 					</a>
