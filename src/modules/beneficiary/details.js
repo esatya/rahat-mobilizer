@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useCallback } from 'react';
 import Moment from 'react-moment';
 import { Button } from 'react-bootstrap';
 import { GiReceiveMoney } from 'react-icons/gi';
@@ -27,22 +27,25 @@ export default function Main(props) {
 		//return addBeneficiary(signature);
 	};
 
-	useEffect(() => {
-		(async () => {
-			const b = await DataService.getBeneficiary(phone);
-			b.icon = (
-				<div className="iconbox bg-success">
-					<GiReceiveMoney className="ion-icon" />
-				</div>
-			);
+	const updateBeneficiaryDetails = useCallback(async () => {
+		const b = await DataService.getBeneficiary(phone);
+		b.icon = (
+			<div className="iconbox bg-success">
+				<GiReceiveMoney className="ion-icon" />
+			</div>
+		);
 
-			setBeneficiary(b);
-			const agency = await DataService.getDefaultAgency();
-			const rahat = RahatService(agency.address, wallet);
-			const remainingToken = await rahat.getBeneficiaryToken(phone);
-			setRemainingToken(remainingToken);
-		})();
-	}, []);
+		setBeneficiary(b);
+		const agency = await DataService.getDefaultAgency();
+		const rahat = RahatService(agency.address, wallet);
+		const remainingToken = await rahat.getBeneficiaryToken(phone);
+		console.log({ phone, wallet });
+		setRemainingToken(remainingToken);
+	}, [phone, wallet]);
+
+	useEffect(() => {
+		updateBeneficiaryDetails();
+	}, [updateBeneficiaryDetails]);
 
 	return (
 		<>
