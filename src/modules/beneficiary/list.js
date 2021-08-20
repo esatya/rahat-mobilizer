@@ -32,12 +32,13 @@ const BenList = ({ limit, beneficiaries = [] }) => {
 						return (
 							<li key={ben.phone}>
 								<Link to={`/beneficiary/${ben.phone}`} className="item">
-									<div className="in">
+									<div className="beneficiaryList">
+										<img className="beneficiaryPic" src={ben.photo} alt="profile pic" />
 										<div>
-											<div className="mb-05">
+											<div className="mb-1">
 												<strong>{ben.name}</strong>
 											</div>
-											<div className="text-xsmall">
+											<div className="text-small">
 												{/* <Moment date={ben.createdAt} format="YYYY/MM/DD hh:mm a" /> */}
 												{ben.phone}
 											</div>

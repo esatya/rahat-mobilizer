@@ -83,29 +83,26 @@ export default function Main() {
 			) : (
 				<>
 					<Loading message={loading} showModal={loading !== null} />
-					<div className="section">
+					<div className="section mt-5 mb-5">
 						<div className="card1">
 							<div className="card-body text-center">
-								<h3 className="mb-2">
-									Take a picture of Beneficiary ID card
-									<small>
-										<br />
-										Citizenship, Passport, License or National ID
-									</small>
-								</h3>
+								<h3 className="mt-4">Take a picture of beneficiary ID card</h3>
+								<span>Citizenship, Passport, License or National ID</span>
 
 								{previewImage ? (
 									<img
 										alt="preview"
 										src={previewImage}
 										style={{
-											borderRadius: '10%',
-											width: '100%',
-											border: '3px solid #958d9e'
+											borderRadius: '10px',
+											width: '88%',
+											height: '350px',
+											border: '3px solid #958d9e',
+											marginTop: '30px'
 										}}
 									/>
 								) : (
-									<div className="idCardWrapper">
+									<div className="idCardWrapper mt-4">
 										<Webcam
 											audio={false}
 											ref={webcamRef}
@@ -126,23 +123,26 @@ export default function Main() {
 								<div className="text-center">
 									<button
 										type="button"
-										className="btn btn-lg btn-block btn-success mt-1"
-										onClick={save}
-									>
-										Complete setup
-									</button>
-									<button
-										type="button"
-										className="btn btn btn-block btn-outline-secondary mt-5"
-										style={{ width: 200 }}
+										className="btn btn-lg btn-block btn-outline-primary mt-1"
 										onClick={() => setPreviewImage(null)}
 									>
 										<BiReset className="ion-icon" />
 										Retake Picture
 									</button>
+									<button
+										type="button"
+										className="btn btn-lg btn-block btn-success mt-3 mb-5"
+										onClick={save}
+									>
+										Complete setup
+									</button>
 								</div>
 							) : (
-								<button type="button" className="btn btn-lg btn-block btn-dark mt-1" onClick={capture}>
+								<button
+									type="button"
+									className="btn btn-lg btn-block btn-primary mt-1"
+									onClick={capture}
+								>
 									<IoCamera className="ion-icon" />
 									Take Picture
 								</button>

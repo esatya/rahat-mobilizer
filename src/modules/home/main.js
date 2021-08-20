@@ -95,15 +95,15 @@ export default function Main() {
 			<div id="appCapsule">
 				<div className="section wallet-card-section pt-1">
 					<div className="wallet-card">
-						<div className="title">{project ? project.name : '...'}</div>
+						<div className="mobilizer-header">{project ? project.name : '...'}</div>
 						<div className="balance">
 							<div className="left">
-								<span className="title">Project Balance</span>
 								<h1 className="total">{project ? project.balance : 0}</h1>
+								<span className="mobilizer-title">Project Balance</span>
 							</div>
 							<div className="right">
-								<span className="title">Beneficiaries</span>
 								<h1 className="total">{beneficiaryCount}</h1>
+								<span className="mobilizer-title">Beneficiaries</span>
 							</div>
 						</div>
 					</div>

@@ -57,11 +57,11 @@ const RegisterBeneficiary = () => {
 
 			<div id="appCapsule">
 				<div class="section mt-2 text-center">
-					<h1>Register Beneficiary</h1>
-					<h4>Fill the form to register beneficiary</h4>
+					<h2 className="mt-4">Register Beneficiary</h2>
+					<span>Fill the form to register beneficiary</span>
 				</div>
 
-				<div class="section mt-2 mb-5 p-3">
+				<div class="section p-3">
 					<Form onSubmit={save}>
 						<div className="card">
 							<div className="card-body">
@@ -157,11 +157,9 @@ const RegisterBeneficiary = () => {
 								</div>
 							</div>
 						</div>
-						<div className="p-2">
-							<Button type="submit" className="btn btn-lg btn-block btn-success mt-3">
-								Continue
-							</Button>
-						</div>
+						<Button type="submit" className="btn btn-lg btn-block btn-success mt-4">
+							Continue
+						</Button>
 					</Form>
 				</div>
 			</div>
