@@ -38,3 +38,9 @@
   .button-link:focus {
     text-decoration: none;
   }
+
+/* ......................   */
+
+.image-size{
+  height: 48px;
+}

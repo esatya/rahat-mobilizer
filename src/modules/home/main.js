@@ -1,26 +1,58 @@
 import React, { useState, useContext, useRef, useEffect } from 'react';
 import { useHistory, Redirect } from 'react-router-dom';
-import { Form } from 'react-bootstrap';
-import Swal from 'sweetalert2';
+// import { Form } from 'react-bootstrap';
+// import Swal from 'sweetalert2';
 import { useResize } from '../../utils/react-utils';
 import * as Service from '../../services';
 import { isOffline, getAuthSignature } from '../../utils';
 import { AppContext } from '../../contexts/AppContext';
-import TransactionList from '../transactions/list';
+// import TransactionList from '../transactions/list';
 import DataService from '../../services/db';
-import { TokenService, RahatService } from '../../services/chain';
+// import { TokenService, RahatService } from '../../services/chain';
 import Loading from '../global/Loading';
 
-var QRCode = require('qrcode.react');
+import Transactions from './transaction';
+
+// var QRCode = require('qrcode.react');
+const datas = [
+	{
+		id: 1,
+		url: 'assets/img/beneficiary/leo.jpg',
+		name: 'KP Sharma Oli',
+		project: 'Jhapa duban project',
+		token: '150'
+	},
+	{
+		id: 2,
+		url: 'assets/img/beneficiary/pep.jpg',
+		name: 'Gokul Baskota',
+		project: '70 crore project',
+		token: '70'
+	},
+	{
+		id: 3,
+		url: 'assets/img/beneficiary/leo.jpg',
+		name: 'Pep gradiola',
+		project: 'Sports development project',
+		token: '1500'
+	},
+	{
+		id: 4,
+		url: 'assets/img/beneficiary/leo.jpg',
+		name: 'Leonardo',
+		project: 'Orphanage development project',
+		token: '7000'
+	}
+];
 
 export default function Main() {
 	const history = useHistory();
 	const {
 		hasWallet,
 		wallet,
-		tokenBalance,
-		recentTx,
-		setTokenBalance,
+		// tokenBalance,
+		// recentTx,
+		// setTokenBalance,
 		addRecentTx,
 		setProject,
 		agency,
@@ -33,10 +65,10 @@ export default function Main() {
 	const cardBody = useRef();
 	const { width } = useResize(cardBody);
 
-	const calcQRWidth = () => {
-		if (width < 200) return 200;
-		else return 280;
-	};
+	// const calcQRWidth = () => {
+	// 	if (width < 200) return 200;
+	// 	else return 280;
+	// };
 
 	const checkMobilizerStatus = async wallet => {
 		//update API to only query relevant agency.
@@ -118,13 +150,13 @@ export default function Main() {
 		};
 	}, []);
 
-	if (!hasWallet) {
-		return <Redirect to="/setup" />;
-	}
+	// if (!hasWallet) {
+	// 	return <Redirect to="/setup" />;
+	// }
 
-	if (agency && !agency.isApproved) {
-		return <Redirect to="/setup/pending" />;
-	}
+	// if (agency && !agency.isApproved) {
+	// 	return <Redirect to="/setup/pending" />;
+	// }
 
 	return (
 		<>
@@ -152,12 +184,7 @@ export default function Main() {
 				</div>
 
 				<div className="section mt-2">
-					<div className="card">
-						<div className="card-header">Recent Transactions</div>
-						<div className="card-body">
-							<TransactionList limit="3" transactions={recentTx} />
-						</div>
-					</div>
+					<Transactions component={datas} />
 				</div>
 
 				{/* {wallet && (
