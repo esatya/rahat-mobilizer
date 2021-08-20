@@ -1,35 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-// import { IoArrowDownOutline, IoArrowForwardOutline } from 'react-icons/io5';
-// import { GiReceiveMoney, GiMoneyStack } from 'react-icons/gi';
-// import { BiError } from 'react-icons/bi';
-// import Moment from 'react-moment';
+import { IoArrowDownOutline, IoArrowForwardOutline } from 'react-icons/io5';
+import { GiReceiveMoney, GiMoneyStack } from 'react-icons/gi';
+import { BiError } from 'react-icons/bi';
+import Moment from 'react-moment';
 
 import DataService from '../../services/db';
-import { useHistory } from 'react-router-dom';
-
-const beneficiaryData = [
-	{
-		id: 1,
-		name: 'KP Sharma Oli',
-		phone: '9808345150'
-	},
-	{
-		id: 2,
-		name: 'Gokul Baskota',
-		phone: '9818756e70'
-	},
-	{
-		id: 3,
-		name: 'Pep gradiola',
-		phone: '9845731500'
-	},
-	{
-		id: 4,
-		name: 'Leonardo',
-		phone: '9808347000'
-	}
-];
 
 const BenList = ({ limit, beneficiaries = [] }) => {
 	const [ben, setBen] = useState([]);
@@ -81,38 +57,6 @@ const BenList = ({ limit, beneficiaries = [] }) => {
 						);
 					})}
 			</ul>
-
-			<div id="appCapsule" style={{ paddingBottom: '10px', paddingTop: '10px' }}>
-				<div className="section mt-1 mb-2">
-					<div className="wide-block p-0">
-						<div className="table-responsive">
-							<table className="table">
-								<thead>
-									<tr>
-										<th scope="col">#</th>
-										<th scope="col">Name</th>
-										<th scope="col">Phone</th>
-									</tr>
-								</thead>
-								<tbody>
-									{beneficiaryData &&
-										beneficiaryData.map(data => {
-											return (
-												<tr>
-													<th scope="row">{data.id}</th>
-													<Link to={`/beneficiary/detail`}>
-														<td>{data.name}</td>
-													</Link>
-													<td>{data.phone}</td>
-												</tr>
-											);
-										})}
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</div>
-			</div>
 		</>
 	);
 };

@@ -26,15 +26,14 @@ export default function Footer() {
 
 	return (
 		<>
-			{/* {hasWallet ? (
+			{hasWallet ? (
 				<>
 					{wallet === null && <LockedFooter />}
 					{wallet !== null && <UnlockedFooter />}
 				</>
 			) : (
 				''
-			)} */}
-			<UnlockedFooter />
+			)}
 		</>
 	);
 }
