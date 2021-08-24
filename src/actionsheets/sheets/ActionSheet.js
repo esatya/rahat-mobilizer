@@ -4,20 +4,24 @@ import PropTypes from 'prop-types';
 import { ActionSheetContext } from '../../contexts/ActionSheetContext';
 
 export default function ActionSheet(props) {
-	const { handleSubmit, modalSize, showModal, title, onHide, onShow, buttonName } = props;
-	const { loading } = useContext(ActionSheetContext);
+	const { handleSubmit, modalSize, showModal, title, onShow, buttonName } = props;
+	const { loading, toggelActionSheet } = useContext(ActionSheetContext);
+
+	const handleHideAction = () => {
+		toggelActionSheet(null);
+	};
 	return (
 		<>
 			<Modal
 				className="modal fade action-sheet"
 				size={modalSize || 'md'}
 				show={showModal || false}
-				onHide={onHide}
+				onHide={handleHideAction}
 				onShow={onShow}
 				role="dialog"
 			>
 				{title && (
-					<Modal.Header>
+					<Modal.Header closeButton>
 						<Modal.Title>{title}</Modal.Title>
 					</Modal.Header>
 				)}

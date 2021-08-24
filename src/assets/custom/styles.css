@@ -80,3 +80,11 @@
     height: 100px; 
     border-radius: 50px;
   }
+
+  .modal-header {
+    align-items: center;
+  }
+  .modal-header .close{
+    padding: 0rem;
+    margin: 0rem;
+  }

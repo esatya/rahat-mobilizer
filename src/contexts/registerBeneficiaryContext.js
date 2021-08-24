@@ -12,9 +12,16 @@ const initialState = {
 	agency: null,
 	email: null,
 	address: null,
+	address_temporary: null,
+	age: null,
 	govt_id: null,
 	photo: null,
 	govt_id_image: null,
+	profession: null,
+	education: null,
+	family_members: null,
+	adult: null,
+	child: null,
 	token: null
 };
 
