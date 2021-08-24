@@ -12,8 +12,22 @@ import * as Service from '../../services';
 
 const RegisterBeneficiary = () => {
 	const history = useHistory();
-	const { phone, setBeneficiaryDetails, setBeneficiaryPhone, name, address, email, govt_id } =
-		useContext(RegisterBeneficiaryContext);
+	const {
+		phone,
+		setBeneficiaryDetails,
+		setBeneficiaryPhone,
+		name,
+		address,
+		address_temporary,
+		age,
+		email,
+		govt_id,
+		profession,
+		education,
+		family_members,
+		adult,
+		child
+	} = useContext(RegisterBeneficiaryContext);
 	const { wallet } = useContext(AppContext);
 
 	const updateBeneficiaryData = e => {
@@ -82,10 +96,9 @@ const RegisterBeneficiary = () => {
 										</i>
 									</div>
 								</div>
-
 								<div className="form-group basic">
 									<div className="input-wrapper">
-										<label className="label">Phone #</label>
+										<label className="label">Phone</label>
 										<Form.Control
 											type="number"
 											className="form-control"
@@ -107,12 +120,42 @@ const RegisterBeneficiary = () => {
 								</div>
 								<div className="form-group basic">
 									<div className="input-wrapper">
-										<label className="label">Address</label>
+										<label className="label">Age</label>
+										<Form.Control
+											type="number"
+											className="form-control"
+											name="age"
+											placeholder="Enter your age"
+											value={age}
+											onChange={updateBeneficiaryData}
+											required
+										/>
+										<i className="clear-input">
+											<IoCloseCircle className="ion-icon" />
+										</i>
+									</div>
+								</div>
+								<div class="form-group basic">
+									<div class="input-wrapper">
+										<label class="label" for="gender">
+											Gender
+										</label>
+										<select class="form-control custom-select" id="gender">
+											<option value="U">Select gender</option>
+											<option value="M">Male</option>
+											<option value="F">Female</option>
+											<option value="O">Other</option>
+										</select>
+									</div>
+								</div>
+								<div className="form-group basic">
+									<div className="input-wrapper">
+										<label className="label">Permanent address</label>
 										<Form.Control
 											type="text"
 											className="form-control"
 											name="address"
-											placeholder="Enter your address"
+											placeholder="Enter your permanent address"
 											value={address}
 											onChange={updateBeneficiaryData}
 											required
@@ -122,7 +165,23 @@ const RegisterBeneficiary = () => {
 										</i>
 									</div>
 								</div>
-
+								<div className="form-group basic">
+									<div className="input-wrapper">
+										<label className="label">Temporary address</label>
+										<Form.Control
+											type="text"
+											className="form-control"
+											name="address_temporary"
+											placeholder="Enter your temporary address"
+											value={address_temporary}
+											onChange={updateBeneficiaryData}
+											required
+										/>
+										<i className="clear-input">
+											<IoCloseCircle className="ion-icon" />
+										</i>
+									</div>
+								</div>
 								<div className="form-group basic">
 									<div className="input-wrapper">
 										<label className="label">Email Address</label>
@@ -149,6 +208,104 @@ const RegisterBeneficiary = () => {
 											placeholder="Enter your address"
 											value={govt_id}
 											onChange={updateBeneficiaryData}
+										/>
+										<i className="clear-input">
+											<IoCloseCircle className="ion-icon" />
+										</i>
+									</div>
+								</div>
+								<div className="form-group basic">
+									<div className="input-wrapper">
+										<label className="label">Education</label>
+										<Form.Control
+											type="text"
+											name="education"
+											className="form-control"
+											placeholder="Enter your education"
+											value={education}
+											onChange={updateBeneficiaryData}
+											// required
+										/>
+										<i className="clear-input">
+											<IoCloseCircle className="ion-icon" />
+										</i>
+									</div>
+								</div>
+								<div className="form-group basic">
+									<div className="input-wrapper">
+										<label className="label">Profession</label>
+										<Form.Control
+											type="text"
+											name="profession"
+											className="form-control"
+											placeholder="Enter your profession"
+											value={profession}
+											onChange={updateBeneficiaryData}
+											// required
+										/>
+										<i className="clear-input">
+											<IoCloseCircle className="ion-icon" />
+										</i>
+									</div>
+								</div>
+								<div class="form-group basic">
+									<div class="input-wrapper">
+										<label class="label" for="group">
+											Group
+										</label>
+										<select class="form-control custom-select" id="group">
+											<option value="U">Select group</option>
+											<option value="M">Differently abled</option>
+											<option value="F">Maternity</option>
+											<option value="O">Senior citizen</option>
+										</select>
+									</div>
+								</div>
+								<div className="form-group basic">
+									<div className="input-wrapper">
+										<label className="label">Family members</label>
+										<Form.Control
+											type="number"
+											className="form-control"
+											name="family_members"
+											placeholder="Enter number of family members"
+											value={family_members}
+											onChange={updateBeneficiaryData}
+											required
+										/>
+										<i className="clear-input">
+											<IoCloseCircle className="ion-icon" />
+										</i>
+									</div>
+								</div>
+								<div className="form-group basic">
+									<div className="input-wrapper">
+										<label className="label">Adults</label>
+										<Form.Control
+											type="number"
+											className="form-control"
+											name="adult"
+											placeholder="Enter number of adults"
+											value={adult}
+											onChange={updateBeneficiaryData}
+											required
+										/>
+										<i className="clear-input">
+											<IoCloseCircle className="ion-icon" />
+										</i>
+									</div>
+								</div>{' '}
+								<div className="form-group basic">
+									<div className="input-wrapper">
+										<label className="label">Child</label>
+										<Form.Control
+											type="number"
+											className="form-control"
+											name="child"
+											placeholder="Enter number of children"
+											value={child}
+											onChange={updateBeneficiaryData}
+											required
 										/>
 										<i className="clear-input">
 											<IoCloseCircle className="ion-icon" />

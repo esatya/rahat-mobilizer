@@ -24,6 +24,10 @@ export const ActionSheetContextProvider = ({ children }) => {
 		return newData;
 	};
 
+	const toggelActionSheet = data => {
+		setActiveSheet(data);
+	};
+
 	return (
 		<ActionSheetContext.Provider
 			value={{
@@ -33,6 +37,7 @@ export const ActionSheetContextProvider = ({ children }) => {
 				setData,
 				initData,
 				showLoading,
+				toggelActionSheet,
 				setActiveSheet
 			}}
 		>

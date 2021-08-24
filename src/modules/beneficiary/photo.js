@@ -46,6 +46,11 @@ export default function Main() {
 		history.push('/beneficiary/idcard');
 	};
 
+	const skip = async event => {
+		event.preventDefault();
+		history.push('/beneficiary/idcard');
+	};
+
 	useEffect(() => {
 		setVideoConstraints({
 			facingMode: 'user',
@@ -71,59 +76,67 @@ export default function Main() {
 					</Link>
 				}
 			/>
+			<div id="appCapsule">
+				<div className="section">
+					<div className="card1">
+						<div className="card-body text-center" ref={camContainerRef}>
+							<button type="button" class="btn btn-outline-primary" onClick={skip}>
+								Skip
+							</button>
+							<h2 className="mt-2">Take a photo of beneficiary</h2>
+							<span>Remember to smile :-)</span>
 
-			<div className="section mt-5">
-				<div className="card1">
-					<div className="card-body text-center" ref={camContainerRef}>
-						<h2 className="mt-4">Take a photo of beneficiary</h2>
-						<span>Remember to smile :-)</span>
+							{previewImage ? (
+								<img className="video-flipped circleSelfie mt-4" alt="preview" src={previewImage} />
+							) : (
+								<div className="selfieWrapper mt-3">
+									<Webcam
+										audio={false}
+										ref={webcamRef}
+										className="circleSelfie"
+										minScreenshotWidth={1024}
+										minScreenshotHeight={720}
+										screenshotFormat="image/png"
+										videoConstraints={videoConstraints}
+									/>
 
+									<button
+										type="button"
+										className="btn btn-text-primary rounded shadowed mt-2 mb-1"
+										onClick={handleFaceChange}
+									>
+										&nbsp; &nbsp; <IoCameraReverse className="ion-icon" />
+									</button>
+								</div>
+							)}
+						</div>
+					</div>
+					<div className="pl-5 pr-5">
 						{previewImage ? (
-							<img className="video-flipped circleSelfie mt-4" alt="preview" src={previewImage} />
-						) : (
-							<div className="selfieWrapper mt-4">
-								<Webcam
-									audio={false}
-									ref={webcamRef}
-									className="circleSelfie"
-									minScreenshotWidth={1024}
-									minScreenshotHeight={720}
-									screenshotFormat="image/png"
-									videoConstraints={videoConstraints}
-								/>
-
+							<div className="text-center">
 								<button
 									type="button"
-									className="btn btn-text-primary rounded shadowed mt-2 mb-1"
-									onClick={handleFaceChange}
+									className="btn btn-lg btn-block btn-outline-primary mt-1"
+									onClick={() => setPreviewImage(null)}
 								>
-									&nbsp; &nbsp; <IoCameraReverse className="ion-icon" />
+									<BiReset className="ion-icon" />
+									Retake Picture
+								</button>
+								<button
+									type="button"
+									className="btn btn-lg btn-block btn-success mt-3 mb-5"
+									onClick={save}
+								>
+									Continue to next step
 								</button>
 							</div>
+						) : (
+							<button type="button" className="btn btn-lg btn-block btn-primary mb-5" onClick={capture}>
+								<IoCamera className="ion-icon" />
+								Take Picture
+							</button>
 						)}
 					</div>
-				</div>
-				<div className="pl-5 pr-5">
-					{previewImage ? (
-						<div className="text-center">
-							<button
-								type="button"
-								className="btn btn-lg btn-block btn-outline-primary mt-1"
-								onClick={() => setPreviewImage(null)}
-							>
-								<BiReset className="ion-icon" />
-								Retake Picture
-							</button>
-							<button type="button" className="btn btn-lg btn-block btn-success mt-3" onClick={save}>
-								Continue to next step
-							</button>
-						</div>
-					) : (
-						<button type="button" className="btn btn-lg btn-block btn-primary mt-1" onClick={capture}>
-							<IoCamera className="ion-icon" />
-							Take Picture
-						</button>
-					)}
 				</div>
 			</div>
 		</>

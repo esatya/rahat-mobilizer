@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import DataService from '../../services/db';
+import Avatar from '../../assets/images/Man.png';
 
 const BenList = ({ limit, beneficiaries = [] }) => {
 	const [ben, setBen] = useState([]);
@@ -33,7 +34,11 @@ const BenList = ({ limit, beneficiaries = [] }) => {
 							<li key={ben.phone}>
 								<Link to={`/beneficiary/${ben.phone}`} className="item">
 									<div className="beneficiaryList">
-										<img className="beneficiaryPic" src={ben.photo} alt="profile pic" />
+										{ben.photo ? (
+											<img className="beneficiaryPic" src={ben.photo} alt="profile pic" />
+										) : (
+											<img className="beneficiaryPic" src={Avatar} alt="profile pic" />
+										)}
 										<div>
 											<div className="mb-1">
 												<strong>{ben.name}</strong>
