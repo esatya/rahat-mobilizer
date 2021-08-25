@@ -152,7 +152,7 @@ const RegisterBeneficiary = () => {
 			)}
 
 			<div id="appCapsule">
-				<div class="section mt-2 text-center">
+				<div className="section mt-2 text-center">
 					<h2 className="mt-3">Issue Token</h2>
 					<span>Enter Amount to Issue Token</span>
 					<br />
@@ -171,7 +171,7 @@ const RegisterBeneficiary = () => {
 					</div>
 				</div>
 
-				<div class="section pt-0 p-3">
+				<div className="section pt-0 p-3">
 					<div>
 						<ul className="listview flush transparent simple-listview no-space mt-3">
 							<li>

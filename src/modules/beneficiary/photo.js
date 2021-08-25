@@ -80,7 +80,7 @@ export default function Main() {
 				<div className="section">
 					<div className="card1">
 						<div className="card-body text-center" ref={camContainerRef}>
-							<button type="button" class="btn btn-outline-primary" onClick={skip}>
+							<button type="button" className="btn btn-outline-primary" onClick={skip}>
 								Skip
 							</button>
 							<h2 className="mt-2">Take a photo of beneficiary</h2>

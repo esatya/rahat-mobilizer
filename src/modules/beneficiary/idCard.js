@@ -92,11 +92,12 @@ export default function Main() {
 						<div className="section mb-5">
 							<div className="card1">
 								<div className="card-body text-center">
-									<button type="button" class="btn btn-outline-primary" onClick={skip}>
+									<button type="button" className="btn btn-outline-primary" onClick={skip}>
 										Skip
 									</button>
 									<h3 className="mt-2">Take a picture of beneficiary ID card</h3>
 									<span>Citizenship, Passport, License or National ID</span>
+									<br />
 
 									{previewImage ? (
 										<img
