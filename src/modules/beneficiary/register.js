@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Input } from 'react-bootstrap';
 import { IoCloseCircle, IoHomeOutline } from 'react-icons/io5';
 import { RegisterBeneficiaryContext } from '../../contexts/registerBeneficiaryContext';
 import { AppContext } from '../../contexts/AppContext';
@@ -8,6 +8,7 @@ import { useHistory } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import AppHeader from '../layouts/AppHeader';
 import { Link } from 'react-router-dom';
+import { GROUPS } from '../../constants';
 import * as Service from '../../services';
 
 const RegisterBeneficiary = () => {
@@ -26,7 +27,8 @@ const RegisterBeneficiary = () => {
 		education,
 		family_members,
 		adult,
-		child
+		child,
+		group
 	} = useContext(RegisterBeneficiaryContext);
 	const { wallet } = useContext(AppContext);
 
@@ -127,7 +129,6 @@ const RegisterBeneficiary = () => {
 											placeholder="Enter your age"
 											value={age}
 											onChange={updateBeneficiaryData}
-											required
 										/>
 										<i className="clear-input">
 											<IoCloseCircle className="ion-icon" />
@@ -157,7 +158,6 @@ const RegisterBeneficiary = () => {
 											placeholder="Enter your permanent address"
 											value={address}
 											onChange={updateBeneficiaryData}
-											required
 										/>
 										<i className="clear-input">
 											<IoCloseCircle className="ion-icon" />
@@ -174,7 +174,6 @@ const RegisterBeneficiary = () => {
 											placeholder="Enter your temporary address"
 											value={address_temporary}
 											onChange={updateBeneficiaryData}
-											required
 										/>
 										<i className="clear-input">
 											<IoCloseCircle className="ion-icon" />
@@ -223,7 +222,6 @@ const RegisterBeneficiary = () => {
 											placeholder="Enter your education"
 											value={education}
 											onChange={updateBeneficiaryData}
-											// required
 										/>
 										<i className="clear-input">
 											<IoCloseCircle className="ion-icon" />
@@ -240,7 +238,6 @@ const RegisterBeneficiary = () => {
 											placeholder="Enter your profession"
 											value={profession}
 											onChange={updateBeneficiaryData}
-											// required
 										/>
 										<i className="clear-input">
 											<IoCloseCircle className="ion-icon" />
@@ -252,11 +249,31 @@ const RegisterBeneficiary = () => {
 										<label className="label" htmlFor="group">
 											Group
 										</label>
-										<select className="form-control custom-select" id="group">
-											<option value="U">Select group</option>
-											<option value="M">Differently abled</option>
-											<option value="F">Maternity</option>
-											<option value="O">Senior citizen</option>
+										<select class="form-control custom-select" id="group">
+											<option value="">--Select Group--</option>
+											<option value={GROUPS.DIFFERENTLY_ABLED.value}>
+												{GROUPS.DIFFERENTLY_ABLED.label}
+											</option>
+											<option value={GROUPS.MATERNITY.value}>{GROUPS.MATERNITY.label}</option>
+											<option value={GROUPS.SENIOR_CITIZENS.value}>
+												{GROUPS.SENIOR_CITIZENS.label}
+											</option>
+											<option value={GROUPS.COVID_VICTIM.value}>
+												{GROUPS.COVID_VICTIM.label}
+											</option>
+											<option value={GROUPS.NATURAL_CLIMATE_VICTIM.value}>
+												{GROUPS.NATURAL_CLIMATE_VICTIM.label}
+											</option>
+											<option value={GROUPS.UNDER_PRIVILAGED.value}>
+												{GROUPS.UNDER_PRIVILAGED.label}
+											</option>
+											<option value={GROUPS.SEVERE_HEATH_ISSUES.value}>
+												{GROUPS.SEVERE_HEATH_ISSUES.label}
+											</option>
+											<option value={GROUPS.SINGLE_WOMAN.value}>
+												{GROUPS.SINGLE_WOMAN.label}
+											</option>
+											<option value={GROUPS.ORPHAN.value}>{GROUPS.ORPHAN.label}</option>
 										</select>
 									</div>
 								</div>
@@ -270,7 +287,6 @@ const RegisterBeneficiary = () => {
 											placeholder="Enter number of family members"
 											value={family_members}
 											onChange={updateBeneficiaryData}
-											required
 										/>
 										<i className="clear-input">
 											<IoCloseCircle className="ion-icon" />
@@ -287,7 +303,6 @@ const RegisterBeneficiary = () => {
 											placeholder="Enter number of adults"
 											value={adult}
 											onChange={updateBeneficiaryData}
-											required
 										/>
 										<i className="clear-input">
 											<IoCloseCircle className="ion-icon" />
@@ -304,7 +319,6 @@ const RegisterBeneficiary = () => {
 											placeholder="Enter number of children"
 											value={child}
 											onChange={updateBeneficiaryData}
-											required
 										/>
 										<i className="clear-input">
 											<IoCloseCircle className="ion-icon" />
