@@ -12,7 +12,16 @@ const AppReducer = (state, action) => {
 				email: action.data.email,
 				address: action.data.address,
 				govt_id: action.data.govt_id,
-				project: action.data.project
+				project: action.data.project,
+				extras: {
+					age: action.data.age,
+					profession: action.data.profession,
+					education: action.data.education,
+					family_members: action.data.family_members,
+					adult: action.data.adult,
+					child: action.data.child,
+					group: action.data.group
+				}
 			};
 
 		case APP_ACTIONS.SET_PHONE:
