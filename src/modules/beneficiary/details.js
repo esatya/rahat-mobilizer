@@ -40,7 +40,6 @@ export default function Main(props) {
 		const agency = await DataService.getDefaultAgency();
 		const rahat = RahatService(agency.address, wallet);
 		const remainingToken = await rahat.getBeneficiaryToken(phone);
-		console.log({ phone, wallet });
 		setRemainingToken(remainingToken);
 	}, [phone, wallet]);
 

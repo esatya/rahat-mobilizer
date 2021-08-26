@@ -23,7 +23,6 @@ export default function Index() {
 		})();
 	}, []);
 
-	console.log('profile name', profile);
 	return (
 		<>
 			<AppHeader currentMenu="Profile" />

@@ -49,14 +49,13 @@ const RegisterBeneficiary = () => {
 		try {
 			const signature = await getAuthSignature(wallet);
 			const ben = await Service.getBeneficiaryById(signature, phone);
-			if (ben) {
+			if (ben.data) {
 				Swal.fire('Error', 'Beneficiary with given phone already exists', 'error');
 				return;
 			}
-
 			history.push('/beneficiary/photo');
 		} catch (e) {
-			alert('Invalid beneficiary');
+			alert(e);
 		}
 	};
 
@@ -72,12 +71,12 @@ const RegisterBeneficiary = () => {
 			/>
 
 			<div id="appCapsule">
-				<div class="section mt-2 text-center">
+				<div className="section mt-2 text-center">
 					<h2 className="mt-4">Register Beneficiary</h2>
 					<span>Fill the form to register beneficiary</span>
 				</div>
 
-				<div class="section p-3">
+				<div className="section p-3">
 					<Form onSubmit={save}>
 						<div className="card">
 							<div className="card-body">
@@ -136,12 +135,12 @@ const RegisterBeneficiary = () => {
 										</i>
 									</div>
 								</div>
-								<div class="form-group basic">
-									<div class="input-wrapper">
-										<label class="label" for="gender">
+								<div className="form-group basic">
+									<div className="input-wrapper">
+										<label className="label" htmlFor="gender">
 											Gender
 										</label>
-										<select class="form-control custom-select" id="gender">
+										<select className="form-control custom-select" id="gender">
 											<option value="U">Select gender</option>
 											<option value="M">Male</option>
 											<option value="F">Female</option>
@@ -245,9 +244,9 @@ const RegisterBeneficiary = () => {
 										</i>
 									</div>
 								</div>
-								<div class="form-group basic">
-									<div class="input-wrapper">
-										<label class="label" for="group">
+								<div className="form-group basic">
+									<div className="input-wrapper">
+										<label className="label" htmlFor="group">
 											Group
 										</label>
 										<select class="form-control custom-select" id="group">
