@@ -166,6 +166,10 @@ const DataService = {
 		return db.beneficiaries.get(phone);
 	},
 
+	getBeneficiaryName(name) {
+		return db.beneficiaries.get(name);
+	},
+
 	listBeneficiaries(type) {
 		if (!type) return db.beneficiaries.orderBy('name').reverse().toArray();
 		return db.beneficiaries.get({ type }).orderBy('timestamp').reverse();

@@ -27,7 +27,7 @@ const RegisterBeneficiary = () => {
 		photo,
 		govt_id_image
 	} = useContext(RegisterBeneficiaryContext);
-	const { wallet } = useContext(AppContext);
+	const { wallet, toggleFooter } = useContext(AppContext);
 	const [loading, showLoading] = useState(null);
 	const [remainingToken, setRemainingToken] = useState('loading...');
 
@@ -106,7 +106,10 @@ const RegisterBeneficiary = () => {
 		// 	setRemainingToken(remainingToken);
 		// })();
 		updateTokenDetails();
-	}, [updateTokenDetails]);
+		return () => {
+			toggleFooter(false);
+		};
+	}, [updateTokenDetails, toggleFooter]);
 
 	return (
 		<>

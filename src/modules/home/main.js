@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { useHistory, Redirect } from 'react-router-dom';
+import { useHistory, Redirect, Link } from 'react-router-dom';
 
 import * as Service from '../../services';
 import { AppContext } from '../../contexts/AppContext';
@@ -111,8 +111,31 @@ export default function Main() {
 
 				<div className="section mt-2">
 					<div className="card">
-						<div className="card-header">Recent Transactions</div>
-						<div className="card-body">
+						<div
+							className="section-heading"
+							style={{
+								marginBottom: '0px'
+							}}
+						>
+							<div
+								className="card-header"
+								style={{
+									borderBottom: '0px'
+								}}
+							>
+								Recent Transactions
+							</div>
+
+							<Link to="/transaction" className="link" style={{ marginRight: '16px' }}>
+								View All
+							</Link>
+						</div>
+						<div
+							className="card-body"
+							style={{
+								paddingTop: '0px'
+							}}
+						>
 							<TransactionList limit="3" transactions={recentTx} />
 						</div>
 					</div>

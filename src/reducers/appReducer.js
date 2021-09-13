@@ -73,6 +73,12 @@ const AppReducer = (state, action) => {
 				beneficiaryCount: action.data
 			};
 
+		case APP_ACTIONS.TOGGLE_FOOTER:
+			return {
+				...state,
+				hideFooter: action.data
+			};
+
 		default:
 			return state;
 	}

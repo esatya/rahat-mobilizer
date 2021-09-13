@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Form, Button, Input } from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
 import { IoCloseCircle, IoHomeOutline } from 'react-icons/io5';
 import { RegisterBeneficiaryContext } from '../../contexts/registerBeneficiaryContext';
 import { AppContext } from '../../contexts/AppContext';
@@ -27,8 +27,7 @@ const RegisterBeneficiary = () => {
 		education,
 		family_members,
 		adult,
-		child,
-		group
+		child
 	} = useContext(RegisterBeneficiaryContext);
 	const { wallet } = useContext(AppContext);
 

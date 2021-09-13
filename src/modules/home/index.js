@@ -20,6 +20,7 @@ import BeneficiaryId from '../beneficiary/idCard';
 import BeneficiaryTokenIssue from '../beneficiary/issueToken';
 import BeneficairyDetails from '../beneficiary/details';
 import TxDetails from '../transactions/details';
+import AllTransactions from '../transactions/allTransactions';
 import GoogleBackup from '../misc/googleBackup';
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
 				<Route exact path="/" component={Main} />
 				<PrivateRoute exact path="/tx" component={Transactions} wallet={wallet} />
 				<PrivateRoute exact path="/tx/:hash" component={TxDetails} wallet={wallet} />
+				<PrivateRoute exact path="/transaction" component={AllTransactions} wallet={wallet} />
 				<PrivateRoute exact path="/beneficiary" component={Beneficiary} wallet={wallet} />
 				<PrivateRoute exact path="/beneficiary/register" component={BeneficiaryRegister} wallet={wallet} />
 				<PrivateRoute exact path="/beneficiary/photo" component={BeneficiaryPhoto} wallet={wallet} />
@@ -54,6 +56,7 @@ function App() {
 				<PrivateRoute exact path="/google/backup" component={GoogleBackup} wallet={wallet} />
 				<Route path="*" component={Main} />
 			</Switch>
+
 			<Footer />
 		</>
 	);
