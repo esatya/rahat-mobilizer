@@ -17,7 +17,7 @@ export default function Camera(props) {
 	const history = useHistory();
 
 	const { modalSize, showModal } = props;
-	const { wallet } = useContext(AppContext);
+	const { wallet, toggleFooter } = useContext(AppContext);
 	const { showLoading, loading, setData, setActiveSheet } = useContext(ActionSheetContext);
 	const { setBeneficiaryPhone, setBeneficiaryToken, setBeneficiaryDetails } = useContext(RegisterBeneficiaryContext);
 
@@ -67,6 +67,7 @@ export default function Camera(props) {
 			buttonName="Enter manually"
 			handleSubmit={() => {
 				setActiveSheet(null);
+				toggleFooter(true);
 				return history.push('/beneficiary/register');
 			}}
 		>

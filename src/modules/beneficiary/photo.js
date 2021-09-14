@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import { IoCamera, IoCameraReverse } from 'react-icons/io5';
+import { IoChevronForwardOutline, IoSyncOutline, IoRadioButtonOff } from 'react-icons/io5';
 import { BiReset } from 'react-icons/bi';
 import Webcam from 'react-webcam';
 import AppHeader from '../layouts/AppHeader';
@@ -80,10 +80,7 @@ export default function Main() {
 				<div className="section">
 					<div className="card1">
 						<div className="card-body text-center" ref={camContainerRef}>
-							<button type="button" className="btn btn-outline-primary" onClick={skip}>
-								Skip
-							</button>
-							<h2 className="mt-2">Take a photo of beneficiary</h2>
+							<h2 className="mt-1">Take a photo of beneficiary</h2>
 							<span>Remember to smile :-)</span>
 
 							{previewImage ? (
@@ -99,19 +96,11 @@ export default function Main() {
 										screenshotFormat="image/png"
 										videoConstraints={videoConstraints}
 									/>
-
-									<button
-										type="button"
-										className="btn btn-text-primary rounded shadowed mt-2 mb-1"
-										onClick={handleFaceChange}
-									>
-										&nbsp; &nbsp; <IoCameraReverse className="ion-icon" />
-									</button>
 								</div>
 							)}
 						</div>
 					</div>
-					<div className="pl-5 pr-5">
+					<div className="pl-4 pr-4">
 						{previewImage ? (
 							<div className="text-center">
 								<button
@@ -131,10 +120,17 @@ export default function Main() {
 								</button>
 							</div>
 						) : (
-							<button type="button" className="btn btn-lg btn-block btn-primary mb-5" onClick={capture}>
-								<IoCamera className="ion-icon" />
-								Take Picture
-							</button>
+							<div className="d-flex justify-content-between align-items-center">
+								<div className="btn-faceChange" onClick={handleFaceChange}>
+									<IoSyncOutline className="btn-flipcamera" />
+								</div>
+								<div className="btn-shutter" onClick={capture}>
+									<IoRadioButtonOff className="btn-shutter-icon" />
+								</div>
+								<div className="btn-faceChange" onClick={skip}>
+									<IoChevronForwardOutline className="btn-skip" />
+								</div>
+							</div>
 						)}
 					</div>
 				</div>

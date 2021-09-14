@@ -1,11 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-
+import { IoSearchOutline, IoCloseCircleOutline } from 'react-icons/io5';
 import DataService from '../../services/db';
 import Avatar from '../../assets/images/Man.png';
+import * as io5 from 'react-icons/io5';
 
 const BenList = ({ limit, beneficiaries = [] }) => {
 	const [ben, setBen] = useState([]);
+	const [searchOpen, setSearchOpen] = useState(false);
+
+	function toggleSearch() {
+		setSearchOpen(!searchOpen);
+	}
+
+	function searchProduct(name) {
+		// let params = {
+		// 	name
+		// };
+		// initListProduct(params);
+	}
 
 	useEffect(() => {
 		(async () => {
@@ -27,6 +40,46 @@ const BenList = ({ limit, beneficiaries = [] }) => {
 
 	return (
 		<>
+			{!searchOpen ? (
+				<div className="appHeader" style={{ backgroundColor: '#2b7ec1' }}>
+					<div className="left">
+						<button className=" btn btn-text headerButton ">
+							<Link to="/" className="headerButton goBack">
+								<io5.IoChevronBackOutline className="ion-icon" style={{ color: 'white' }} />
+							</Link>
+						</button>
+					</div>
+					<div className="pageTitle" style={{ color: 'white' }}>
+						Beneficiaries
+					</div>
+					<div className="right">
+						<button
+							className="btn btn-text headerButton toggle-searchbox"
+							onClick={() => toggleSearch()}
+							style={{ marginRight: '0px', color: 'white' }}
+						>
+							<IoSearchOutline className="ion-icon" />
+						</button>
+					</div>
+				</div>
+			) : (
+				<div className="appHeader" style={{ backgroundColor: '#2b7ec1' }}>
+					<form className="search-form pl-2">
+						<div className="form-group searchbox">
+							<input type="text" className="form-control" onChange={e => searchProduct(e.target.value)} />
+							<i className="input-icon">
+								<IoSearchOutline className="ion-icon" />
+							</i>
+							<button
+								className="ml-1 close toggle-searchbox btn btn-text headerButton"
+								onClick={() => toggleSearch()}
+							>
+								<IoCloseCircleOutline className="ion-icon" />
+							</button>
+						</div>
+					</form>
+				</div>
+			)}
 			<ul className="listview image-listview flush">
 				{ben.length > 0 &&
 					ben.map(ben => {

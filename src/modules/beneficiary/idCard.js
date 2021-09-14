@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { IoCamera } from 'react-icons/io5';
+import { IoChevronForwardOutline, IoRadioButtonOff } from 'react-icons/io5';
+
 import { BiReset } from 'react-icons/bi';
 import Webcam from 'react-webcam';
 import Swal from 'sweetalert2';
@@ -89,12 +90,9 @@ export default function Main() {
 				) : (
 					<>
 						<Loading message={loading} showModal={loading !== null} />
-						<div className="section mb-5">
+						<div className="section">
 							<div className="card1">
 								<div className="card-body text-center">
-									<button type="button" className="btn btn-outline-primary" onClick={skip}>
-										Skip
-									</button>
 									<h3 className="mt-2">Take a picture of beneficiary ID card</h3>
 									<span>Citizenship, Passport, License or National ID</span>
 									<br />
@@ -105,7 +103,7 @@ export default function Main() {
 											src={previewImage}
 											style={{
 												borderRadius: '10px',
-												width: '88%',
+												width: '100%',
 												height: '350px',
 												border: '3px solid #958d9e',
 												marginTop: '30px'
@@ -128,7 +126,7 @@ export default function Main() {
 									)}
 								</div>
 							</div>
-							<div className="pl-5 pr-5">
+							<div className="pl-4 pr-4">
 								{previewImage ? (
 									<div className="text-center">
 										<button
@@ -141,21 +139,23 @@ export default function Main() {
 										</button>
 										<button
 											type="button"
-											className="btn btn-lg btn-block btn-success mt-3 mb-5"
+											className="btn btn-lg btn-block btn-success mt-3 mb-2"
 											onClick={save}
 										>
 											Complete setup
 										</button>
 									</div>
 								) : (
-									<button
-										type="button"
-										className="btn btn-lg btn-block btn-primary mt-1"
-										onClick={capture}
-									>
-										<IoCamera className="ion-icon" />
-										Take Picture
-									</button>
+									<div className="d-flex justify-content-between align-items-center mt-1">
+										<div style={{ width: '40px', height: '40px' }}></div>
+
+										<div className="btn-shutter" onClick={capture}>
+											<IoRadioButtonOff className="btn-shutter-icon" />
+										</div>
+										<div className="btn-faceChange" onClick={skip}>
+											<IoChevronForwardOutline className="btn-skip" />
+										</div>
+									</div>
 								)}
 							</div>
 						</div>

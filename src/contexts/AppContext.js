@@ -16,7 +16,8 @@ const initialState = {
 	scannedEthAddress: '',
 	scannedAmount: null,
 	project: null,
-	beneficiaryCount: 0
+	beneficiaryCount: 0,
+	hideFooter: false
 };
 
 export const AppContext = createContext(initialState);
@@ -50,6 +51,10 @@ export const AppContextProvider = ({ children }) => {
 
 	async function setTokenBalance(tokenBalance) {
 		dispatch({ type: APP_ACTIONS.SET_BALANCE, data: tokenBalance });
+	}
+
+	function toggleFooter(hideFooter) {
+		dispatch({ type: APP_ACTIONS.TOGGLE_FOOTER, data: hideFooter });
 	}
 
 	function setHasWallet(hasWallet) {
@@ -93,10 +98,12 @@ export const AppContextProvider = ({ children }) => {
 				network: state.network,
 				wallet: state.wallet,
 				project: state.project,
+				hideFooter: state.hideFooter,
 				beneficiaryCount: state.beneficiaryCount,
 				recentTx,
 				initApp,
 				setAgency,
+				toggleFooter,
 				setTokenBalance,
 				saveScannedAddress,
 				setHasWallet,
