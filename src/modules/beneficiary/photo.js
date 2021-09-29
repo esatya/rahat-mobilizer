@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import { IoCamera, IoCameraReverse } from 'react-icons/io5';
+import { IoChevronForwardOutline, IoSyncOutline, IoRadioButtonOff } from 'react-icons/io5';
 import { BiReset } from 'react-icons/bi';
 import Webcam from 'react-webcam';
 import AppHeader from '../layouts/AppHeader';
@@ -46,6 +46,11 @@ export default function Main() {
 		history.push('/beneficiary/idcard');
 	};
 
+	const skip = async event => {
+		event.preventDefault();
+		history.push('/beneficiary/idcard');
+	};
+
 	useEffect(() => {
 		setVideoConstraints({
 			facingMode: 'user',
@@ -71,65 +76,63 @@ export default function Main() {
 					</Link>
 				}
 			/>
+			<div id="appCapsule">
+				<div className="section">
+					<div className="card1">
+						<div className="card-body text-center" ref={camContainerRef}>
+							<h2 className="mt-1">Take a photo of beneficiary</h2>
+							<span>Remember to smile :-)</span>
 
-			<div className="section">
-				<div className="card1">
-					<div className="card-body text-center" ref={camContainerRef}>
-						<h3 className="mb-2">
-							Take a photo of beneficiary
-							<small>
-								<br />
-								Remember to smile :-)
-							</small>
-						</h3>
-
+							{previewImage ? (
+								<img className="video-flipped circleSelfie mt-4" alt="preview" src={previewImage} />
+							) : (
+								<div className="selfieWrapper mt-3">
+									<Webcam
+										audio={false}
+										ref={webcamRef}
+										className="circleSelfie"
+										minScreenshotWidth={1024}
+										minScreenshotHeight={720}
+										screenshotFormat="image/png"
+										videoConstraints={videoConstraints}
+									/>
+								</div>
+							)}
+						</div>
+					</div>
+					<div className="pl-4 pr-4">
 						{previewImage ? (
-							<img className="video-flipped circleSelfie" alt="preview" src={previewImage} />
-						) : (
-							<div className="selfieWrapper">
-								<Webcam
-									audio={false}
-									ref={webcamRef}
-									className="circleSelfie"
-									minScreenshotWidth={1024}
-									minScreenshotHeight={720}
-									screenshotFormat="image/png"
-									videoConstraints={videoConstraints}
-								/>
-
+							<div className="text-center">
 								<button
 									type="button"
-									className="btn btn-text-primary rounded shadowed mr-1 mb-1"
-									onClick={handleFaceChange}
+									className="btn btn-lg btn-block btn-outline-primary mt-1"
+									onClick={() => setPreviewImage(null)}
 								>
-									&nbsp; &nbsp; <IoCameraReverse className="ion-icon" />
+									<BiReset className="ion-icon" />
+									Retake Picture
 								</button>
+								<button
+									type="button"
+									className="btn btn-lg btn-block btn-success mt-3 mb-5"
+									onClick={save}
+								>
+									Continue to next step
+								</button>
+							</div>
+						) : (
+							<div className="d-flex justify-content-between align-items-center">
+								<div className="btn-faceChange" onClick={handleFaceChange}>
+									<IoSyncOutline className="btn-flipcamera" />
+								</div>
+								<div className="btn-shutter" onClick={capture}>
+									<IoRadioButtonOff className="btn-shutter-icon" />
+								</div>
+								<div className="btn-faceChange" onClick={skip}>
+									<IoChevronForwardOutline className="btn-skip" />
+								</div>
 							</div>
 						)}
 					</div>
-				</div>
-				<div className="pl-5 pr-5">
-					{previewImage ? (
-						<div className="text-center">
-							<button type="button" className="btn btn-lg btn-block btn-success mt-1" onClick={save}>
-								Continue to next step
-							</button>
-							<button
-								type="button"
-								className="btn btn btn-block btn-outline-secondary mt-5"
-								style={{ width: 200 }}
-								onClick={() => setPreviewImage(null)}
-							>
-								<BiReset className="ion-icon" />
-								Retake Picture
-							</button>
-						</div>
-					) : (
-						<button type="button" className="btn btn-lg btn-block btn-dark mt-1" onClick={capture}>
-							<IoCamera className="ion-icon" />
-							Take Picture
-						</button>
-					)}
 				</div>
 			</div>
 		</>

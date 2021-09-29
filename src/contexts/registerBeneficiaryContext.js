@@ -12,10 +12,20 @@ const initialState = {
 	agency: null,
 	email: null,
 	address: null,
+	address_temporary: null,
 	govt_id: null,
 	photo: null,
 	govt_id_image: null,
-	token: null
+	token: null,
+	extras: {
+		profession: null,
+		education: null,
+		family_members: null,
+		adult: null,
+		child: null,
+		age: null,
+		group: null
+	}
 };
 
 export const RegisterBeneficiaryContext = createContext(initialState);
@@ -62,6 +72,7 @@ export const RegisterBeneficiaryContextProvider = ({ children }) => {
 		<RegisterBeneficiaryContext.Provider
 			value={{
 				...state,
+				...state.extras,
 				setBeneficiaryDetails,
 				setBeneficiaryPhone,
 				setBeneficiaryPhoto,

@@ -11,10 +11,10 @@ import AppHeader from '../layouts/AppHeader';
 import { Link } from 'react-router-dom';
 import { getAuthSignature } from '../../utils';
 import * as Service from '../../services';
+import Avatar from '../../assets/images/Man.png';
 
 const RegisterBeneficiary = () => {
 	const history = useHistory();
-
 	const {
 		phone,
 		setBeneficiaryToken,
@@ -27,7 +27,7 @@ const RegisterBeneficiary = () => {
 		photo,
 		govt_id_image
 	} = useContext(RegisterBeneficiaryContext);
-	const { wallet } = useContext(AppContext);
+	const { wallet, toggleFooter } = useContext(AppContext);
 	const [loading, showLoading] = useState(null);
 	const [remainingToken, setRemainingToken] = useState('loading...');
 
@@ -106,7 +106,10 @@ const RegisterBeneficiary = () => {
 		// 	setRemainingToken(remainingToken);
 		// })();
 		updateTokenDetails();
-	}, [updateTokenDetails]);
+		return () => {
+			toggleFooter(false);
+		};
+	}, [updateTokenDetails, toggleFooter]);
 
 	return (
 		<>
@@ -122,6 +125,7 @@ const RegisterBeneficiary = () => {
 			{loading !== null && (
 				<div
 					style={{
+						height: '850px',
 						position: 'absolute',
 						color: '#ffffff',
 						fontSize: 16,
@@ -151,55 +155,70 @@ const RegisterBeneficiary = () => {
 			)}
 
 			<div id="appCapsule">
-				<div class="section mt-2 text-center">
-					<h1>Issue Token</h1>
-					<h4>Enter Amount to Issue Token</h4>
-					<img className="video-flipped circleSelfie " alt="preview" src={photo} />
+				<div className="section mt-2 text-center">
+					<h2 className="mt-3">Issue Token</h2>
+					<span>Enter Amount to Issue Token</span>
+					<br />
+					<div className="mt-3">
+						{photo ? (
+							<img className="video-flipped selfie" alt="preview" src={photo} />
+						) : (
+							<img
+								className="video-flipped selfie "
+								alt="preview"
+								src={Avatar}
+								width="100px"
+								height="100px"
+							/>
+						)}
+					</div>
 				</div>
 
-				<div class="section mt-2 mb-5 p-3">
-					<ul className="listview flush transparent simple-listview no-space mt-3">
-						<li>
-							<strong>Name</strong>
-							<span>{name}</span>
-						</li>
-						<li>
-							<strong>Phone</strong>
-							<span style={{ overflow: 'hidden' }}>{phone}</span>
-						</li>
-						<li>
-							<strong>Token Balance</strong>
-							<h3 className="m-0">{remainingToken}</h3>
-						</li>
-					</ul>
+				<div className="section pt-0 p-3">
+					<div>
+						<ul className="listview flush transparent simple-listview no-space mt-3">
+							<li>
+								<strong>Name</strong>
+								<span>{name}</span>
+							</li>
+							<li>
+								<strong>Phone</strong>
+								<span style={{ overflow: 'hidden' }}>{phone}</span>
+							</li>
+							<li>
+								<strong>Token Balance</strong>
+								<h3 className="m-0">{remainingToken}</h3>
+							</li>
+						</ul>
 
-					<Form onSubmit={save}>
-						<div className="card">
-							<div className="card-body">
-								<div className="form-group basic">
-									<div className="input-wrapper">
-										<Form.Control
-											type="number"
-											name="token"
-											className="form-control"
-											placeholder="Issue Tokens"
-											value={token}
-											onChange={updateBeneficiaryData}
-											required
-										/>
-										<i className="clear-input">
-											<IoCloseCircle className="ion-icon" />
-										</i>
+						<Form onSubmit={save}>
+							<div className="card mt-3">
+								<div className="card-body">
+									<div className="form-group basic">
+										<div className="input-wrapper">
+											<Form.Control
+												type="number"
+												name="token"
+												className="form-control"
+												placeholder="Issue Tokens"
+												value={token}
+												onChange={updateBeneficiaryData}
+												required
+											/>
+											<i className="clear-input">
+												<IoCloseCircle className="ion-icon" />
+											</i>
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-						<div className="p-2">
-							<Button type="submit" className="btn btn-lg btn-block btn-success mt-3">
-								Issue Token
-							</Button>
-						</div>
-					</Form>
+							<div className="">
+								<Button type="submit" className="btn btn-lg btn-block btn-success mt-3">
+									Issue Token
+								</Button>
+							</div>
+						</Form>
+					</div>
 				</div>
 			</div>
 		</>

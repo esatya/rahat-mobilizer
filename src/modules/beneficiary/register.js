@@ -8,12 +8,27 @@ import { useHistory } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import AppHeader from '../layouts/AppHeader';
 import { Link } from 'react-router-dom';
+import { GROUPS } from '../../constants';
 import * as Service from '../../services';
 
 const RegisterBeneficiary = () => {
 	const history = useHistory();
-	const { phone, setBeneficiaryDetails, setBeneficiaryPhone, name, address, email, govt_id } =
-		useContext(RegisterBeneficiaryContext);
+	const {
+		phone,
+		setBeneficiaryDetails,
+		setBeneficiaryPhone,
+		name,
+		address,
+		address_temporary,
+		age,
+		email,
+		govt_id,
+		profession,
+		education,
+		family_members,
+		adult,
+		child
+	} = useContext(RegisterBeneficiaryContext);
 	const { wallet } = useContext(AppContext);
 
 	const updateBeneficiaryData = e => {
@@ -33,14 +48,13 @@ const RegisterBeneficiary = () => {
 		try {
 			const signature = await getAuthSignature(wallet);
 			const ben = await Service.getBeneficiaryById(signature, phone);
-			if (ben) {
+			if (ben.data) {
 				Swal.fire('Error', 'Beneficiary with given phone already exists', 'error');
 				return;
 			}
-
 			history.push('/beneficiary/photo');
 		} catch (e) {
-			alert('Invalid beneficiary');
+			alert(e);
 		}
 	};
 
@@ -56,12 +70,12 @@ const RegisterBeneficiary = () => {
 			/>
 
 			<div id="appCapsule">
-				<div class="section mt-2 text-center">
-					<h1>Register Beneficiary</h1>
-					<h4>Fill the form to register beneficiary</h4>
+				<div className="section mt-2 text-center">
+					<h2 className="mt-4">Register Beneficiary</h2>
+					<span>Fill the form to register beneficiary</span>
 				</div>
 
-				<div class="section mt-2 mb-5 p-3">
+				<div className="section p-3">
 					<Form onSubmit={save}>
 						<div className="card">
 							<div className="card-body">
@@ -82,10 +96,9 @@ const RegisterBeneficiary = () => {
 										</i>
 									</div>
 								</div>
-
 								<div className="form-group basic">
 									<div className="input-wrapper">
-										<label className="label">Phone #</label>
+										<label className="label">Phone</label>
 										<Form.Control
 											type="number"
 											className="form-control"
@@ -107,22 +120,65 @@ const RegisterBeneficiary = () => {
 								</div>
 								<div className="form-group basic">
 									<div className="input-wrapper">
-										<label className="label">Address</label>
+										<label className="label">Age</label>
 										<Form.Control
-											type="text"
+											type="number"
 											className="form-control"
-											name="address"
-											placeholder="Enter your address"
-											value={address}
+											name="age"
+											placeholder="Enter your age"
+											value={age}
 											onChange={updateBeneficiaryData}
-											required
 										/>
 										<i className="clear-input">
 											<IoCloseCircle className="ion-icon" />
 										</i>
 									</div>
 								</div>
-
+								<div className="form-group basic">
+									<div className="input-wrapper">
+										<label className="label" htmlFor="gender">
+											Gender
+										</label>
+										<select className="form-control custom-select" id="gender">
+											<option value="U">Select gender</option>
+											<option value="M">Male</option>
+											<option value="F">Female</option>
+											<option value="O">Other</option>
+										</select>
+									</div>
+								</div>
+								<div className="form-group basic">
+									<div className="input-wrapper">
+										<label className="label">Permanent address</label>
+										<Form.Control
+											type="text"
+											className="form-control"
+											name="address"
+											placeholder="Enter your permanent address"
+											value={address}
+											onChange={updateBeneficiaryData}
+										/>
+										<i className="clear-input">
+											<IoCloseCircle className="ion-icon" />
+										</i>
+									</div>
+								</div>
+								<div className="form-group basic">
+									<div className="input-wrapper">
+										<label className="label">Temporary address</label>
+										<Form.Control
+											type="text"
+											className="form-control"
+											name="address_temporary"
+											placeholder="Enter your temporary address"
+											value={address_temporary}
+											onChange={updateBeneficiaryData}
+										/>
+										<i className="clear-input">
+											<IoCloseCircle className="ion-icon" />
+										</i>
+									</div>
+								</div>
 								<div className="form-group basic">
 									<div className="input-wrapper">
 										<label className="label">Email Address</label>
@@ -155,13 +211,124 @@ const RegisterBeneficiary = () => {
 										</i>
 									</div>
 								</div>
+								<div className="form-group basic">
+									<div className="input-wrapper">
+										<label className="label">Education</label>
+										<Form.Control
+											type="text"
+											name="education"
+											className="form-control"
+											placeholder="Enter your education"
+											value={education}
+											onChange={updateBeneficiaryData}
+										/>
+										<i className="clear-input">
+											<IoCloseCircle className="ion-icon" />
+										</i>
+									</div>
+								</div>
+								<div className="form-group basic">
+									<div className="input-wrapper">
+										<label className="label">Profession</label>
+										<Form.Control
+											type="text"
+											name="profession"
+											className="form-control"
+											placeholder="Enter your profession"
+											value={profession}
+											onChange={updateBeneficiaryData}
+										/>
+										<i className="clear-input">
+											<IoCloseCircle className="ion-icon" />
+										</i>
+									</div>
+								</div>
+								<div className="form-group basic">
+									<div className="input-wrapper">
+										<label className="label" htmlFor="group">
+											Group
+										</label>
+										<select class="form-control custom-select" id="group">
+											<option value="">--Select Group--</option>
+											<option value={GROUPS.DIFFERENTLY_ABLED.value}>
+												{GROUPS.DIFFERENTLY_ABLED.label}
+											</option>
+											<option value={GROUPS.MATERNITY.value}>{GROUPS.MATERNITY.label}</option>
+											<option value={GROUPS.SENIOR_CITIZENS.value}>
+												{GROUPS.SENIOR_CITIZENS.label}
+											</option>
+											<option value={GROUPS.COVID_VICTIM.value}>
+												{GROUPS.COVID_VICTIM.label}
+											</option>
+											<option value={GROUPS.NATURAL_CLIMATE_VICTIM.value}>
+												{GROUPS.NATURAL_CLIMATE_VICTIM.label}
+											</option>
+											<option value={GROUPS.UNDER_PRIVILAGED.value}>
+												{GROUPS.UNDER_PRIVILAGED.label}
+											</option>
+											<option value={GROUPS.SEVERE_HEATH_ISSUES.value}>
+												{GROUPS.SEVERE_HEATH_ISSUES.label}
+											</option>
+											<option value={GROUPS.SINGLE_WOMAN.value}>
+												{GROUPS.SINGLE_WOMAN.label}
+											</option>
+											<option value={GROUPS.ORPHAN.value}>{GROUPS.ORPHAN.label}</option>
+										</select>
+									</div>
+								</div>
+								<div className="form-group basic">
+									<div className="input-wrapper">
+										<label className="label">Family members</label>
+										<Form.Control
+											type="number"
+											className="form-control"
+											name="family_members"
+											placeholder="Enter number of family members"
+											value={family_members}
+											onChange={updateBeneficiaryData}
+										/>
+										<i className="clear-input">
+											<IoCloseCircle className="ion-icon" />
+										</i>
+									</div>
+								</div>
+								<div className="form-group basic">
+									<div className="input-wrapper">
+										<label className="label">Adults</label>
+										<Form.Control
+											type="number"
+											className="form-control"
+											name="adult"
+											placeholder="Enter number of adults"
+											value={adult}
+											onChange={updateBeneficiaryData}
+										/>
+										<i className="clear-input">
+											<IoCloseCircle className="ion-icon" />
+										</i>
+									</div>
+								</div>{' '}
+								<div className="form-group basic">
+									<div className="input-wrapper">
+										<label className="label">Child</label>
+										<Form.Control
+											type="number"
+											className="form-control"
+											name="child"
+											placeholder="Enter number of children"
+											value={child}
+											onChange={updateBeneficiaryData}
+										/>
+										<i className="clear-input">
+											<IoCloseCircle className="ion-icon" />
+										</i>
+									</div>
+								</div>
 							</div>
 						</div>
-						<div className="p-2">
-							<Button type="submit" className="btn btn-lg btn-block btn-success mt-3">
-								Continue
-							</Button>
-						</div>
+						<Button type="submit" className="btn btn-lg btn-block btn-success mt-4">
+							Continue
+						</Button>
 					</Form>
 				</div>
 			</div>

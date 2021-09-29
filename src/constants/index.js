@@ -26,5 +26,43 @@ module.exports = {
 	DEFAULT_TOKEN: {
 		NAME: 'Ether',
 		SYMBOL: 'ETH'
+	},
+	GROUPS: {
+		DIFFERENTLY_ABLED: {
+			label: 'Differently Abled',
+			value: 'Differently_Abled'
+		},
+		MATERNITY: {
+			label: 'Maternity',
+			value: 'Maternity'
+		},
+		SENIOR_CITIZENS: {
+			label: 'Senior Citizens',
+			value: 'Senior_Citizens'
+		},
+		COVID_VICTIM: {
+			label: 'Covid Victim',
+			value: 'Covid_Victim'
+		},
+		NATURAL_CLIMATE_VICTIM: {
+			label: 'Natural Calamities Victim',
+			value: 'Natural_Calamities_Victim'
+		},
+		UNDER_PRIVILAGED: {
+			label: 'Under Privileged',
+			value: 'Under_Privileged'
+		},
+		SEVERE_HEATH_ISSUES: {
+			label: 'Severe Health Issues',
+			value: 'Severe_Health_Issues'
+		},
+		SINGLE_WOMAN: {
+			label: 'Single Women',
+			value: 'Single_Women'
+		},
+		ORPHAN: {
+			label: 'Orphan',
+			value: 'Orphan'
+		}
 	}
 };

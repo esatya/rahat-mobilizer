@@ -22,13 +22,14 @@ export default function Index() {
 			setProfileImage(await DataService.get('profileImage'));
 		})();
 	}, []);
+
 	return (
 		<>
 			<AppHeader currentMenu="Profile" />
 			<div id="appCapsule">
 				<div className="section mt-3 text-center">
 					<div className="avatar-section">
-						<img src={profileImage} alt="avatar" className="imaged w100 rounded" />
+						<img src={profileImage} alt="avatar" className="profileImage" />
 					</div>
 					<p>{profile.name}</p>
 				</div>

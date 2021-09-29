@@ -16,8 +16,8 @@ const { SCAN_DELAY, SCANNER_PREVIEW_STYLE } = APP_CONSTANTS;
 export default function Camera(props) {
 	const history = useHistory();
 
-	const { modalSize, onHide, showModal } = props;
-	const { wallet } = useContext(AppContext);
+	const { modalSize, showModal } = props;
+	const { wallet, toggleFooter } = useContext(AppContext);
 	const { showLoading, loading, setData, setActiveSheet } = useContext(ActionSheetContext);
 	const { setBeneficiaryPhone, setBeneficiaryToken, setBeneficiaryDetails } = useContext(RegisterBeneficiaryContext);
 
@@ -64,10 +64,10 @@ export default function Camera(props) {
 			title="Scan QR Code"
 			size={modalSize || 'md'}
 			showModal={showModal}
-			onHide={onHide}
 			buttonName="Enter manually"
 			handleSubmit={() => {
 				setActiveSheet(null);
+				toggleFooter(true);
 				return history.push('/beneficiary/register');
 			}}
 		>

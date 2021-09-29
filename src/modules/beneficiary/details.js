@@ -13,7 +13,7 @@ import { AppContext } from '../../contexts/AppContext';
 export default function Main(props) {
 	const history = useHistory();
 	const phone = props.match.params.phone;
-	const { setBeneficiaryPhone, setBeneficiaryDetails } = useContext(RegisterBeneficiaryContext);
+	const { setBeneficiaryPhone, setBeneficiaryDetails, setBeneficiaryPhoto } = useContext(RegisterBeneficiaryContext);
 	const { wallet } = useContext(AppContext);
 
 	const [beneficiary, setBeneficiary] = useState({});
@@ -23,6 +23,7 @@ export default function Main(props) {
 		e.preventDefault();
 		setBeneficiaryPhone(phone);
 		setBeneficiaryDetails({ name: beneficiary.name });
+		setBeneficiaryPhoto(beneficiary.photo);
 		history.push('/beneficiary/token');
 		//return addBeneficiary(signature);
 	};
@@ -39,7 +40,6 @@ export default function Main(props) {
 		const agency = await DataService.getDefaultAgency();
 		const rahat = RahatService(agency.address, wallet);
 		const remainingToken = await rahat.getBeneficiaryToken(phone);
-		console.log({ phone, wallet });
 		setRemainingToken(remainingToken);
 	}, [phone, wallet]);
 

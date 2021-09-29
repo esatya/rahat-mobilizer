@@ -9,5 +9,6 @@ module.exports = {
 	SET_BALANCE: 'set_balance',
 	ADD_RECENT_TX: 'add_recent_tx',
 	SET_PROJECT: 'set_project',
-	SET_TOTAL_BENEFICIARIES: 'set_total_beneficiaries'
+	SET_TOTAL_BENEFICIARIES: 'set_total_beneficiaries',
+	TOGGLE_FOOTER: 'toggle_footer'
 };
