@@ -67,4 +67,4 @@ This repository uses eslint to enforce air-bnb coding styles.
 
 Everyone is very welcome to contribute on the codebase of Rahat. Please reach us in Gitter in case of any query/feedback/suggestion.
 
-For more information on the contributing procedure, see [Contribution](https://github.com/esatya/rahat-agency/blob/master/CONTRIBUTING.md)
+For more information on the contributing procedure, see [Contribution](https://github.com/esatya/rahat-mobilizer/blob/master/CONTRIBUTING.md)
