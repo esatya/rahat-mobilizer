@@ -3,8 +3,8 @@ import { getDefaultNetwork } from '../constants/networks';
 import DataService from './db';
 
 const ABI = {
-	TOKEN: require(`../assets/contracts/aidToken.json`),
-	RAHAT: require(`../assets/contracts/rahat.json`),
+	TOKEN: require(`../assets/contracts/RahatERC20.json`),
+	RAHAT: require(`../assets/contracts/Rahat.json`),
 	ERC20: require(`../assets/contracts/erc20.json`),
 	ERC721: require(`../assets/contracts/erc721.json`)
 };
