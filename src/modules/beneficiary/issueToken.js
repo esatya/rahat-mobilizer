@@ -155,69 +155,73 @@ const RegisterBeneficiary = () => {
 			)}
 
 			<div id="appCapsule">
-				<div className="section mt-2 text-center">
-					<h2 className="mt-3">Issue Token</h2>
-					<span>Enter Amount to Issue Token</span>
-					<br />
-					<div className="mt-3">
-						{photo ? (
-							<img className="video-flipped selfie" alt="preview" src={photo} />
-						) : (
-							<img
-								className="video-flipped selfie "
-								alt="preview"
-								src={Avatar}
-								width="100px"
-								height="100px"
-							/>
-						)}
+				<div className="section mt-2">
+					<div className="card mt-2">
+						<div className="card-header">Beneficiary details</div>
+						<div className="card-body">
+							<div className="mt-1 text-center">
+								{photo ? (
+									<img className="video-flipped selfie" alt="preview" src={photo} />
+								) : (
+									<img
+										className="video-flipped selfie "
+										alt="preview"
+										src={Avatar}
+										width="40px"
+										height="40px"
+									/>
+								)}
+							</div>
+							<ul className="listview flush transparent simple-listview no-space mt-3">
+								<li>
+									<strong>Name</strong>
+									<span>{name}</span>
+								</li>
+								<li>
+									<strong>Phone</strong>
+									<span style={{ overflow: 'hidden' }}>{phone}</span>
+								</li>
+								<li>
+									<strong>Token Balance</strong>
+									<h3 className="m-0">{remainingToken}</h3>
+								</li>
+							</ul>
+						</div>
 					</div>
-				</div>
 
-				<div className="section pt-0 p-3">
-					<div>
-						<ul className="listview flush transparent simple-listview no-space mt-3">
-							<li>
-								<strong>Name</strong>
-								<span>{name}</span>
-							</li>
-							<li>
-								<strong>Phone</strong>
-								<span style={{ overflow: 'hidden' }}>{phone}</span>
-							</li>
-							<li>
-								<strong>Token Balance</strong>
-								<h3 className="m-0">{remainingToken}</h3>
-							</li>
-						</ul>
-
-						<Form onSubmit={save}>
-							<div className="card mt-3">
-								<div className="card-body">
-									<div className="form-group basic">
-										<div className="input-wrapper">
-											<Form.Control
-												type="number"
-												name="token"
-												className="form-control"
-												placeholder="Issue Tokens"
-												value={token}
-												onChange={updateBeneficiaryData}
-												required
-											/>
-											<i className="clear-input">
-												<IoCloseCircle className="ion-icon" />
-											</i>
-										</div>
+					<div className="card mt-2">
+						<div className="card-header">Issue Token</div>
+						<div className="card-body">
+							<Form onSubmit={save}>
+								<div className="form-group basic">
+									<div className="input-wrapper">
+										<label className="label" htmlFor="chargeAmount">
+											Amount to Charge:
+										</label>
+										<Form.Control
+											type="number"
+											name="token"
+											className="form-control"
+											placeholder="Issue Tokens"
+											value={token}
+											onChange={updateBeneficiaryData}
+											required
+										/>
+										<i className="clear-input">
+											<IoCloseCircle className="ion-icon" />
+										</i>
 									</div>
 								</div>
-							</div>
-							<div className="">
-								<Button type="submit" className="btn btn-lg btn-block btn-success mt-3">
-									Issue Token
-								</Button>
-							</div>
-						</Form>
+								<div className="mt-1">
+									<small>Important: Please double check the amount before charging</small>
+								</div>
+								<div className="text-right">
+									<Button type="submit" className="btn btn-lg btn-block btn-success mt-3">
+										Issue Token
+									</Button>
+								</div>
+							</Form>
+						</div>
 					</div>
 				</div>
 			</div>
