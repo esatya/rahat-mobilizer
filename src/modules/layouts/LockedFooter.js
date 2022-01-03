@@ -29,15 +29,15 @@ export default function LockedFooter() {
 			if (data && data.projects.length) {
 				//	setProject({ name: data.projects[0].project.name, id: data.projects[0].project.id });
 				await checkProjectBeneficiaries(wallet, data.projects[0].project.id);
-				RahatService(defaultAgency.address, wallet)
-					.getProjectBalance(data.projects[0].project.id)
-					.then(bal => {
-						setProject({
-							name: data.projects[0].project.name,
-							id: data.projects[0].project.id,
-							balance: bal
-						});
-					});
+				// RahatService(defaultAgency.address, wallet)
+				// 	.getProjectBalance(data.projects[0].project.id)
+				// 	.then(bal => {
+				// 		setProject({
+				// 			name: data.projects[0].project.name,
+				// 			id: data.projects[0].project.id,
+				// 			balance: bal
+				// 		});
+				// 	});
 			}
 			if (!data.agencies.length) return history.push('/setup/idcard');
 			let status = data.agencies[0].status;

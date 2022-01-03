@@ -4,9 +4,10 @@ import DataService from './db';
 
 const ABI = {
 	TOKEN: require(`../assets/contracts/RahatERC20.json`),
+	RAHAT_ADMIN: require(`../assets/contracts/RahatAdmin.json`),
 	RAHAT: require(`../assets/contracts/Rahat.json`),
-	ERC20: require(`../assets/contracts/erc20.json`),
-	ERC721: require(`../assets/contracts/erc721.json`)
+	ERC20: require(`../assets/contracts/RahatERC20.json`),
+	ERC1155: require(`../assets/contracts/RahatERC1155.json`)
 };
 
 const DefaultProvider = new ethers.providers.JsonRpcProvider(getDefaultNetwork());
@@ -14,13 +15,17 @@ const getAgencyDetails = async agencyAddress => {
 	const details = await DataService.getAgency(agencyAddress);
 	if (!details) throw Error('Agency does not exists');
 	const provider = details.network ? new ethers.providers.JsonRpcProvider(details.network) : DefaultProvider;
-	const rahatContract = new ethers.Contract(agencyAddress, ABI.RAHAT, provider);
-	const tokenContract = new ethers.Contract(details.tokenAddress, ABI.TOKEN, provider);
+	const rahatContract = new ethers.Contract(agencyAddress, ABI.RAHAT.abi, provider);
+	const erc20Contract = new ethers.Contract(details.erc20Address, ABI.ERC20.abi, provider);
+	const erc1155Contract = new ethers.Contract(details.erc1155Address, ABI.ERC1155.abi, provider);
+	const rahatAdminContract = new ethers.Contract(details.adminAddress, ABI.RAHAT_ADMIN.abi, provider);
 	return {
 		details,
 		provider,
 		rahatContract,
-		tokenContract
+		erc20Contract,
+		erc1155Contract,
+		rahatAdminContract
 	};
 };
 
@@ -57,7 +62,7 @@ const RahatService = (agencyAddress, wallet) => {
 		},
 		async getBeneficiaryToken(phone) {
 			const contract = await this.getContract();
-			const balance = await contract.tokenBalance(Number(phone));
+			const balance = await contract.erc20Balance(Number(phone));
 			return balance.toNumber();
 		}
 	};
@@ -67,7 +72,7 @@ const TokenService = (agencyAddress, wallet) => {
 	return {
 		async getContract() {
 			const agency = await getAgencyDetails(agencyAddress);
-			return wallet ? agency.tokenContract.connect(wallet) : agency.tokenContract;
+			return wallet ? agency.erc20Contract.connect(wallet) : agency.erc20Contract;
 		},
 		async getBalance(address) {
 			if (!address) address = await DataService.getAddress();
