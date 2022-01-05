@@ -18,10 +18,13 @@ import BeneficiaryRegister from '../beneficiary/register';
 import BeneficiaryPhoto from '../beneficiary/photo';
 import BeneficiaryId from '../beneficiary/idCard';
 import BeneficiaryTokenIssue from '../beneficiary/issueToken';
+import BeneficiaryPackageIssue from '../beneficiary/package';
 import BeneficairyDetails from '../beneficiary/details';
 import TxDetails from '../transactions/details';
 import AllTransactions from '../transactions/allTransactions';
 import GoogleBackup from '../misc/googleBackup';
+import IssuePackage from '../issue/package';
+import IssueToken from '../issue/token';
 
 function App() {
 	const { initApp, wallet } = useContext(AppContext);
@@ -45,6 +48,7 @@ function App() {
 				<PrivateRoute exact path="/beneficiary/photo" component={BeneficiaryPhoto} wallet={wallet} />
 				<PrivateRoute exact path="/beneficiary/idcard" component={BeneficiaryId} wallet={wallet} />
 				<PrivateRoute exact path="/beneficiary/token" component={BeneficiaryTokenIssue} wallet={wallet} />
+				<PrivateRoute exact path="/beneficiary/package" component={BeneficiaryPackageIssue} wallet={wallet} />
 				<PrivateRoute exact path="/beneficiary/:phone" component={BeneficairyDetails} wallet={wallet} />
 				<PrivateRoute exact path="/backup" component={BackupWallet} wallet={wallet} />
 				<PrivateRoute exact path="/networks" component={NetworkSettings} wallet={wallet} />
@@ -54,6 +58,8 @@ function App() {
 				<PrivateRoute exact path="/transfer" component={Transfer} wallet={wallet} />
 				<PrivateRoute exact path="/transfer/:address" component={Transfer} wallet={wallet} />
 				<PrivateRoute exact path="/google/backup" component={GoogleBackup} wallet={wallet} />
+				<PrivateRoute exact path="/issue/token" component={IssueToken} wallet={wallet} />
+				<PrivateRoute exact path="/issue/package/:tokenId" component={IssuePackage} wallet={wallet} />
 				<Route path="*" component={Main} />
 			</Switch>
 
