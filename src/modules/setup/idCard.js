@@ -35,13 +35,13 @@ export default function Main() {
 			if (!r.ok) throw Error(r.message);
 			return r.json();
 		});
-
 		const agencyData = {
 			api: process.env.REACT_APP_DEFAULT_AGENCY_API,
 			address: appData.agency.contracts.rahat,
 			adminAddress: appData.agency.contracts.rahat_admin,
 			network: appData.networkUrl,
-			tokenAddress: appData.agency.contracts.token,
+			erc20Address: appData.agency.contracts.rahat_erc20,
+			erc1155Address: appData.agency.contracts.rahat_erc1155,
 			name: appData.agency.name,
 			email: appData.agency.email,
 			isApproved: false

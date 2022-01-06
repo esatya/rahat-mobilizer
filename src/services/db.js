@@ -9,7 +9,8 @@ db.version(DB.VERSION).stores({
 	documents: 'hash,type,name,file,encryptedFile,createdAt,inIpfs',
 	beneficiaries: 'phone,name,address,createdAt,photo,govt_id_image',
 	assets: 'address,type,name,symbol,decimal,balance,network',
-	agencies: 'address,name,api,network,rahatAddress,tokenAddress,adminAddress,phone,email,logo,isApproved',
+	agencies:
+		'address,name,api,network,rahatAddress,tokenAddress,erc20Address,erc1155Address,adminAddress,phone,email,logo,isApproved',
 	transactions: 'hash,type,timestamp,amount,to,from,status,image',
 	projects: 'id,name'
 });

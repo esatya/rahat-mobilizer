@@ -70,12 +70,8 @@ const RegisterBeneficiary = () => {
 			/>
 
 			<div id="appCapsule">
-				<div className="section mt-2 text-center">
-					<h2 className="mt-4">Register Beneficiary</h2>
-					<span>Fill the form to register beneficiary</span>
-				</div>
-
-				<div className="section p-3">
+				<h3 className="section mt-4">Register Beneficiary</h3>
+				<div className="section mt-3">
 					<Form onSubmit={save}>
 						<div className="card">
 							<div className="card-body">
@@ -125,7 +121,7 @@ const RegisterBeneficiary = () => {
 											type="number"
 											className="form-control"
 											name="age"
-											placeholder="Enter your age"
+											placeholder="Enter age"
 											value={age}
 											onChange={updateBeneficiaryData}
 										/>
@@ -154,7 +150,7 @@ const RegisterBeneficiary = () => {
 											type="text"
 											className="form-control"
 											name="address"
-											placeholder="Enter your permanent address"
+											placeholder="Enter permanent address"
 											value={address}
 											onChange={updateBeneficiaryData}
 										/>
@@ -170,7 +166,7 @@ const RegisterBeneficiary = () => {
 											type="text"
 											className="form-control"
 											name="address_temporary"
-											placeholder="Enter your temporary address"
+											placeholder="Enter temporary address"
 											value={address_temporary}
 											onChange={updateBeneficiaryData}
 										/>
@@ -202,7 +198,7 @@ const RegisterBeneficiary = () => {
 											type="text"
 											className="form-control"
 											name="govt_id"
-											placeholder="Enter your address"
+											placeholder="Enter address"
 											value={govt_id}
 											onChange={updateBeneficiaryData}
 										/>
@@ -218,7 +214,7 @@ const RegisterBeneficiary = () => {
 											type="text"
 											name="education"
 											className="form-control"
-											placeholder="Enter your education"
+											placeholder="Enter education"
 											value={education}
 											onChange={updateBeneficiaryData}
 										/>
@@ -234,7 +230,7 @@ const RegisterBeneficiary = () => {
 											type="text"
 											name="profession"
 											className="form-control"
-											placeholder="Enter your profession"
+											placeholder="Enter profession"
 											value={profession}
 											onChange={updateBeneficiaryData}
 										/>
@@ -248,7 +244,7 @@ const RegisterBeneficiary = () => {
 										<label className="label" htmlFor="group">
 											Group
 										</label>
-										<select class="form-control custom-select" id="group">
+										<select className="form-control custom-select" id="group">
 											<option value="">--Select Group--</option>
 											<option value={GROUPS.DIFFERENTLY_ABLED.value}>
 												{GROUPS.DIFFERENTLY_ABLED.label}

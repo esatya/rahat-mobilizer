@@ -92,11 +92,10 @@ export default function Main() {
 						<Loading message={loading} showModal={loading !== null} />
 						<div className="section">
 							<div className="card1">
-								<div className="card-body text-center">
-									<h3 className="mt-2">Take a picture of beneficiary ID card</h3>
-									<span>Citizenship, Passport, License or National ID</span>
-									<br />
-
+								<h3 className="mt-4">Take a picture of beneficiary ID card</h3>
+								<span>Citizenship, Passport, License or National ID</span>
+								<br />
+								<div className="mt-5">
 									{previewImage ? (
 										<img
 											alt="preview"
@@ -105,8 +104,7 @@ export default function Main() {
 												borderRadius: '10px',
 												width: '100%',
 												height: '350px',
-												border: '3px solid #958d9e',
-												marginTop: '30px'
+												border: '3px solid #958d9e'
 											}}
 										/>
 									) : (
@@ -126,38 +124,36 @@ export default function Main() {
 									)}
 								</div>
 							</div>
-							<div className="pl-4 pr-4">
-								{previewImage ? (
-									<div className="text-center">
-										<button
-											type="button"
-											className="btn btn-lg btn-block btn-outline-primary mt-1"
-											onClick={() => setPreviewImage(null)}
-										>
-											<BiReset className="ion-icon" />
-											Retake Picture
-										</button>
-										<button
-											type="button"
-											className="btn btn-lg btn-block btn-success mt-3 mb-2"
-											onClick={save}
-										>
-											Complete setup
-										</button>
-									</div>
-								) : (
-									<div className="d-flex justify-content-between align-items-center mt-1">
-										<div style={{ width: '40px', height: '40px' }}></div>
+							{previewImage ? (
+								<div>
+									<button
+										type="button"
+										className="btn btn-lg btn-block btn-outline-primary mt-5"
+										onClick={() => setPreviewImage(null)}
+									>
+										<BiReset className="ion-icon" />
+										Retake Picture
+									</button>
+									<button
+										type="button"
+										className="btn btn-lg btn-block btn-success mt-3 mb-2"
+										onClick={save}
+									>
+										Complete setup
+									</button>
+								</div>
+							) : (
+								<div className="d-flex justify-content-between align-items-center mt-5">
+									<div style={{ width: '40px', height: '40px' }}></div>
 
-										<div className="btn-shutter" onClick={capture}>
-											<IoRadioButtonOff className="btn-shutter-icon" />
-										</div>
-										<div className="btn-faceChange" onClick={skip}>
-											<IoChevronForwardOutline className="btn-skip" />
-										</div>
+									<div className="btn-shutter" onClick={capture}>
+										<IoRadioButtonOff className="btn-shutter-icon" />
 									</div>
-								)}
-							</div>
+									<div className="btn-faceChange" onClick={skip}>
+										<IoChevronForwardOutline className="btn-skip" />
+									</div>
+								</div>
+							)}
 						</div>
 					</>
 				)}
