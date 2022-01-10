@@ -1,8 +1,7 @@
 import React from 'react';
-// import { ChargeContextProvider } from '../../../contexts/ChargeContext';
 import Package from './package';
 
-function index(props) {
+function index() {
 	const pkg = {
 		name: 'Rice',
 		symbol: 'RC',
@@ -10,11 +9,7 @@ function index(props) {
 		value: '234',
 		imageUri: ''
 	};
-	return (
-		// <ChargeContextProvider>
-		<Package pkg={pkg} />
-		// </ChargeContextProvider>
-	);
+	return <Package pkg={pkg} />;
 }
 
 export default index;

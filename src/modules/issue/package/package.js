@@ -1,7 +1,6 @@
 import React from 'react';
 // import Loading from '../../global/Loading';
 import AppHeader from '../../layouts/AppHeader';
-import { IoSendOutline } from 'react-icons/io5';
 
 export default function ChargePackage(props) {
 	// const [loading, showLoading] = useState(null);

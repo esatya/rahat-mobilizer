@@ -7,7 +7,7 @@ import { RegisterBeneficiaryContext } from '../../contexts/registerBeneficiaryCo
 
 import TransactionList from '../transactions/list';
 import DataService from '../../services/db';
-import { RahatService } from '../../services/chain';
+// import { RahatService } from '../../services/chain';
 
 export default function Main() {
 	const history = useHistory();
@@ -16,7 +16,7 @@ export default function Main() {
 		wallet,
 		recentTx,
 		addRecentTx,
-		setProject,
+		// setProject,
 		agency,
 		project,
 		beneficiaryCount,
@@ -29,7 +29,7 @@ export default function Main() {
 		//update API to only query relevant agency.
 		if (!wallet) return;
 		const data = await Service.getMobilizerByWallet(wallet.address);
-		let defaultAgency = await DataService.getDefaultAgency();
+		// let defaultAgency = await DataService.getDefaultAgency();
 		if (data && data.projects.length) {
 			await checkProjectBeneficiaries(wallet, data.projects[0].project.id);
 			// RahatService(defaultAgency.address, wallet)

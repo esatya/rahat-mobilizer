@@ -21,7 +21,7 @@ const PackageList = ({ limit, packages = [], beneficiary }) => {
 					pkg.map(p => {
 						return (
 							<li>
-								<Link to={`/issue/package/${p.tokenId}`} className="item">
+								<Link to={`/issue/${beneficiary}/package/${p.tokenId}`} className="item">
 									<div className="icon-box bg-primary">
 										<ion-icon
 											name="card-outline"

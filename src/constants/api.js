@@ -5,5 +5,6 @@ module.exports = {
 	REGISTER: base_url + '/mobilizers/register',
 	PROJECTS: base_url + '/projects',
 	BENEFICIARIES: base_url + '/beneficiaries',
-	MOBILIZERS: base_url + '/mobilizers'
+	MOBILIZERS: base_url + '/mobilizers',
+	NFT: base_url + '/nft'
 };

@@ -105,3 +105,23 @@ export async function registerBeneficiary(signature, payload) {
 		throw Error(e);
 	}
 }
+
+export async function getPackageDetails(id) {
+	try {
+		if (!id) throw new Error('Must send id');
+		const res = await axios.get(`${API.NFT}/token/${id}`);
+		return res.data;
+	} catch (e) {
+		throw Error(e);
+	}
+}
+
+export async function listNftPackages(projectId, query) {
+	try {
+		const res = await axios({
+			url: `${API.NFT}/${projectId}/list?${qs.stringify(query)}`,
+			method: 'get'
+		});
+		return res.data;
+	} catch {}
+}

@@ -1,7 +1,11 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, {
+	useState,
+	useContext
+	// useEffect,  useCallback
+} from 'react';
 import { IoHomeOutline } from 'react-icons/io5';
 import { RegisterBeneficiaryContext } from '../../contexts/registerBeneficiaryContext';
-import { AppContext } from '../../contexts/AppContext';
+// import { AppContext } from '../../contexts/AppContext';
 import { useHistory } from 'react-router-dom';
 import AppHeader from '../layouts/AppHeader';
 import { Link } from 'react-router-dom';

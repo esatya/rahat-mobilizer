@@ -64,6 +64,10 @@ const RahatService = (agencyAddress, wallet) => {
 			const contract = await this.getContract();
 			const balance = await contract.erc20Balance(Number(phone));
 			return balance.toNumber();
+		},
+		async getTotalERC1155Balance(phone) {
+			const contract = await this.getContract();
+			return contract.getTotalERC1155Balance(Number(phone));
 		}
 	};
 };
@@ -87,4 +91,23 @@ const TokenService = (agencyAddress, wallet) => {
 	};
 };
 
-export { DefaultProvider, RahatService, TokenService };
+const PackageService = (agencyAddress, wallet) => {
+	return {
+		async getContract() {
+			const agency = await getAgencyDetails(agencyAddress);
+			return wallet ? agency.erc1155Contract.connect(wallet) : agency.erc1155Contract;
+		},
+		async issueERC1155ToBeneficiary(projectId, phone, amount, tokenId) {
+			const contract = await this.getContract();
+			const tx = await contract.createERC1155Claim(
+				Number(projectId),
+				Number(phone),
+				Number(amount),
+				Number(tokenId)
+			);
+			return tx.wait();
+		}
+	};
+};
+
+export { DefaultProvider, RahatService, TokenService, PackageService };
