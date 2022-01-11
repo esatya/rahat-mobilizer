@@ -87,8 +87,12 @@ export const AppContextProvider = ({ children }) => {
 		setRecentTx(arr.slice(0, 3));
 	}
 
-	const listNftPackages = useCallback((projectId, query) => {
-		return Service.listNftPackages(projectId, query);
+	const listNftPackages = useCallback((projectId, signature) => {
+		return Service.listNftPackages(projectId, signature);
+	}, []);
+
+	const getNftPackages = useCallback(tokenId => {
+		return Service.getNftPackages(tokenId);
 	}, []);
 
 	return (
@@ -118,7 +122,8 @@ export const AppContextProvider = ({ children }) => {
 				dispatch,
 				addRecentTx,
 				setTotalBeneficiaries,
-				listNftPackages
+				listNftPackages,
+				getNftPackages
 			}}
 		>
 			{children}

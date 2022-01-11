@@ -61,7 +61,7 @@ function App() {
 				<PrivateRoute exact path="/issue/token" component={IssueToken} wallet={wallet} />
 				<PrivateRoute
 					exact
-					path="/issue/:beneficiary/package/:tokenId"
+					path="/issue/beneficiary/package/:tokenId"
 					component={IssuePackage}
 					wallet={wallet}
 				/>

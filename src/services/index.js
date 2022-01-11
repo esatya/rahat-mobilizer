@@ -116,10 +116,23 @@ export async function getPackageDetails(id) {
 	}
 }
 
-export async function listNftPackages(projectId, query) {
+export async function listNftPackages(projectId, signature) {
 	try {
 		const res = await axios({
-			url: `${API.NFT}/${projectId}/list?${qs.stringify(query)}`,
+			url: `${API.NFT}/${projectId}/list`,
+			method: 'get',
+			headers: {
+				auth_signature: signature
+			}
+		});
+		return res.data;
+	} catch {}
+}
+
+export async function getNftPackages(tokenId) {
+	try {
+		const res = await axios({
+			url: `${API.NFT}/token/${tokenId}`,
 			method: 'get'
 		});
 		return res.data;
