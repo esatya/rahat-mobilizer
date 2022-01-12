@@ -1,19 +1,47 @@
-import React from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import AppHeader from '../../layouts/AppHeader';
 import { Link } from 'react-router-dom';
 import { IoHomeOutline } from 'react-icons/io5';
 import PackageList from './packageList';
-// import BeneficiaryDetail from '../beneficiaryDetail';
+import {
+	getMobilizerByWallet
+	//  getProjectBeneficiaries
+} from '../../../services';
+import { AppContext } from '../../../contexts/AppContext';
+import { getAuthSignature } from '../../../utils';
 
-const BeneficiaryPackageIssue = props => {
-	const packages = [
-		{
-			name: 'rice',
-			tokenId: 'xcv2',
-			balance: '34567'
+const BeneficiaryPackageIssue = () => {
+	const { wallet, listNftPackages } = useContext(AppContext);
+	const [packageList, setPackageList] = useState([]);
+	const [projectId, setProjectId] = useState('');
+
+	const checkMobilizerStatus = useCallback(async () => {
+		if (!wallet) return;
+		const data = await getMobilizerByWallet(wallet.address);
+		const pId = data.projects[0].project.id;
+		setProjectId(pId);
+	}, [wallet]);
+
+	// const fetchBeneficiary = useCallback(async () => {
+	// 	const signature = await getAuthSignature(wallet);
+	// 	const beneficiary = await getProjectBeneficiaries(signature, projectId);
+	// 	if (beneficiary && beneficiary.data) {
+	// 		setBeneficiary(beneficiary.data);
+	// 	}
+	// }, [wallet, projectId]);
+
+	const fetchPackageList = useCallback(async () => {
+		const signature = await getAuthSignature(wallet);
+		const d = await listNftPackages(projectId, signature);
+		if (d && d.data) {
+			setPackageList(d.data);
 		}
-	];
-	const beneficiary = '';
+	}, [listNftPackages, wallet, projectId]);
+
+	useEffect(() => {
+		checkMobilizerStatus();
+		fetchPackageList();
+	}, [checkMobilizerStatus, fetchPackageList]);
 
 	return (
 		<>
@@ -28,12 +56,10 @@ const BeneficiaryPackageIssue = props => {
 
 			<div id="appCapsule">
 				<div className="section">
-					{/* <BeneficiaryDetail name={name} phone={phone} remainingToken={remainingToken} photo={photo} /> */}
-
 					<div className="card mt-3">
 						<div className="card-header">Packages</div>
 						<div className="card-body">
-							<PackageList packages={packages} beneficiary={beneficiary} />
+							<PackageList packages={packageList} />
 						</div>
 					</div>
 				</div>

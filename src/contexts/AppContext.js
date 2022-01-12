@@ -3,6 +3,7 @@ import appReduce from '../reducers/appReducer';
 import APP_ACTIONS from '../actions/appActions';
 import DataService from '../services/db';
 import { TokenService } from '../services/chain';
+import * as Service from '../services';
 import { APP_CONSTANTS, DEFAULT_TOKEN } from '../constants';
 
 const initialState = {
@@ -86,6 +87,14 @@ export const AppContextProvider = ({ children }) => {
 		setRecentTx(arr.slice(0, 3));
 	}
 
+	const listNftPackages = useCallback((projectId, signature) => {
+		return Service.listNftPackages(projectId, signature);
+	}, []);
+
+	const getNftPackages = useCallback(tokenId => {
+		return Service.getNftPackages(tokenId);
+	}, []);
+
 	return (
 		<AppContext.Provider
 			value={{
@@ -112,7 +121,9 @@ export const AppContextProvider = ({ children }) => {
 				setProject,
 				dispatch,
 				addRecentTx,
-				setTotalBeneficiaries
+				setTotalBeneficiaries,
+				listNftPackages,
+				getNftPackages
 			}}
 		>
 			{children}

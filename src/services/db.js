@@ -12,7 +12,8 @@ db.version(DB.VERSION).stores({
 	agencies:
 		'address,name,api,network,rahatAddress,tokenAddress,erc20Address,erc1155Address,adminAddress,phone,email,logo,isApproved',
 	transactions: 'hash,type,timestamp,amount,to,from,status,image',
-	projects: 'id,name'
+	projects: 'id,name',
+	nfts: 'tokenId,name,symbol,description,imageUri,metadataUri,value,amount'
 });
 
 const DataService = {

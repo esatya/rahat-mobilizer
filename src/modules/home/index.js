@@ -59,7 +59,12 @@ function App() {
 				<PrivateRoute exact path="/transfer/:address" component={Transfer} wallet={wallet} />
 				<PrivateRoute exact path="/google/backup" component={GoogleBackup} wallet={wallet} />
 				<PrivateRoute exact path="/issue/token" component={IssueToken} wallet={wallet} />
-				<PrivateRoute exact path="/issue/package/:tokenId" component={IssuePackage} wallet={wallet} />
+				<PrivateRoute
+					exact
+					path="/issue/beneficiary/package/:tokenId"
+					component={IssuePackage}
+					wallet={wallet}
+				/>
 				<Route path="*" component={Main} />
 			</Switch>
 

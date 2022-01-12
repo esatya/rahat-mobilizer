@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
-
 import { Link } from 'react-router-dom';
 
-const PackageList = ({ limit, packages = [], beneficiary }) => {
+const PackageList = ({ limit, packages = [] }) => {
 	const [pkg, setPkg] = useState([]);
 	useEffect(() => {
 		(async () => {
 			let pkgs = packages;
-			//	let pkgs = packages.length ? packages : await DataService.listNft();
 			if (limit) pkgs = pkgs.slice(0, limit);
-
 			setPkg(pkgs);
 		})();
 	}, [packages, limit]);
@@ -20,16 +17,17 @@ const PackageList = ({ limit, packages = [], beneficiary }) => {
 				{pkg.length > 0 &&
 					pkg.map(p => {
 						return (
-							<li>
-								<Link to={`/issue/package/${p.tokenId}`} className="item">
-									<div className="icon-box bg-primary">
-										<ion-icon
-											name="card-outline"
-											role="img"
-											className="md hydrated"
-											aria-label="card outline"
-										></ion-icon>
-									</div>
+							<li key={p.tokenId}>
+								<Link to={`/issue/beneficiary/package/${p.tokenId}`} className="item">
+									{p.metadata.packageImgURI ? (
+										<img
+											src={`https://ipfs.rumsan.com/ipfs//${p.metadata.packageImgURI}`}
+											alt=""
+											className="package-img"
+										/>
+									) : (
+										<div className="icon-box package-img bg-primary"></div>
+									)}
 									<div key={p.tokenId} className="in">
 										{p.name}
 										<span className="text-success">{p.balance}</span>

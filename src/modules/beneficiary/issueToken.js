@@ -1,17 +1,21 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { IoHomeOutline } from 'react-icons/io5';
 import { RegisterBeneficiaryContext } from '../../contexts/registerBeneficiaryContext';
 import { AppContext } from '../../contexts/AppContext';
+import { ActionSheetContext } from '../../contexts/ActionSheetContext';
 import { useHistory } from 'react-router-dom';
 import AppHeader from '../layouts/AppHeader';
 import { Link } from 'react-router-dom';
 import BeneficiaryDetail from './beneficiaryDetail';
+import { Row, Col } from 'react-bootstrap';
+import DataService from '../../services/db';
+import { RahatService } from '../../services/chain';
 
 const RegisterBeneficiary = () => {
 	const history = useHistory();
 	const { phone, name, photo } = useContext(RegisterBeneficiaryContext);
-	// const { wallet, toggleFooter } = useContext(AppContext);
-	const [loading, showLoading] = useState(null);
+	const { wallet } = useContext(AppContext);
+	const { loading } = useContext(ActionSheetContext);
 	const [remainingToken, setRemainingToken] = useState('loading...');
 
 	const handleIssuePackage = () => {
@@ -22,19 +26,16 @@ const RegisterBeneficiary = () => {
 		history.push('/issue/token');
 	};
 
-	// const updateTokenDetails = useCallback(async () => {
-	// 	const agency = await DataService.getDefaultAgency();
-	// 	const rahat = RahatService(agency.address, wallet);
-	// 	const remainingToken = await rahat.getBeneficiaryToken(phone);
-	// 	setRemainingToken(remainingToken);
-	// }, [phone, wallet]);
+	const updateTokenDetails = useCallback(async () => {
+		const agency = await DataService.getDefaultAgency();
+		const rahat = RahatService(agency.address, wallet);
+		const remainingToken = await rahat.getBeneficiaryToken(phone);
+		setRemainingToken(remainingToken);
+	}, [phone, wallet]);
 
-	// useEffect(() => {
-	// 	updateTokenDetails();
-	// 	return () => {
-	// 		toggleFooter(false);
-	// 	};
-	// }, [updateTokenDetails, toggleFooter]);
+	useEffect(() => {
+		updateTokenDetails();
+	}, [updateTokenDetails]);
 
 	return (
 		<>
@@ -83,17 +84,23 @@ const RegisterBeneficiary = () => {
 				<div className="section mt-2">
 					<BeneficiaryDetail name={name} phone={phone} remainingToken={remainingToken} photo={photo} />
 					<div>
-						<h3 className="mt-3">Issue </h3>
-						<div className="card mt-2">
-							<div className="card-header" onClick={handleIssueToken}>
-								Token
-							</div>
-						</div>
-						<div className="card mt-2">
-							<div className="card-header" onClick={handleIssuePackage}>
-								Package
-							</div>
-						</div>
+						<h3 className="mt-4">Issue </h3>
+						<Row className="text-center mt-2">
+							<Col>
+								<div className="card">
+									<div className="card-header " onClick={handleIssueToken}>
+										Token
+									</div>
+								</div>
+							</Col>
+							<Col>
+								<div className="card ">
+									<div className="card-header" onClick={handleIssuePackage}>
+										Package
+									</div>
+								</div>
+							</Col>
+						</Row>
 					</div>
 				</div>
 			</div>
