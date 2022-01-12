@@ -3,7 +3,7 @@ import { AppContext } from '../../../contexts/AppContext';
 import Loading from '../../global/Loading';
 import AppHeader from '../../layouts/AppHeader';
 import { ActionSheetContext } from '../../../contexts/ActionSheetContext';
-import { PackageService } from '../../../services/chain';
+import { RahatService } from '../../../services/chain';
 import DataService from '../../../services/db';
 import { RegisterBeneficiaryContext } from '../../../contexts/registerBeneficiaryContext';
 import * as Service from '../../../services';
@@ -12,41 +12,37 @@ export default function ChargePackage(props) {
 	const { wallet, getNftPackages } = useContext(AppContext);
 	const { loading } = useContext(ActionSheetContext);
 	const { phone } = useContext(RegisterBeneficiaryContext);
-	const [tokenId, setTokenId] = useState('');
-	console.log({ props });
 	// const [loading, showLoading] = useState(null);
+	const [tokenId, setTokenId] = useState([]);
 	const [nft, setNft] = useState(null);
+	const amountToIssue = 1;
 
-	// const issueTokenToBeneficiary = useCallback(async () => {
-	// 	const agency = await DataService.getDefaultAgency();
-	// 	const data = await Service.getMobilizerByWallet(wallet.address);
-	// 	const projectId = data.projects[0].project.id;
-	// 	console.log({ projectId });
-	// 	const rahat = PackageService(agency.address, wallet);
-	// 	const amount = '1';
-	// 	const remainingToken = await rahat.issueERC1155ToBeneficiary(projectId, phone, amount, tokenId);
-	// 	// setRemainingToken(remainingToken);
-	// }, [phone, wallet]);
+	const issueTokenToBeneficiary = useCallback(async () => {
+		const agency = await DataService.getDefaultAgency();
+		const data = await Service.getMobilizerByWallet(wallet.address);
+		const projectId = data.projects[0].project.id;
 
-	const handleChargeClick = () => {};
+		const rahat = RahatService(agency.address, wallet);
+		const amount = [amountToIssue];
+
+		const remainingToken = await rahat.issueERC1155ToBeneficiary(projectId, 2345, [1], tokenId);
+	}, [phone, wallet, tokenId]);
 
 	useEffect(() => {
 		async function getDetails() {
 			let tId = props.match.params.tokenId;
-			setTokenId(tId);
+			setTokenId([Number(tId)]);
 			const details = await getNftPackages(tId);
 			setNft(details);
 		}
 		getDetails();
 	}, [props, getNftPackages]);
 
-	// useEffect(() => {
-	// 	issueTokenToBeneficiary();
-	// }, [issueTokenToBeneficiary]);
-
 	return (
 		<>
 			<div>
+				{/* <Loading message={loading} showModal={loading !== null} /> */}
+
 				<AppHeader currentMenu="Issue Package" />
 				{nft ? (
 					<div id="appCapsule" className="full-height">
@@ -90,7 +86,7 @@ export default function ChargePackage(props) {
 										type="button"
 										id="btncharge"
 										className="btn btn-lg btn-block btn-success mt-4 mb-3"
-										onClick={handleChargeClick}
+										onClick={issueTokenToBeneficiary}
 									>
 										Issue Package
 									</button>
