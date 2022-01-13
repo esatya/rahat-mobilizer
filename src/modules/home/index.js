@@ -14,6 +14,7 @@ import Profile from '../settings/profile';
 import Transfer from '../transfer';
 import Transactions from '../transactions';
 import Beneficiary from '../beneficiary';
+import VerifyBeneficiary from '../beneficiary/verifyBeneficiary';
 import BeneficiaryRegister from '../beneficiary/register';
 import BeneficiaryPhoto from '../beneficiary/photo';
 import BeneficiaryId from '../beneficiary/idCard';
@@ -44,6 +45,7 @@ function App() {
 				<PrivateRoute exact path="/tx/:hash" component={TxDetails} wallet={wallet} />
 				<PrivateRoute exact path="/transaction" component={AllTransactions} wallet={wallet} />
 				<PrivateRoute exact path="/beneficiary" component={Beneficiary} wallet={wallet} />
+				<PrivateRoute exact path="/beneficiary/verify" component={VerifyBeneficiary} wallet={wallet} />
 				<PrivateRoute exact path="/beneficiary/register" component={BeneficiaryRegister} wallet={wallet} />
 				<PrivateRoute exact path="/beneficiary/photo" component={BeneficiaryPhoto} wallet={wallet} />
 				<PrivateRoute exact path="/beneficiary/idcard" component={BeneficiaryId} wallet={wallet} />
