@@ -68,7 +68,7 @@ export default function Camera(props) {
 			handleSubmit={() => {
 				setActiveSheet(null);
 				toggleFooter(true);
-				return history.push('/beneficiary/register');
+				return history.push('/beneficiary/verify');
 			}}
 		>
 			<div className="text-center">

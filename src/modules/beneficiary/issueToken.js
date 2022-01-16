@@ -10,6 +10,8 @@ import BeneficiaryDetail from './beneficiaryDetail';
 import { Row, Col } from 'react-bootstrap';
 import DataService from '../../services/db';
 import { RahatService } from '../../services/chain';
+import { getAuthSignature } from '../../utils';
+import * as Service from '../../services';
 
 const RegisterBeneficiary = () => {
 	const history = useHistory();
@@ -17,6 +19,7 @@ const RegisterBeneficiary = () => {
 	const { wallet } = useContext(AppContext);
 	const { loading } = useContext(ActionSheetContext);
 	const [remainingToken, setRemainingToken] = useState('loading...');
+	const [beneficiaryInfo, setBeneficiaryInfo] = useState([]);
 
 	const handleIssuePackage = () => {
 		history.push('/beneficiary/package');
@@ -26,6 +29,12 @@ const RegisterBeneficiary = () => {
 		history.push('/issue/token');
 	};
 
+	const fetchBeneficiary = useCallback(async () => {
+		const signature = await getAuthSignature(wallet);
+		const ben = await Service.getBeneficiaryById(signature, phone);
+		setBeneficiaryInfo(ben.data);
+	}, [wallet, phone]);
+
 	const updateTokenDetails = useCallback(async () => {
 		const agency = await DataService.getDefaultAgency();
 		const rahat = RahatService(agency.address, wallet);
@@ -34,9 +43,9 @@ const RegisterBeneficiary = () => {
 	}, [phone, wallet]);
 
 	useEffect(() => {
+		fetchBeneficiary();
 		updateTokenDetails();
-	}, [updateTokenDetails]);
-
+	}, [fetchBeneficiary, updateTokenDetails]);
 	return (
 		<>
 			<AppHeader
@@ -82,7 +91,12 @@ const RegisterBeneficiary = () => {
 
 			<div id="appCapsule">
 				<div className="section mt-2">
-					<BeneficiaryDetail name={name} phone={phone} remainingToken={remainingToken} photo={photo} />
+					<BeneficiaryDetail
+						name={name ? name : beneficiaryInfo.name}
+						phone={phone}
+						remainingToken={remainingToken}
+						photo={photo}
+					/>
 					<div>
 						<h3 className="mt-4">Issue </h3>
 						<Row className="text-center mt-2">
