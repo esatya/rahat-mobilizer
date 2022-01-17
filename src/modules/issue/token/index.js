@@ -8,8 +8,8 @@ import { Link } from 'react-router-dom';
 import { IoHomeOutline } from 'react-icons/io5';
 import { useHistory } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { getAuthSignature } from '../../../utils';
-import * as Service from '../../../services';
+// import { getAuthSignature } from '../../../utils';
+// import * as Service from '../../../services';
 import DataService from '../../../services/db';
 import { RahatService } from '../../../services/chain';
 
@@ -18,14 +18,14 @@ const Index = () => {
 	const {
 		phone,
 		setBeneficiaryToken,
-		name,
 		token,
-		resetBeneficiary,
-		addBeneficiary,
-		address,
-		govt_id,
-		photo,
-		govt_id_image
+		resetBeneficiary
+		// name,
+		// addBeneficiary,
+		// address,
+		// govt_id,
+		// photo,
+		// govt_id_image
 	} = useContext(RegisterBeneficiaryContext);
 	const { wallet } = useContext(AppContext);
 	const [loading, showLoading] = useState(null);
@@ -40,32 +40,32 @@ const Index = () => {
 		e.preventDefault();
 		showLoading('Issuing Tokens..');
 		try {
-			const signature = await getAuthSignature(wallet);
-			const benExists = await Service.getBeneficiaryById(signature, phone);
+			// const signature = await getAuthSignature(wallet);
+			// const benExists = await Service.getBeneficiaryById(signature, phone);
 			const agency = await DataService.getDefaultAgency();
 			const project = await DataService.getDefaultProject();
 			const rahat = RahatService(agency.address, wallet);
 
-			if (!benExists) {
-				const ben = await addBeneficiary(signature);
-				if (!ben) {
-					Swal.fire('Error', 'Invalid Beneficiary, Please enter valid details.', 'error');
-					return;
-				}
-				let beneficiary = {
-					name: name,
-					address: address || null,
-					phone: phone || null,
-					govt_id: govt_id || null,
-					photo: photo,
-					govt_id_image: govt_id_image,
-					createdAt: Date.now()
-					//	id,name,location,phone,age,gender,familySize,address,createdAt
-				};
-				await DataService.addBeneficiary(beneficiary);
-			}
+			// if (!benExists) {
+			// 	const ben = await addBeneficiary(signature);
+			// 	if (!ben) {
+			// 		Swal.fire('Error', 'Invalid Beneficiary, Please enter valid details.', 'error');
+			// 		return;
+			// 	}
+			// 	let beneficiary = {
+			// 		name: name,
+			// 		address: address || null,
+			// 		phone: phone || null,
+			// 		govt_id: govt_id || null,
+			// 		photo: photo,
+			// 		govt_id_image: govt_id_image,
+			// 		createdAt: Date.now()
+			// 		//	id,name,location,phone,age,gender,familySize,address,createdAt
+			// 	};
+			// 	await DataService.addBeneficiary(beneficiary);
+			// }
 
-			let receipt = await rahat.issueToken(project.id, phone, token);
+			let receipt = await rahat.issueERC20ToBeneficiary(project.id, phone, token);
 			const tx = {
 				hash: receipt.transactionHash,
 				type: 'issued',
