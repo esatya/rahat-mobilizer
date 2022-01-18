@@ -138,3 +138,10 @@ export async function getNftPackages(tokenId) {
 		return res.data;
 	} catch {}
 }
+
+export async function calculateTotalPackageBalance(payload, signature) {
+	let res = await axios.post(`${API.NFT}/total-package-balance`, payload, {
+		headers: { auth_signature: signature }
+	});
+	return res.data;
+}

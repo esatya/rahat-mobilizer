@@ -46,6 +46,8 @@ const RahatService = (agencyAddress, wallet) => {
 		},
 		async getProjectBalance(projectId) {
 			const contract = await this.getContract();
+
+			console.log({ contract });
 			const hashId = ethers.utils.solidityKeccak256(['string'], [projectId]);
 			const balance = await contract.getProjectBalance(hashId);
 			return balance.toNumber();
@@ -72,6 +74,30 @@ const RahatService = (agencyAddress, wallet) => {
 		async issueERC1155ToBeneficiary(projectId, phone, amount, tokenId) {
 			const contract = await this.getContract();
 			return contract.issueERC1155ToBeneficiary(projectId, Number(phone), amount, tokenId);
+		},
+		async issueERC20ToBeneficiary(projectId, phone, amount) {
+			const contract = await this.getContract();
+			const mobilizerRole = await contract.MOBILIZER_ROLE();
+			const hasRole = await contract.hasRole(mobilizerRole, '0x9abfd0296a24d81355d83f94c09d40c4f3b64374');
+			console.log({ hasRole });
+			return contract.issueERC20ToBeneficiary(projectId, Number(phone), Number(amount));
+		}
+	};
+};
+
+const RahatAdminService = (agencyAddress, wallet) => {
+	return {
+		async getContract() {
+			const agency = await getAgencyDetails(agencyAddress);
+			return agency.rahatAdminContract.connect(wallet);
+		},
+		async getProjectERC1155Balances(projectId) {
+			const contract = await this.getContract();
+			return contract.getProjectERC1155Balances(projectId);
+		},
+		async getProjecERC20Balance(projectId) {
+			const contract = await this.getContract();
+			return contract.getProjecERC20Balance(projectId);
 		}
 	};
 };
@@ -95,4 +121,4 @@ const TokenService = (agencyAddress, wallet) => {
 	};
 };
 
-export { DefaultProvider, RahatService, TokenService };
+export { DefaultProvider, RahatService, RahatAdminService, TokenService };
