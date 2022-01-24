@@ -1,4 +1,4 @@
-import React, { createContext, useState, useReducer, useCallback } from 'react';
+import React, { createContext, useReducer, useCallback } from 'react';
 import appReduce from '../reducers/appReducer';
 import APP_ACTIONS from '../actions/appActions';
 import DataService from '../services/db';
@@ -18,13 +18,13 @@ const initialState = {
 	scannedAmount: null,
 	project: null,
 	beneficiaryCount: 0,
-	hideFooter: false
+	hideFooter: false,
+	recentTx: []
 };
 
 export const AppContext = createContext(initialState);
 export const AppContextProvider = ({ children }) => {
 	const [state, dispatch] = useReducer(appReduce, initialState);
-	const [recentTx, setRecentTx] = useState([]);
 
 	const initApp = useCallback(async () => {
 		DataService.addDefaultAsset(DEFAULT_TOKEN.SYMBOL, DEFAULT_TOKEN.NAME);
@@ -68,9 +68,9 @@ export const AppContextProvider = ({ children }) => {
 	function setProject(project) {
 		dispatch({ type: APP_ACTIONS.SET_PROJECT, data: project });
 	}
-	function setTotalBeneficiaries(beneficiaryCount) {
+	const setTotalBeneficiaries = useCallback(beneficiaryCount => {
 		dispatch({ type: APP_ACTIONS.SET_TOTAL_BENEFICIARIES, data: beneficiaryCount });
-	}
+	}, []);
 
 	function setNetwork(network) {
 		dispatch({ type: APP_ACTIONS.SET_NETWORK, data: network });
@@ -80,12 +80,9 @@ export const AppContextProvider = ({ children }) => {
 		dispatch({ type: APP_ACTIONS.SET_SCANNED_DATA, data });
 	}
 
-	function addRecentTx(tx) {
-		setRecentTx([]);
-		if (!Array.isArray(tx)) tx = [tx];
-		const arr = [...tx, ...recentTx];
-		setRecentTx(arr.slice(0, 3));
-	}
+	const addRecentTx = useCallback(async tx => {
+		dispatch({ type: APP_ACTIONS.ADD_RECENT_TX, data: tx });
+	}, []);
 
 	const listNftPackages = useCallback((projectId, signature) => {
 		return Service.listNftPackages(projectId, signature);
@@ -109,7 +106,7 @@ export const AppContextProvider = ({ children }) => {
 				project: state.project,
 				hideFooter: state.hideFooter,
 				beneficiaryCount: state.beneficiaryCount,
-				recentTx,
+				recentTx: state.recentTx,
 				initApp,
 				setAgency,
 				toggleFooter,

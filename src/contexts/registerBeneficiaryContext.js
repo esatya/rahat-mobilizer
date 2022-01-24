@@ -1,4 +1,4 @@
-import React, { createContext, useReducer } from 'react';
+import React, { createContext, useReducer, useCallback } from 'react';
 import BenificiaryReduce from '../reducers/beneficiaryReducer';
 import BENEFICIARY_ACTIONS from '../actions/beneficiaryActions';
 import * as Service from '../services';
@@ -53,9 +53,9 @@ export const RegisterBeneficiaryContextProvider = ({ children }) => {
 		dispatch({ type: BENEFICIARY_ACTIONS.SET_ID_IMAGE, idImage: idImage });
 	};
 
-	const resetBeneficiary = () => {
+	const resetBeneficiary = useCallback(() => {
 		dispatch({ type: BENEFICIARY_ACTIONS.RESET, data: initialState });
-	};
+	}, []);
 
 	const addBeneficiary = async signature => {
 		const project = await DataService.getDefaultProject();
