@@ -7,7 +7,8 @@ import { RegisterBeneficiaryContext } from '../../contexts/registerBeneficiaryCo
 
 import TransactionList from '../transactions/list';
 import DataService from '../../services/db';
-import { RahatService } from '../../services/chain';
+import { RahatAdminService } from '../../services/chain';
+import { getAuthSignature } from '../../utils';
 
 export default function Main() {
 	const history = useHistory();
@@ -24,19 +25,39 @@ export default function Main() {
 	} = useContext(AppContext);
 	const { resetBeneficiary } = useContext(RegisterBeneficiaryContext);
 	const [showPageLoader, setShowPageLoader] = useState(true);
+	const [erc20, setErc20] = useState();
+	const [erc1155, setErc1155] = useState([]);
+
+	const checkProjectBeneficiaries = async () => {
+		const totalBen = await DataService.listBeneficiaries();
+		setTotalBeneficiaries(totalBen.length);
+	};
 
 	const checkMobilizerStatus = async () => {
-		//update API to only query relevant agency.
 		if (!wallet) return;
+		const signature = await getAuthSignature(wallet);
 		const data = await Service.getMobilizerByWallet(wallet.address);
 		let defaultAgency = await DataService.getDefaultAgency();
 		if (data && data.projects.length) {
 			await checkProjectBeneficiaries(wallet, data.projects[0].project.id);
-			RahatService(defaultAgency.address, wallet)
-				.getProjectBalance(data.projects[0].project.id)
-				.then(bal => {
-					setProject({ name: data.projects[0].project.name, id: data.projects[0].project.id, balance: bal });
-				});
+			const rahat = RahatAdminService(defaultAgency.address, wallet);
+			const projectERC1155Balances = await rahat.getProjectERC1155Balances(data.projects[0].project.id);
+			if (!projectERC1155Balances) return null;
+			if (projectERC1155Balances) {
+				const tokenIds = projectERC1155Balances.tokenIds.map(t => t.toNumber());
+				const tokenQtys = projectERC1155Balances.balances.map(b => b.toNumber());
+				const totalPackageBalance = await Service.calculateTotalPackageBalance(
+					{ tokenIds, tokenQtys },
+					signature
+				);
+				setErc1155(totalPackageBalance);
+			}
+			const projectERC20Balance = await rahat.getProjecERC20Balance(data.projects[0].project.id);
+			setErc20(projectERC20Balance.toNumber());
+			setProject({
+				name: data.projects[0].project.name,
+				id: data.projects[0].project.id
+			});
 		}
 		if (!data.agencies.length) return history.push('/setup/idcard');
 		let status = data.agencies[0].status;
@@ -48,15 +69,9 @@ export default function Main() {
 		}
 	};
 
-	const checkProjectBeneficiaries = async projectId => {
-		const totalBen = await DataService.listBeneficiaries();
-		setTotalBeneficiaries(totalBen.length);
-	};
-
 	useEffect(() => {
 		checkMobilizerStatus();
 		resetBeneficiary();
-
 		let timer1 = null;
 		(async () => {
 			let txs = await DataService.listTx();
@@ -96,15 +111,19 @@ export default function Main() {
 				<div className="section wallet-card-section pt-1">
 					<div className="wallet-card">
 						<div className="mobilizer-header">{project ? project.name : '...'}</div>
-						<div className="balance">
+						<div className="balance mt-2">
 							<div className="left">
-								<h1 className="total">{project ? project.balance : 0}</h1>
-								<span className="mobilizer-title">Project Balance</span>
+								<h2 className="total">{erc20 ? erc20 : 0}</h2>
+								<span className="mobilizer-title">Project Token</span>
 							</div>
 							<div className="right">
-								<h1 className="total">{beneficiaryCount}</h1>
-								<span className="mobilizer-title">Beneficiaries</span>
+								<h2 className="total">{erc1155.grandTotal ? erc1155.grandTotal : 0}</h2>
+								<span className="mobilizer-title">Project Packages</span>
 							</div>
+						</div>
+						<div className="mt-1">
+							<h2 className="total">{beneficiaryCount}</h2>
+							<span className="mobilizer-title">Beneficiaries</span>
 						</div>
 					</div>
 				</div>

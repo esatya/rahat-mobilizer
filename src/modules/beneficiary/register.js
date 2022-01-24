@@ -2,21 +2,15 @@ import React, { useContext } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { IoCloseCircle, IoHomeOutline } from 'react-icons/io5';
 import { RegisterBeneficiaryContext } from '../../contexts/registerBeneficiaryContext';
-import { AppContext } from '../../contexts/AppContext';
-import { getAuthSignature } from '../../utils';
 import { useHistory } from 'react-router-dom';
-import Swal from 'sweetalert2';
 import AppHeader from '../layouts/AppHeader';
 import { Link } from 'react-router-dom';
 import { GROUPS } from '../../constants';
-import * as Service from '../../services';
 
 const RegisterBeneficiary = () => {
 	const history = useHistory();
 	const {
-		phone,
 		setBeneficiaryDetails,
-		setBeneficiaryPhone,
 		name,
 		address,
 		address_temporary,
@@ -29,7 +23,6 @@ const RegisterBeneficiary = () => {
 		adult,
 		child
 	} = useContext(RegisterBeneficiaryContext);
-	const { wallet } = useContext(AppContext);
 
 	const updateBeneficiaryData = e => {
 		let formData = new FormData(e.target.form);
@@ -39,23 +32,12 @@ const RegisterBeneficiary = () => {
 			if (data[key] === '') data[key] = null;
 			// return (data[key] = value)
 		});
-		setBeneficiaryPhone(data.phone);
 		setBeneficiaryDetails(data);
 	};
 
 	const save = async e => {
 		e.preventDefault();
-		try {
-			const signature = await getAuthSignature(wallet);
-			const ben = await Service.getBeneficiaryById(signature, phone);
-			if (ben.data) {
-				Swal.fire('Error', 'Beneficiary with given phone already exists', 'error');
-				return;
-			}
-			history.push('/beneficiary/photo');
-		} catch (e) {
-			alert(e);
-		}
+		history.push('/beneficiary/photo');
 	};
 
 	return (
@@ -70,12 +52,8 @@ const RegisterBeneficiary = () => {
 			/>
 
 			<div id="appCapsule">
-				<div className="section mt-2 text-center">
-					<h2 className="mt-4">Register Beneficiary</h2>
-					<span>Fill the form to register beneficiary</span>
-				</div>
-
-				<div className="section p-3">
+				<h3 className="section mt-4">Register Beneficiary</h3>
+				<div className="section mt-3">
 					<Form onSubmit={save}>
 						<div className="card">
 							<div className="card-body">
@@ -87,30 +65,8 @@ const RegisterBeneficiary = () => {
 											name="name"
 											className="form-control"
 											placeholder="Enter your full name"
-											value={name}
+											value={name ? name : ''}
 											onChange={updateBeneficiaryData}
-											required
-										/>
-										<i className="clear-input">
-											<IoCloseCircle className="ion-icon" />
-										</i>
-									</div>
-								</div>
-								<div className="form-group basic">
-									<div className="input-wrapper">
-										<label className="label">Phone</label>
-										<Form.Control
-											type="number"
-											className="form-control"
-											name="phone"
-											placeholder="Enter mobile number"
-											value={phone}
-											onChange={updateBeneficiaryData}
-											onKeyDown={e => {
-												if (['-', '+', 'e'].includes(e.key)) {
-													e.preventDefault();
-												}
-											}}
 											required
 										/>
 										<i className="clear-input">
@@ -125,8 +81,8 @@ const RegisterBeneficiary = () => {
 											type="number"
 											className="form-control"
 											name="age"
-											placeholder="Enter your age"
-											value={age}
+											placeholder="Enter age"
+											value={age ? age : ''}
 											onChange={updateBeneficiaryData}
 										/>
 										<i className="clear-input">
@@ -154,8 +110,8 @@ const RegisterBeneficiary = () => {
 											type="text"
 											className="form-control"
 											name="address"
-											placeholder="Enter your permanent address"
-											value={address}
+											placeholder="Enter permanent address"
+											value={address ? address : ''}
 											onChange={updateBeneficiaryData}
 										/>
 										<i className="clear-input">
@@ -170,8 +126,8 @@ const RegisterBeneficiary = () => {
 											type="text"
 											className="form-control"
 											name="address_temporary"
-											placeholder="Enter your temporary address"
-											value={address_temporary}
+											placeholder="Enter temporary address"
+											value={address_temporary ? address_temporary : ''}
 											onChange={updateBeneficiaryData}
 										/>
 										<i className="clear-input">
@@ -187,7 +143,7 @@ const RegisterBeneficiary = () => {
 											className="form-control"
 											name="email"
 											placeholder="Enter email"
-											value={email}
+											value={email ? email : ''}
 											onChange={updateBeneficiaryData}
 										/>
 										<i className="clear-input">
@@ -202,8 +158,8 @@ const RegisterBeneficiary = () => {
 											type="text"
 											className="form-control"
 											name="govt_id"
-											placeholder="Enter your address"
-											value={govt_id}
+											placeholder="Enter address"
+											value={govt_id ? govt_id : ''}
 											onChange={updateBeneficiaryData}
 										/>
 										<i className="clear-input">
@@ -218,8 +174,8 @@ const RegisterBeneficiary = () => {
 											type="text"
 											name="education"
 											className="form-control"
-											placeholder="Enter your education"
-											value={education}
+											placeholder="Enter education"
+											value={education ? education : ''}
 											onChange={updateBeneficiaryData}
 										/>
 										<i className="clear-input">
@@ -234,8 +190,8 @@ const RegisterBeneficiary = () => {
 											type="text"
 											name="profession"
 											className="form-control"
-											placeholder="Enter your profession"
-											value={profession}
+											placeholder="Enter profession"
+											value={profession ? profession : ''}
 											onChange={updateBeneficiaryData}
 										/>
 										<i className="clear-input">
@@ -248,9 +204,13 @@ const RegisterBeneficiary = () => {
 										<label className="label" htmlFor="group">
 											Group
 										</label>
-										<select class="form-control custom-select" id="group">
+										<select className="form-control custom-select" id="group">
 											<option value="">--Select Group--</option>
-											<option value={GROUPS.DIFFERENTLY_ABLED.value}>
+											<option
+												value={
+													GROUPS.DIFFERENTLY_ABLED.value ? GROUPS.DIFFERENTLY_ABLED.value : ''
+												}
+											>
 												{GROUPS.DIFFERENTLY_ABLED.label}
 											</option>
 											<option value={GROUPS.MATERNITY.value}>{GROUPS.MATERNITY.label}</option>
@@ -284,7 +244,7 @@ const RegisterBeneficiary = () => {
 											className="form-control"
 											name="family_members"
 											placeholder="Enter number of family members"
-											value={family_members}
+											value={family_members ? family_members : ''}
 											onChange={updateBeneficiaryData}
 										/>
 										<i className="clear-input">
@@ -300,7 +260,7 @@ const RegisterBeneficiary = () => {
 											className="form-control"
 											name="adult"
 											placeholder="Enter number of adults"
-											value={adult}
+											value={adult ? adult : ''}
 											onChange={updateBeneficiaryData}
 										/>
 										<i className="clear-input">
@@ -316,7 +276,7 @@ const RegisterBeneficiary = () => {
 											className="form-control"
 											name="child"
 											placeholder="Enter number of children"
-											value={child}
+											value={child ? child : ''}
 											onChange={updateBeneficiaryData}
 										/>
 										<i className="clear-input">

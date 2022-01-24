@@ -1,95 +1,39 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
-import { Form, Button } from 'react-bootstrap';
-import { IoCloseCircle, IoHomeOutline } from 'react-icons/io5';
+import React, { useState, useContext, useEffect, useCallback } from 'react';
+import { IoHomeOutline } from 'react-icons/io5';
 import { RegisterBeneficiaryContext } from '../../contexts/registerBeneficiaryContext';
 import { AppContext } from '../../contexts/AppContext';
-import { RahatService } from '../../services/chain';
-import DataService from '../../services/db';
-import Swal from 'sweetalert2';
+import { ActionSheetContext } from '../../contexts/ActionSheetContext';
 import { useHistory } from 'react-router-dom';
 import AppHeader from '../layouts/AppHeader';
 import { Link } from 'react-router-dom';
+import BeneficiaryDetail from './beneficiaryDetail';
+import { Row, Col } from 'react-bootstrap';
+import DataService from '../../services/db';
+import { RahatService } from '../../services/chain';
 import { getAuthSignature } from '../../utils';
 import * as Service from '../../services';
-import Avatar from '../../assets/images/Man.png';
 
 const RegisterBeneficiary = () => {
 	const history = useHistory();
-	const {
-		phone,
-		setBeneficiaryToken,
-		name,
-		token,
-		resetBeneficiary,
-		addBeneficiary,
-		address,
-		govt_id,
-		photo,
-		govt_id_image
-	} = useContext(RegisterBeneficiaryContext);
-	const { wallet, toggleFooter } = useContext(AppContext);
-	const [loading, showLoading] = useState(null);
+	const { phone, name, photo } = useContext(RegisterBeneficiaryContext);
+	const { wallet } = useContext(AppContext);
+	const { loading } = useContext(ActionSheetContext);
 	const [remainingToken, setRemainingToken] = useState('loading...');
+	const [beneficiaryInfo, setBeneficiaryInfo] = useState([]);
 
-	const updateBeneficiaryData = e => {
-		let formData = new FormData(e.target.form);
-
-		let tokenAmount = formData.get('token');
-		setBeneficiaryToken(tokenAmount);
+	const handleIssuePackage = () => {
+		history.push('/beneficiary/package');
 	};
 
-	const save = async e => {
-		e.preventDefault();
-		showLoading('Issuing Tokens..');
-		try {
-			const signature = await getAuthSignature(wallet);
-			const benExists = await Service.getBeneficiaryById(signature, phone);
-			const agency = await DataService.getDefaultAgency();
-			const project = await DataService.getDefaultProject();
-			const rahat = RahatService(agency.address, wallet);
-
-			if (!benExists) {
-				const ben = await addBeneficiary(signature);
-				if (!ben) {
-					Swal.fire('Error', 'Invalid Beneficiary, Please enter valid details.', 'error');
-					return;
-				}
-				let beneficiary = {
-					name: name,
-					address: address || null,
-					phone: phone || null,
-					govt_id: govt_id || null,
-					photo: photo,
-					govt_id_image: govt_id_image,
-					createdAt: Date.now()
-					//	id,name,location,phone,age,gender,familySize,address,createdAt
-				};
-				await DataService.addBeneficiary(beneficiary);
-			}
-
-			let receipt = await rahat.issueToken(project.id, phone, token);
-			const tx = {
-				hash: receipt.transactionHash,
-				type: 'issued',
-				timestamp: Date.now(),
-				amount: token,
-				to: phone,
-				from: wallet.address,
-				status: 'success'
-			};
-
-			await DataService.addTx(tx);
-			if (receipt) showLoading(null);
-			Swal.fire('Success', 'Tokens Issued to Beneficiary', 'success');
-			resetBeneficiary();
-			history.push('/');
-		} catch (e) {
-			showLoading(null);
-			Swal.fire('Error', 'Unable To Issue Token', 'error');
-			throw Error(e);
-		}
-		//return addBeneficiary(signature);
+	const handleIssueToken = () => {
+		history.push('/issue/token');
 	};
+
+	const fetchBeneficiary = useCallback(async () => {
+		const signature = await getAuthSignature(wallet);
+		const ben = await Service.getBeneficiaryById(signature, phone);
+		setBeneficiaryInfo(ben.data);
+	}, [wallet, phone]);
 
 	const updateTokenDetails = useCallback(async () => {
 		const agency = await DataService.getDefaultAgency();
@@ -99,18 +43,9 @@ const RegisterBeneficiary = () => {
 	}, [phone, wallet]);
 
 	useEffect(() => {
-		// (async () => {
-		// 	const agency = await DataService.getDefaultAgency();
-		// 	const rahat = RahatService(agency.address, wallet);
-		// 	const remainingToken = await rahat.getBeneficiaryToken(phone);
-		// 	setRemainingToken(remainingToken);
-		// })();
+		fetchBeneficiary();
 		updateTokenDetails();
-		return () => {
-			toggleFooter(false);
-		};
-	}, [updateTokenDetails, toggleFooter]);
-
+	}, [fetchBeneficiary, updateTokenDetails]);
 	return (
 		<>
 			<AppHeader
@@ -155,69 +90,31 @@ const RegisterBeneficiary = () => {
 			)}
 
 			<div id="appCapsule">
-				<div className="section mt-2 text-center">
-					<h2 className="mt-3">Issue Token</h2>
-					<span>Enter Amount to Issue Token</span>
-					<br />
-					<div className="mt-3">
-						{photo ? (
-							<img className="video-flipped selfie" alt="preview" src={photo} />
-						) : (
-							<img
-								className="video-flipped selfie "
-								alt="preview"
-								src={Avatar}
-								width="100px"
-								height="100px"
-							/>
-						)}
-					</div>
-				</div>
-
-				<div className="section pt-0 p-3">
+				<div className="section mt-2">
+					<BeneficiaryDetail
+						name={name ? name : beneficiaryInfo.name}
+						phone={phone}
+						remainingToken={remainingToken}
+						photo={photo}
+					/>
 					<div>
-						<ul className="listview flush transparent simple-listview no-space mt-3">
-							<li>
-								<strong>Name</strong>
-								<span>{name}</span>
-							</li>
-							<li>
-								<strong>Phone</strong>
-								<span style={{ overflow: 'hidden' }}>{phone}</span>
-							</li>
-							<li>
-								<strong>Token Balance</strong>
-								<h3 className="m-0">{remainingToken}</h3>
-							</li>
-						</ul>
-
-						<Form onSubmit={save}>
-							<div className="card mt-3">
-								<div className="card-body">
-									<div className="form-group basic">
-										<div className="input-wrapper">
-											<Form.Control
-												type="number"
-												name="token"
-												className="form-control"
-												placeholder="Issue Tokens"
-												value={token}
-												onChange={updateBeneficiaryData}
-												required
-											/>
-											<i className="clear-input">
-												<IoCloseCircle className="ion-icon" />
-											</i>
-										</div>
+						<h3 className="mt-4">Issue </h3>
+						<Row className="text-center mt-2">
+							<Col>
+								<div className="card">
+									<div className="card-header " onClick={handleIssueToken}>
+										Token
 									</div>
 								</div>
-							</div>
-							<div className="">
-								<Button type="submit" className="btn btn-lg btn-block btn-success mt-3">
-									Issue Token
-								</Button>
-							</div>
-						</Form>
+							</Col>
+							<Col>
+								<div className="card ">
+									<div className="card-header" onClick={handleIssuePackage}>
+										Package
+									</div>
+								</div>
+							</Col>
+						</Row>
 					</div>
 				</div>
 			</div>
