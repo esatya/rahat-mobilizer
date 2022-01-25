@@ -66,8 +66,9 @@ const Index = () => {
 			// }
 
 			let receipt = await rahat.issueERC20ToBeneficiary(project.id, phone, token);
+
 			const tx = {
-				hash: receipt.transactionHash,
+				hash: receipt.hash,
 				type: 'issued',
 				timestamp: Date.now(),
 				amount: token,
