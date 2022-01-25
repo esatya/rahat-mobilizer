@@ -1,9 +1,7 @@
 import React, { useEffect, useContext } from 'react';
 import { Route, Switch } from 'react-router-dom';
-
 import { AppContext } from '../../contexts/AppContext';
 import PrivateRoute from './PrivateRoute';
-
 import BackupWallet from '../wallet/backup/index';
 import Footer from '../layouts/Footer';
 import Header from '../layouts/Header';
@@ -30,11 +28,7 @@ import IssueToken from '../issue/token';
 function App() {
 	const { initApp, wallet } = useContext(AppContext);
 
-	useEffect(() => {
-		(async () => {
-			initApp();
-		})();
-	}, [initApp]);
+	useEffect(initApp, [initApp]);
 
 	return (
 		<>

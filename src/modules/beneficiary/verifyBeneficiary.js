@@ -29,7 +29,7 @@ const VerifyBeneficiary = () => {
 		try {
 			const signature = await getAuthSignature(wallet);
 			const ben = await Service.getBeneficiaryById(signature, phone);
-			if (ben.data) {
+			if (ben) {
 				history.push('/beneficiary/token');
 				return;
 			}

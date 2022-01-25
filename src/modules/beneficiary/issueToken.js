@@ -32,7 +32,7 @@ const RegisterBeneficiary = () => {
 	const fetchBeneficiary = useCallback(async () => {
 		const signature = await getAuthSignature(wallet);
 		const ben = await Service.getBeneficiaryById(signature, phone);
-		setBeneficiaryInfo(ben.data);
+		setBeneficiaryInfo(ben);
 	}, [wallet, phone]);
 
 	const updateTokenDetails = useCallback(async () => {

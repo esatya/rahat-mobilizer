@@ -2,30 +2,51 @@ import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { AppContext } from '../../../contexts/AppContext';
 import Loading from '../../global/Loading';
 import AppHeader from '../../layouts/AppHeader';
-import { ActionSheetContext } from '../../../contexts/ActionSheetContext';
+// import { ActionSheetContext } from '../../../contexts/ActionSheetContext';
 import { RahatService } from '../../../services/chain';
 import DataService from '../../../services/db';
 import { RegisterBeneficiaryContext } from '../../../contexts/registerBeneficiaryContext';
 import * as Service from '../../../services';
+import { TRANSACTION_TYPES } from '../../../constants';
+import Spinner from '../../spinner';
+import Swal from 'sweetalert2';
 
 export default function ChargePackage(props) {
 	const { wallet, getNftPackages } = useContext(AppContext);
-	const { loading } = useContext(ActionSheetContext);
+	// const { loading } = useContext(ActionSheetContext);
 	const { phone } = useContext(RegisterBeneficiaryContext);
-	// const [loading, showLoading] = useState(null);
+	const [loading, showLoading] = useState(null);
+
 	const [tokenId, setTokenId] = useState([]);
 	const [nft, setNft] = useState(null);
 	const amountToIssue = 1;
 
 	const issueTokenToBeneficiary = useCallback(async () => {
-		const agency = await DataService.getDefaultAgency();
-		const data = await Service.getMobilizerByWallet(wallet.address);
-		const projectId = data.projects[0].project.id;
+		try {
+			const agency = await DataService.getDefaultAgency();
+			const data = await Service.getMobilizerByWallet(wallet.address);
+			const projectId = data.projects[0].project.id;
+			showLoading('Issuing Token...');
+			const rahat = RahatService(agency.address, wallet);
+			const amount = amountToIssue;
 
-		const rahat = RahatService(agency.address, wallet);
-		const amount = [amountToIssue];
-
-		const remainingToken = await rahat.issueERC1155ToBeneficiary(projectId, 2345, [1], tokenId);
+			const receipt = await rahat.issueERC1155ToBeneficiary(projectId, 2345, [1], tokenId);
+			const tx = {
+				hash: receipt.hash,
+				type: TRANSACTION_TYPES.NFT,
+				timestamp: Date.now(),
+				amount: amount,
+				to: phone,
+				from: wallet.address,
+				status: 'success'
+			};
+			await DataService.addTx(tx);
+			showLoading(null);
+			Swal.fire('Success', 'Tokens Issued to Beneficiary', 'success');
+		} catch (err) {
+			showLoading(null);
+			Swal.fire('Error', 'Unable To Issue Token', 'error');
+		}
 	}, [phone, wallet, tokenId]);
 
 	useEffect(() => {
@@ -43,6 +64,7 @@ export default function ChargePackage(props) {
 			<div>
 				{/* <Loading message={loading} showModal={loading !== null} /> */}
 
+				{loading !== null && <Spinner message={loading} />}
 				<AppHeader currentMenu="Issue Package" />
 				{nft ? (
 					<div id="appCapsule" className="full-height">
