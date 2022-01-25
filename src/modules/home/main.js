@@ -84,16 +84,16 @@ export default function Main() {
 		try {
 			toggleLoader();
 			await checkMobilizerStatus();
+			await checkRecentTnx();
 			resetBeneficiary();
 			toggleLoader();
 		} catch (err) {
 			toggleLoader();
 			console.log({ error });
 		}
-	}, [checkMobilizerStatus, resetBeneficiary]);
+	}, [checkMobilizerStatus, resetBeneficiary, checkRecentTnx]);
 
 	useEffect(getInfoState, [getInfoState]);
-	useEffect(checkRecentTnx, [checkRecentTnx]);
 
 	if (!hasWallet) {
 		return <Redirect to="/setup" />;

@@ -29,6 +29,7 @@ const RegisterBeneficiary = () => {
 		let data = {};
 		formData.forEach((value, key) => {
 			data[key] = value;
+
 			if (data[key] === '') data[key] = null;
 			// return (data[key] = value)
 		});
