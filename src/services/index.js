@@ -30,7 +30,7 @@ export async function getMobilizerByWallet(walletAddress) {
 
 export async function getBeneficiaryById(signature, id) {
 	try {
-		const data = await axios({
+		const { data } = await axios({
 			url: `${API.BENEFICIARIES}/${id}`,
 			method: 'GET',
 			headers: {

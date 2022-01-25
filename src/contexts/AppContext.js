@@ -43,7 +43,7 @@ export const AppContextProvider = ({ children }) => {
 			data.agency = agency;
 		}
 		dispatch({ type: APP_ACTIONS.INIT_APP, data });
-	}, [dispatch]);
+	}, []);
 
 	async function setAgency(agency) {
 		if (!agency) agency = await DataService.getDefaultAgency();

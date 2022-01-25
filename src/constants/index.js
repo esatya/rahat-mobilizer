@@ -64,5 +64,9 @@ module.exports = {
 			label: 'Orphan',
 			value: 'Orphan'
 		}
+	},
+	TRANSACTION_TYPES: {
+		TOKEN: 'token',
+		NFT: 'nft'
 	}
 };

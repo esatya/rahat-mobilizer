@@ -12,18 +12,24 @@ import { getAuthSignature } from '../../utils';
 
 export default function Main() {
 	const history = useHistory();
-	const { hasWallet, wallet, agency, addRecentTx, recentTx, beneficiaryCount, setTotalBeneficiaries } =
-		useContext(AppContext);
+	const { hasWallet, wallet, agency, beneficiaryCount, setTotalBeneficiaries } = useContext(AppContext);
 	const { resetBeneficiary } = useContext(RegisterBeneficiaryContext);
-	const [showPageLoader, setShowPageLoader] = useState(false);
+	const [showPageLoader, setShowPageLoader] = useState(true);
 	const [erc20, setErc20] = useState();
 	const [erc1155, setErc1155] = useState([]);
 	const [project, setProject] = useState(null);
+	const [recentTx, setRecentTx] = useState(null);
 
 	const checkRecentTnx = useCallback(async () => {
 		let txs = await DataService.listTx();
-		if (txs) addRecentTx(txs);
-	}, [addRecentTx]);
+		console.log({ txs });
+
+		if (txs && Array.isArray(txs)) {
+			const arr = txs.slice(0, 3);
+			console.log({ arr });
+			setRecentTx(arr);
+		}
+	}, []);
 
 	const checkProjectBeneficiaries = useCallback(async () => {
 		const totalBen = await DataService.listBeneficiaries();
@@ -69,11 +75,7 @@ export default function Main() {
 		},
 		[checkProjectBeneficiaries, wallet]
 	);
-
-	const toggleLoader = () => setShowPageLoader(prev => !prev);
-
 	const checkMobilizerStatus = useCallback(async () => {
-		if (!wallet) return;
 		const signature = await getAuthSignature(wallet);
 		const { projects, agencies } = await Service.getMobilizerByWallet(wallet.address);
 		await checkProject(projects, signature);
@@ -82,16 +84,16 @@ export default function Main() {
 
 	const getInfoState = useCallback(async () => {
 		try {
-			toggleLoader();
+			if (!wallet) return;
 			await checkMobilizerStatus();
 			await checkRecentTnx();
 			resetBeneficiary();
-			toggleLoader();
+			setShowPageLoader(false);
 		} catch (err) {
-			toggleLoader();
-			console.log({ error });
+			setShowPageLoader(false);
+			console.log({ err });
 		}
-	}, [checkMobilizerStatus, resetBeneficiary, checkRecentTnx]);
+	}, [wallet, checkMobilizerStatus, resetBeneficiary, checkRecentTnx]);
 
 	useEffect(getInfoState, [getInfoState]);
 

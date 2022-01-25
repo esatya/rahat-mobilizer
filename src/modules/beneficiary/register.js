@@ -38,6 +38,7 @@ const RegisterBeneficiary = () => {
 
 	const save = async e => {
 		e.preventDefault();
+
 		history.push('/beneficiary/photo');
 	};
 

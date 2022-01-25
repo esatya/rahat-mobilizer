@@ -14,6 +14,7 @@ import { AppContext } from '../../contexts/AppContext';
 import { RegisterBeneficiaryContext } from '../../contexts/registerBeneficiaryContext';
 import * as Service from '../../services';
 import { getAuthSignature } from '../../utils';
+import DataService from '../../services/db';
 
 export default function Main() {
 	const history = useHistory();
@@ -39,38 +40,25 @@ export default function Main() {
 
 	const registerBeneficiary = useCallback(async () => {
 		const signature = await getAuthSignature(wallet);
-		const benExists = await Service.getBeneficiaryById(signature, phone);
 		setBeneficiaryIdImage(previewImage);
-		if (!benExists) {
-			const ben = await addBeneficiary(signature);
-			if (!ben) {
-				Swal.fire('Error', 'Invalid Beneficiary, Please enter valid details.', 'error');
-				return;
-			}
-			let beneficiary = {
-				name: name,
-				address: address || null,
-				phone: phone || null,
-				govt_id: govt_id || null,
-				photo: photo,
-				govt_id_image: govt_id_image,
-				createdAt: Date.now()
-				//	id,name,location,phone,age,gender,familySize,address,createdAt
-			};
-			await DataService.addBeneficiary(beneficiary);
+
+		const ben = await addBeneficiary(signature);
+		if (!ben) {
+			Swal.fire('Error', 'Invalid Beneficiary, Please enter valid details.', 'error');
+			return;
 		}
-	}, [
-		addBeneficiary,
-		address,
-		name,
-		phone,
-		govt_id,
-		photo,
-		govt_id_image,
-		previewImage,
-		setBeneficiaryIdImage,
-		wallet
-	]);
+		const date = Date.now();
+		let beneficiary = {
+			name: name,
+			address: address || null,
+			phone: phone || null,
+			photo: photo,
+			govt_id_image: govt_id_image,
+			createdAt: date
+		};
+
+		await DataService.addBeneficiary(beneficiary);
+	}, [addBeneficiary, address, name, phone, photo, govt_id_image, previewImage, setBeneficiaryIdImage, wallet]);
 
 	const save = async event => {
 		event.preventDefault();
