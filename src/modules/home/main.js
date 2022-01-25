@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { useHistory, Redirect, Link } from 'react-router-dom';
 
 import * as Service from '../../services';
@@ -12,85 +12,88 @@ import { getAuthSignature } from '../../utils';
 
 export default function Main() {
 	const history = useHistory();
-	const {
-		hasWallet,
-		wallet,
-		recentTx,
-		addRecentTx,
-		setProject,
-		agency,
-		project,
-		beneficiaryCount,
-		setTotalBeneficiaries
-	} = useContext(AppContext);
+	const { hasWallet, wallet, agency, addRecentTx, recentTx, beneficiaryCount, setTotalBeneficiaries } =
+		useContext(AppContext);
 	const { resetBeneficiary } = useContext(RegisterBeneficiaryContext);
-	const [showPageLoader, setShowPageLoader] = useState(true);
+	const [showPageLoader, setShowPageLoader] = useState(false);
 	const [erc20, setErc20] = useState();
 	const [erc1155, setErc1155] = useState([]);
+	const [project, setProject] = useState(null);
 
-	const checkProjectBeneficiaries = async () => {
+	const checkRecentTnx = useCallback(async () => {
+		let txs = await DataService.listTx();
+		if (txs) addRecentTx(txs);
+	}, [addRecentTx]);
+
+	const checkProjectBeneficiaries = useCallback(async () => {
 		const totalBen = await DataService.listBeneficiaries();
 		setTotalBeneficiaries(totalBen.length);
-	};
+	}, [setTotalBeneficiaries]);
 
-	const checkMobilizerStatus = async () => {
+	const checkAgencyApproval = useCallback(
+		async (agencies = []) => {
+			if (!agencies.length) return history.push('/setup/idcard');
+			let status = agencies[0].status;
+			if (status !== 'active') {
+				let dagency = Object.assign(agency, { isApproved: false });
+				await DataService.updateAgency(dagency.address, dagency);
+				history.push('/setup/pending');
+			}
+		},
+		[history, agency]
+	);
+
+	const checkProject = useCallback(
+		async (projects = [], signature) => {
+			if (projects && projects.length > 0 && signature) {
+				setProject({
+					name: projects[0]?.project.name,
+					id: projects[0]?.project.id
+				});
+				await checkProjectBeneficiaries(wallet, projects[0].project.id);
+				const defaultAgency = await DataService.getDefaultAgency();
+				const rahat = RahatAdminService(defaultAgency.address, wallet);
+				const projectERC1155Balances = await rahat.getProjectERC1155Balances(projects[0].project.id);
+				if (projectERC1155Balances) {
+					const tokenIds = projectERC1155Balances.tokenIds.map(t => t.toNumber());
+					const tokenQtys = projectERC1155Balances.balances.map(b => b.toNumber());
+					const totalPackageBalance = await Service.calculateTotalPackageBalance(
+						{ tokenIds, tokenQtys },
+						signature
+					);
+					setErc1155(totalPackageBalance);
+				}
+				const projectERC20Balance = await rahat.getProjecERC20Balance(projects[0].project.id);
+				setErc20(projectERC20Balance.toNumber());
+			}
+		},
+		[checkProjectBeneficiaries, wallet]
+	);
+
+	const toggleLoader = () => setShowPageLoader(prev => !prev);
+
+	const checkMobilizerStatus = useCallback(async () => {
 		if (!wallet) return;
 		const signature = await getAuthSignature(wallet);
-		const data = await Service.getMobilizerByWallet(wallet.address);
-		let defaultAgency = await DataService.getDefaultAgency();
-		if (data && data.projects.length) {
-			await checkProjectBeneficiaries(wallet, data.projects[0].project.id);
-			const rahat = RahatAdminService(defaultAgency.address, wallet);
-			const projectERC1155Balances = await rahat.getProjectERC1155Balances(data.projects[0].project.id);
-			if (!projectERC1155Balances) return null;
-			if (projectERC1155Balances) {
-				const tokenIds = projectERC1155Balances.tokenIds.map(t => t.toNumber());
-				const tokenQtys = projectERC1155Balances.balances.map(b => b.toNumber());
-				const totalPackageBalance = await Service.calculateTotalPackageBalance(
-					{ tokenIds, tokenQtys },
-					signature
-				);
-				setErc1155(totalPackageBalance);
-			}
-			const projectERC20Balance = await rahat.getProjecERC20Balance(data.projects[0].project.id);
-			setErc20(projectERC20Balance.toNumber());
-			setProject({
-				name: data.projects[0].project.name,
-				id: data.projects[0].project.id
-			});
-		}
-		if (!data.agencies.length) return history.push('/setup/idcard');
-		let status = data.agencies[0].status;
+		const { projects, agencies } = await Service.getMobilizerByWallet(wallet.address);
+		await checkProject(projects, signature);
+		await checkAgencyApproval(agencies);
+	}, [wallet, checkProject, checkAgencyApproval]);
 
-		if (status !== 'active') {
-			let dagency = Object.assign(agency, { isApproved: false });
-			await DataService.updateAgency(dagency.address, dagency);
-			history.push('/setup/pending');
+	const getInfoState = useCallback(async () => {
+		try {
+			toggleLoader();
+			await checkMobilizerStatus();
+			resetBeneficiary();
+			toggleLoader();
+		} catch (err) {
+			toggleLoader();
+			console.log({ error });
 		}
-	};
+	}, [checkMobilizerStatus, resetBeneficiary]);
 
-	useEffect(() => {
-		checkMobilizerStatus();
-		resetBeneficiary();
-		let timer1 = null;
-		(async () => {
-			let txs = await DataService.listTx();
-			if (txs) addRecentTx(txs.slice(0, 3));
-			const timer = setTimeout(() => {
-				setShowPageLoader(false);
-			}, 300);
-			timer1 = setTimeout(async () => {
-				await checkMobilizerStatus();
-			}, 3000);
-			return () => {
-				clearTimeout(timer);
-				clearTimeout(timer1);
-			};
-		})();
-		return function cleanup() {
-			if (timer1) clearTimeout(timer1);
-		};
-	}, []);
+	useEffect(getInfoState, [getInfoState]);
+	useEffect(checkRecentTnx, [checkRecentTnx]);
 
 	if (!hasWallet) {
 		return <Redirect to="/setup" />;
@@ -155,7 +158,7 @@ export default function Main() {
 								paddingTop: '0px'
 							}}
 						>
-							<TransactionList limit="3" transactions={recentTx} />
+							<TransactionList limit="3" transactions={recentTx || []} />
 						</div>
 					</div>
 				</div>

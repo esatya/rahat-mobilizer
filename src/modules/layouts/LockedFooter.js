@@ -78,10 +78,16 @@ export default function LockedFooter() {
 	}, [checkMobilizerStatus, setWallet, history]);
 
 	useEffect(() => {
-		const timer = setTimeout(() => {
-			handleUnlockClick();
-		}, 1000);
-		return () => clearTimeout(timer);
+		let isMounted = true;
+
+		const unlock = () => handleUnlockClick();
+
+		return async () => {
+			if (isMounted) {
+				await unlock();
+			}
+			isMounted = false;
+		};
 	}, [handleUnlockClick]);
 
 	return (

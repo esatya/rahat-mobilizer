@@ -43,9 +43,13 @@ const AppReducer = (state, action) => {
 			};
 
 		case APP_ACTIONS.ADD_RECENT_TX:
+			let tx = action.data;
+			if (!Array.isArray(tx)) tx = [tx];
+			const arr = [...tx, ...state.recentTx];
+
 			return {
 				...state,
-				recentTx: action.data ? action.data : []
+				recentTx: arr ? arr.slice(0, 3) : []
 			};
 
 		case APP_ACTIONS.SET_SCANNED_DATA:
