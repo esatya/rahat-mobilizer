@@ -26,7 +26,7 @@ export default function ChargePackage(props) {
 			const agency = await DataService.getDefaultAgency();
 			const data = await Service.getMobilizerByWallet(wallet.address);
 			const projectId = data.projects[0].project.id;
-			showLoading('Issuing Token...');
+			showLoading('Issuing Package...');
 			const rahat = RahatService(agency.address, wallet);
 			const amount = amountToIssue;
 
