@@ -111,7 +111,14 @@ export default function Main() {
 		checkAgencyApproval
 	]);
 
-	useEffect(getInfoState, [getInfoState]);
+	useEffect(() => {
+		let isMounted = true;
+		if (isMounted) getInfoState();
+
+		return () => {
+			isMounted = false;
+		};
+	}, [getInfoState]);
 
 	if (!hasWallet) {
 		return <Redirect to="/setup" />;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { IoSearchOutline, IoCloseCircleOutline } from 'react-icons/io5';
 import DataService from '../../services/db';
@@ -20,23 +20,31 @@ const BenList = ({ limit, beneficiaries = [] }) => {
 		// initListProduct(params);
 	}
 
-	useEffect(() => {
-		(async () => {
-			let bens = beneficiaries.length ? beneficiaries : await DataService.listBeneficiaries();
-			if (limit) bens = bens.slice(0, limit);
-			// for (let b of bens) {
+	const listBeneficiearies = useCallback(async () => {
+		let bens = beneficiaries.length ? beneficiaries : await DataService.listBeneficiaries();
+		if (limit) bens = bens.slice(0, limit);
+		// for (let b of bens) {
 
-			// 		b.name = `Charge to ${t.from}`;
-			// 		t.icon = (
-			// 			<div className="icon-box bg-success">
-			// 				<GiReceiveMoney className="ion-icon" />
-			// 			</div>
-			// 		);
+		// 		b.name = `Charge to ${t.from}`;
+		// 		t.icon = (
+		// 			<div className="icon-box bg-success">
+		// 				<GiReceiveMoney className="ion-icon" />
+		// 			</div>
+		// 		);
 
-			// }
-			setBen(bens);
-		})();
+		// }
+		setBen(bens);
 	}, [beneficiaries, limit]);
+
+	useEffect(() => {
+		let isMounted = true;
+		if (isMounted) {
+			listBeneficiearies();
+		}
+		return () => {
+			isMounted = false;
+		};
+	}, [listBeneficiearies]);
 
 	return (
 		<>
