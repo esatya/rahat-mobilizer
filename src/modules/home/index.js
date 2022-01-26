@@ -20,6 +20,8 @@ import BeneficiaryTokenIssue from '../beneficiary/issueToken';
 import BeneficiaryPackageIssue from '../beneficiary/package';
 import BeneficairyDetails from '../beneficiary/details';
 import TxDetails from '../transactions/details';
+import PackageTxDetails from '../transactions/Package';
+
 import AllTransactions from '../transactions/allTransactions';
 import GoogleBackup from '../misc/googleBackup';
 import IssuePackage from '../issue/package';
@@ -37,6 +39,7 @@ function App() {
 				<Route exact path="/" component={Main} />
 				<PrivateRoute exact path="/tx" component={Transactions} wallet={wallet} />
 				<PrivateRoute exact path="/tx/:hash" component={TxDetails} wallet={wallet} />
+				<PrivateRoute exact path="/tx/:hash/package/:tokenId" component={PackageTxDetails} wallet={wallet} />
 				<PrivateRoute exact path="/transaction" component={AllTransactions} wallet={wallet} />
 				<PrivateRoute exact path="/beneficiary" component={Beneficiary} wallet={wallet} />
 				<PrivateRoute exact path="/beneficiary/verify" component={VerifyBeneficiary} wallet={wallet} />
