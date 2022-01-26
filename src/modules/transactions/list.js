@@ -85,7 +85,10 @@ const TxList = ({ limit, transactions = [] }) => {
 					tx.map(tx => {
 						return (
 							<li key={tx.hash}>
-								<Link to={`/tx/${tx.hash}`} className="item">
+								<Link
+									to={`/tx/${tx.hash}${tx.tokenId ? `/package/${tx.tokenId}` : ''}`}
+									className="item"
+								>
 									{tx.icon}
 									<div className="in">
 										<div>

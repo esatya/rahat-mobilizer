@@ -10,13 +10,14 @@ import * as Service from '../../../services';
 import { TRANSACTION_TYPES } from '../../../constants';
 import Spinner from '../../spinner';
 import Swal from 'sweetalert2';
+import { useHistory } from 'react-router-dom';
 
 export default function ChargePackage(props) {
 	const { wallet, getNftPackages } = useContext(AppContext);
 	// const { loading } = useContext(ActionSheetContext);
 	const { phone } = useContext(RegisterBeneficiaryContext);
 	const [loading, showLoading] = useState(null);
-
+	const history = useHistory();
 	const [tokenId, setTokenId] = useState([]);
 	const [nft, setNft] = useState(null);
 	const amountToIssue = 1;
@@ -26,12 +27,13 @@ export default function ChargePackage(props) {
 			const agency = await DataService.getDefaultAgency();
 			const data = await Service.getMobilizerByWallet(wallet.address);
 			const projectId = data.projects[0].project.id;
-			showLoading('Issuing Token...');
+			showLoading('Issuing Package...');
 			const rahat = RahatService(agency.address, wallet);
 			const amount = amountToIssue;
 
-			const receipt = await rahat.issueERC1155ToBeneficiary(projectId, 2345, [1], tokenId);
+			const receipt = await rahat.issueERC1155ToBeneficiary(projectId, 2345, [1], [tokenId]);
 			const tx = {
+				tokenId,
 				hash: receipt.hash,
 				type: TRANSACTION_TYPES.NFT,
 				timestamp: Date.now(),
@@ -43,16 +45,17 @@ export default function ChargePackage(props) {
 			await DataService.addTx(tx);
 			showLoading(null);
 			Swal.fire('Success', 'Tokens Issued to Beneficiary', 'success');
+			history.push('/');
 		} catch (err) {
 			showLoading(null);
 			Swal.fire('Error', 'Unable To Issue Token', 'error');
 		}
-	}, [phone, wallet, tokenId]);
+	}, [phone, wallet, tokenId, history]);
 
 	useEffect(() => {
 		async function getDetails() {
 			let tId = props.match.params.tokenId;
-			setTokenId([Number(tId)]);
+			setTokenId(Number(tId));
 			const details = await getNftPackages(tId);
 			setNft(details);
 		}

@@ -1,13 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import Moment from 'react-moment';
 
-import AppHeader from '../layouts/AppHeader';
-import DataService from '../../services/db';
+import AppHeader from '../../layouts/AppHeader';
+import DataService from '../../../services/db';
+import { AppContext } from '../../../contexts/AppContext';
 
 export default function Main(props) {
-	const hash = props.match.params.hash;
+	const { hash, tokenId } = props.match.params;
+	const { getNftPackages } = useContext(AppContext);
 
 	const [tx, setTx] = useState({});
+	const [nft, setNft] = useState(null);
+	const [amount, setAmount] = useState(0);
+	useEffect(() => {
+		async function getDetails() {
+			const details = await getNftPackages(tokenId);
+			const {
+				metadata: { fiatValue }
+			} = details;
+			setAmount(fiatValue);
+			setNft(details);
+		}
+		getDetails();
+	}, [tokenId, getNftPackages]);
 
 	useEffect(() => {
 		(async () => {
@@ -27,6 +42,15 @@ export default function Main(props) {
 					<div className="listed-detail mt-3">
 						<div className="icon-wrapper">{tx.icon}</div>
 						<h3 className="text-center mt-2">{tx.name}</h3>
+					</div>
+					<div className="text-center">
+						<img
+							src={`https://ipfs.rumsan.com/ipfs//${nft?.metadata.packageImgURI}`}
+							width="100"
+							height="100"
+							alt="asset"
+							className="image"
+						/>
 					</div>
 
 					<ul className="listview flush transparent simple-listview no-space mt-3">
@@ -59,7 +83,7 @@ export default function Main(props) {
 						</li>
 						<li>
 							<strong>Amount</strong>
-							<h3 className="m-0">{tx.amount}</h3>
+							<h3 className="m-0">{amount}</h3>
 						</li>
 					</ul>
 				</div>

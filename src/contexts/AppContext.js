@@ -54,9 +54,9 @@ export const AppContextProvider = ({ children }) => {
 		dispatch({ type: APP_ACTIONS.SET_BALANCE, data: tokenBalance });
 	}
 
-	function toggleFooter(hideFooter) {
+	const toggleFooter = useCallback(hideFooter => {
 		dispatch({ type: APP_ACTIONS.TOGGLE_FOOTER, data: hideFooter });
-	}
+	}, []);
 
 	function setHasWallet(hasWallet) {
 		dispatch({ type: APP_ACTIONS.SET_HASWALLET, data: hasWallet });
