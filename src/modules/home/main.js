@@ -1,15 +1,12 @@
 import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { useHistory, Redirect, Link } from 'react-router-dom';
-
 import * as Service from '../../services';
 import { AppContext } from '../../contexts/AppContext';
 import { RegisterBeneficiaryContext } from '../../contexts/registerBeneficiaryContext';
-
 import TransactionList from '../transactions/list';
 import DataService from '../../services/db';
 import { RahatAdminService } from '../../services/chain';
 import { getAuthSignature } from '../../utils';
-import { Spinner } from 'react-bootstrap';
 
 export default function Main() {
 	const history = useHistory();
@@ -20,7 +17,6 @@ export default function Main() {
 	const [erc1155, setErc1155] = useState([]);
 	const [project, setProject] = useState(null);
 	const [recentTx, setRecentTx] = useState(null);
-	const [isLoading, setLoading] = useState(true);
 
 	const checkRecentTnx = useCallback(async () => {
 		let txs = await DataService.listTx();
@@ -90,15 +86,13 @@ export default function Main() {
 				const { projects, agencies, signature } = await checkMobilizerStatus();
 				await checkAgencyApproval(agencies);
 				await checkProject(projects, signature);
-				setLoading(false);
 				resetBeneficiary();
 			}
-
 			return () => {
 				isMounted = false;
 			};
 		} catch (err) {
-			setLoading(false);
+			console.error({ err });
 		}
 	}, [
 		wallet,
@@ -133,26 +127,30 @@ export default function Main() {
 			<div id="appCapsule">
 				<div className="section wallet-card-section pt-1">
 					<div className="wallet-card">
-						{isLoading && <Spinner animation="border" />}
+						{/* {isLoading && <Spinner animation="border" />}
 						{!isLoading && (
-							<>
-								<div className="mobilizer-header">{project ? project.name : '...'}</div>
-								<div className="balance mt-2">
-									<div className="left">
-										<h2 className="total">{erc20 ? erc20 : 0}</h2>
-										<span className="mobilizer-title">Project Token</span>
-									</div>
-									<div className="right">
-										<h2 className="total">{erc1155.grandTotal ? erc1155.grandTotal : 0}</h2>
-										<span className="mobilizer-title">Project Packages</span>
-									</div>
-								</div>
-								<div className="mt-1">
-									<h2 className="total">{beneficiaryCount}</h2>
-									<span className="mobilizer-title">Beneficiaries</span>
-								</div>
-							</>
-						)}
+							<> */}
+						<div className="mobilizer-header">{project ? project.name : '...'}</div>
+						<div className="balance mt-2">
+							<div className="left">
+								{erc20 && <h2 className="total">{erc20}</h2>}
+								{!erc20 && <h2 className="total loading_text"> 0</h2>}
+								<span className="mobilizer-title">Project Token</span>
+							</div>
+							<div className="right">
+								{erc1155?.grandTotal && <h2 className="total">{erc1155.grandTotal}</h2>}
+								{!erc1155?.grandTotal && <h2 className="total loading_text">{0}</h2>}
+
+								<span className="mobilizer-title">Project Packages</span>
+							</div>
+						</div>
+						<div className="mt-1">
+							<h2 className="total">{beneficiaryCount}</h2>
+
+							<span className="mobilizer-title">Beneficiaries</span>
+						</div>
+						{/* </>
+						)} */}
 					</div>
 				</div>
 
