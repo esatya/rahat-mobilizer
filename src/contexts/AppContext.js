@@ -27,6 +27,7 @@ export const AppContextProvider = ({ children }) => {
 	const [state, dispatch] = useReducer(appReduce, initialState);
 
 	const initApp = useCallback(async () => {
+		console.log('Init app running');
 		DataService.addDefaultAsset(DEFAULT_TOKEN.SYMBOL, DEFAULT_TOKEN.NAME);
 		//TODO: in future check version and add action if the version is different.
 		DataService.save('version', APP_CONSTANTS.VERSION);

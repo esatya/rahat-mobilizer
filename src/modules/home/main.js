@@ -117,7 +117,6 @@ export default function Main() {
 	if (!hasWallet) {
 		return <Redirect to="/setup" />;
 	}
-
 	if (agency && !agency.isApproved) {
 		return <Redirect to="/setup/pending" />;
 	}
