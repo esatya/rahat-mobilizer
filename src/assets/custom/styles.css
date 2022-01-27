@@ -7,6 +7,10 @@
 	padding: 5px;
 }
 
+.def_background {
+	background: #ededf5;
+}
+
 .selfie {
 	border-radius: 50% !important;
 	width: 150px;

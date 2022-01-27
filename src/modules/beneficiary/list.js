@@ -23,28 +23,10 @@ const BenList = ({ limit, beneficiaries = [] }) => {
 	const listBeneficiearies = useCallback(async () => {
 		let bens = beneficiaries.length ? beneficiaries : await DataService.listBeneficiaries();
 		if (limit) bens = bens.slice(0, limit);
-		// for (let b of bens) {
-
-		// 		b.name = `Charge to ${t.from}`;
-		// 		t.icon = (
-		// 			<div className="icon-box bg-success">
-		// 				<GiReceiveMoney className="ion-icon" />
-		// 			</div>
-		// 		);
-
-		// }
 		setBen(bens);
 	}, [beneficiaries, limit]);
 
-	useEffect(() => {
-		let isMounted = true;
-		if (isMounted) {
-			listBeneficiearies();
-		}
-		return () => {
-			isMounted = false;
-		};
-	}, [listBeneficiearies]);
+	useEffect(listBeneficiearies, [listBeneficiearies]);
 
 	return (
 		<>
