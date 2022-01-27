@@ -26,7 +26,7 @@ const TxList = ({ limit, transactions = [] }) => {
 					);
 				}
 				if (t.type === TRANSACTION_TYPES.NFT) {
-					t.name = `Token sent to:`;
+					t.name = `Package sent to:`;
 					t.phone = `${t.to}`;
 					t.icon = (
 						<div className="icon-box bg-success">

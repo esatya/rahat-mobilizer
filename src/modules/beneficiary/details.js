@@ -2,13 +2,14 @@ import React, { useEffect, useState, useContext, useCallback } from 'react';
 import Moment from 'react-moment';
 import { Button } from 'react-bootstrap';
 import { GiReceiveMoney } from 'react-icons/gi';
-
 import AppHeader from '../layouts/AppHeader';
 import DataService from '../../services/db';
 import { RahatService } from '../../services/chain';
 import { useHistory } from 'react-router-dom';
 import { RegisterBeneficiaryContext } from '../../contexts/registerBeneficiaryContext';
 import { AppContext } from '../../contexts/AppContext';
+import { getAuthSignature } from '../../utils';
+import * as Service from '../../services';
 
 export default function Main(props) {
 	const history = useHistory();
@@ -18,6 +19,7 @@ export default function Main(props) {
 
 	const [beneficiary, setBeneficiary] = useState({});
 	const [remainingToken, setRemainingToken] = useState('loading...');
+	const [remainingPackageValue, setRemainingPackageValue] = useState('loading...');
 
 	const handleTokenIssue = async e => {
 		e.preventDefault();
@@ -28,6 +30,19 @@ export default function Main(props) {
 		//return addBeneficiary(signature);
 	};
 
+	const getBeneficiaryPackageBalance = useCallback(
+		async data => {
+			const signature = await getAuthSignature(wallet);
+			if (!data) return null;
+			if (data) {
+				const tokenIds = data.tokenIds.map(t => t.toNumber());
+				const tokenQtys = data.balances.map(b => b.toNumber());
+				return Service.calculateTotalPackageBalance({ tokenIds, tokenQtys }, signature);
+			}
+		},
+		[wallet]
+	);
+
 	const updateBeneficiaryDetails = useCallback(async () => {
 		const b = await DataService.getBeneficiary(phone);
 		b.icon = (
@@ -37,11 +52,15 @@ export default function Main(props) {
 		);
 
 		setBeneficiary(b);
+		const signature = await getAuthSignature(wallet);
 		const agency = await DataService.getDefaultAgency();
 		const rahat = RahatService(agency.address, wallet);
-		const remainingToken = await rahat.getBeneficiaryToken(phone);
-		setRemainingToken(remainingToken);
-	}, [phone, wallet]);
+		const tokenRemaining = await rahat.getBeneficiaryToken(phone);
+		const packageRemaining = await rahat.getTotalERC1155Balance(phone);
+		setRemainingToken(tokenRemaining);
+		const packageRemainingValue = await getBeneficiaryPackageBalance(packageRemaining, signature);
+		setRemainingPackageValue(packageRemainingValue.grandTotal);
+	}, [phone, wallet, getBeneficiaryPackageBalance]);
 
 	useEffect(() => {
 		updateBeneficiaryDetails();
@@ -82,6 +101,10 @@ export default function Main(props) {
 						<li>
 							<strong>Token Issued</strong>
 							<h3 className="m-0">{remainingToken}</h3>
+						</li>
+						<li>
+							<strong>Package Issued</strong>
+							<h3 className="m-0">{remainingPackageValue}</h3>
 						</li>
 					</ul>
 				</div>

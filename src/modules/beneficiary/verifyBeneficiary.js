@@ -58,12 +58,12 @@ const VerifyBeneficiary = () => {
 							<div className="card-body">
 								<div className="form-group basic">
 									<div className="input-wrapper">
-										<label className="label">Phone</label>
+										<label className="label">Phone/ID</label>
 										<Form.Control
 											type="number"
 											className="form-control"
 											name="phone"
-											placeholder="Enter mobile number"
+											placeholder="Enter mobile number or ID"
 											value={phone ? phone : ''}
 											onChange={updateBeneficiaryData}
 											onKeyDown={e => {
