@@ -12,7 +12,6 @@ import { Link } from 'react-router-dom';
 import { IoChevronBackOutline, IoHomeOutline } from 'react-icons/io5';
 import { AppContext } from '../../contexts/AppContext';
 import { RegisterBeneficiaryContext } from '../../contexts/registerBeneficiaryContext';
-import * as Service from '../../services';
 import { getAuthSignature } from '../../utils';
 import DataService from '../../services/db';
 
@@ -29,7 +28,7 @@ export default function Main() {
 	const [previewImage, setPreviewImage] = useState('');
 	const [showPageLoader, setShowPageLoader] = useState(true);
 	const webcamRef = React.useRef(null);
-	const { addBeneficiary, setBeneficiaryIdImage, name, phone, address, govt_id, photo, govt_id_image } =
+	const { addBeneficiary, setBeneficiaryIdImage, name, phone, address, photo, govt_id_image } =
 		useContext(RegisterBeneficiaryContext);
 	const { wallet } = useContext(AppContext);
 

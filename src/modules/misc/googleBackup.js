@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { gapi } from 'gapi-script';
 import { IoChevronBackOutline, IoHomeOutline, IoCloseCircle } from 'react-icons/io5';
@@ -19,20 +19,23 @@ const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 export default function GoogleBackup() {
 	const history = useHistory();
 
-	const Actions = [
-		{
-			hash: '#choose-account',
-			label: 'Please choose Google account. Please click the switch account button to change account.'
-		},
-		{
-			hash: '#process',
-			label: 'Your is being backed up in Google Drive.'
-		},
-		{
-			hash: '#enter-passphrase',
-			label: 'Please enter backup passphrase. It must be at least 10 characters long with one number and alphabet. Button will appear after you type 12 characters. <br />PLEASE NOTE: THIS IS DIFFERENT THAN YOUR 6-DIGIT PASSCODE.'
-		}
-	];
+	const Actions = useCallback(
+		() => [
+			{
+				hash: '#choose-account',
+				label: 'Please choose Google account. Please click the switch account button to change account.'
+			},
+			{
+				hash: '#process',
+				label: 'Your is being backed up in Google Drive.'
+			},
+			{
+				hash: '#enter-passphrase',
+				label: 'Please enter backup passphrase. It must be at least 10 characters long with one number and alphabet. Button will appear after you type 12 characters. <br />PLEASE NOTE: THIS IS DIFFERENT THAN YOUR 6-DIGIT PASSCODE.'
+			}
+		],
+		[]
+	);
 
 	const { wallet } = useContext(AppContext);
 	const passphraseRef = useRef(null);
@@ -49,12 +52,15 @@ export default function GoogleBackup() {
 
 	const [currentAction, setCurrentAction] = useState({});
 
-	const changeAction = hash => {
-		setErrorMsg(null);
-		let selectedAction = Actions.find(a => a.hash === hash);
-		if (!selectedAction) setCurrentAction(Actions.find(a => a.hash === '#choose-account'));
-		else setCurrentAction(selectedAction);
-	};
+	const changeAction = useCallback(
+		hash => {
+			setErrorMsg(null);
+			let selectedAction = Actions().find(a => a.hash === hash);
+			if (!selectedAction) setCurrentAction(Actions().find(a => a.hash === '#choose-account'));
+			else setCurrentAction(selectedAction);
+		},
+		[Actions]
+	);
 
 	const loadGapiClient = () => {
 		history.listen(location => {
@@ -63,8 +69,21 @@ export default function GoogleBackup() {
 		changeAction(history.location.hash);
 		gapi.load('client:auth2', initClient);
 	};
+	const updateSigninStatus = useCallback(isSignedIn => {
+		let user = null;
+		if (isSignedIn) {
+			user = gapi.auth2.getAuthInstance().currentUser.get();
+			const profile = user.getBasicProfile();
+			setGUser({
+				id: profile.getId(),
+				name: profile.getName(),
+				email: profile.getEmail(),
+				image: profile.getImageUrl()
+			});
+		} else user = handleUserSignIn();
+	}, []);
 
-	const initClient = () => {
+	const initClient = useCallback(() => {
 		gapi.client
 			.init({
 				clientId: CLIENT_ID,
@@ -77,21 +96,7 @@ export default function GoogleBackup() {
 				gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
 				updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
 			});
-	};
-
-	const updateSigninStatus = isSignedIn => {
-		let user = null;
-		if (isSignedIn) {
-			user = gapi.auth2.getAuthInstance().currentUser.get();
-			const profile = user.getBasicProfile();
-			setGUser({
-				id: profile.getId(),
-				name: profile.getName(),
-				email: profile.getEmail(),
-				image: profile.getImageUrl()
-			});
-		} else user = handleUserSignIn();
-	};
+	}, [updateSigninStatus]);
 
 	const handleUserSignIn = () => {
 		return gapi.auth2.getAuthInstance().signIn();
@@ -209,7 +214,7 @@ export default function GoogleBackup() {
 		history.goBack();
 	};
 
-	useEffect(loadGapiClient, []);
+	useEffect(loadGapiClient, [changeAction, history, initClient]);
 
 	return (
 		<div id="appCapsule">
