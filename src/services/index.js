@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import API from '../constants/api';
+import { RahatService } from './chain';
 
 export async function registerToAgency(payload) {
 	try {
@@ -75,22 +76,7 @@ export async function registerBeneficiary(signature, payload) {
 	payload = Object.entries(payload).reduce((a, [k, v]) => (v == null ? a : ((a[k] = v), a)), {});
 	if (!payload.wallet_address) payload.wallet_address = payload.phone;
 	if (payload.token) delete payload.token;
-	// try {
-	// 	const res = await fetch(`${API.BENEFICIARIES}`, {
-	// 		method: 'POST',
-	// 		headers: {
-	// 			auth_signature: signature
-	// 		},
-	// 		body: payload
-	// 	});
-	// 	console.log(res);
-	// 	const d = await res.json();
-	// 	console.log({ d });
-	// 	return { res: res.data };
-	// } catch (e) {
-	// 	console.log(e);
-	// 	throw Error(e);
-	// }
+
 	try {
 		const data = await axios({
 			url: API.BENEFICIARIES,
@@ -144,4 +130,14 @@ export async function calculateTotalPackageBalance(payload, signature) {
 		headers: { auth_signature: signature }
 	});
 	return res.data;
+}
+
+export async function getBeneficiaryPackageBalance(phone, signature) {
+	const data = await RahatService.getTotalERC1155Balance(phone);
+	if (!data) return null;
+	if (data) {
+		const tokenIds = data.tokenIds.map(t => t.toNumber());
+		const tokenQtys = data.balances.map(b => b.toNumber());
+		return calculateTotalPackageBalance({ tokenIds, tokenQtys }, signature);
+	}
 }

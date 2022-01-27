@@ -31,7 +31,7 @@ export default function ChargePackage(props) {
 			const rahat = RahatService(agency.address, wallet);
 			const amount = amountToIssue;
 
-			const receipt = await rahat.issueERC1155ToBeneficiary(projectId, 2345, [1], [tokenId]);
+			const receipt = await rahat.issueERC1155ToBeneficiary(projectId, phone, [1], [tokenId]);
 			const tx = {
 				tokenId,
 				hash: receipt.hash,
