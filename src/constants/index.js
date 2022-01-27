@@ -16,7 +16,7 @@ module.exports = {
 	},
 	DB: {
 		NAME: 'db_wallet',
-		VERSION: 2.1,
+		VERSION: 2.2,
 		TABLES: {
 			DATA: 'tbl_data',
 			ASSETS: 'tbl_assets',
