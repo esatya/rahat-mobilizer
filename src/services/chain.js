@@ -77,8 +77,6 @@ const RahatService = (agencyAddress, wallet) => {
 		},
 		async issueERC20ToBeneficiary(projectId, phone, amount) {
 			const contract = await this.getContract();
-			const mobilizerRole = await contract.MOBILIZER_ROLE();
-			const hasRole = await contract.hasRole(mobilizerRole, '0x9abfd0296a24d81355d83f94c09d40c4f3b64374');
 			return contract.issueERC20ToBeneficiary(projectId, Number(phone), Number(amount));
 		}
 	};

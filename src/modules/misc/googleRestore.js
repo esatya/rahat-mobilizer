@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { Link, useHistory, Redirect } from 'react-router-dom';
 import { gapi } from 'gapi-script';
 import { IoChevronBackOutline, IoHomeOutline, IoCloseCircle } from 'react-icons/io5';
@@ -22,20 +22,23 @@ export default function GoogleRestore() {
 	const history = useHistory();
 	let currentWallet = null;
 
-	const Actions = [
-		{
-			hash: '#choose-account',
-			label: 'Please choose Google account. Please click the switch account button to change account.'
-		},
-		{
-			hash: '#choose-wallet',
-			label: 'Please select the wallet you wish to restore.'
-		},
-		{
-			hash: '#enter-passphrase',
-			label: 'Please enter backup passphrase.'
-		}
-	];
+	const Actions = useCallback(
+		() => [
+			{
+				hash: '#choose-account',
+				label: 'Please choose Google account. Please click the switch account button to change account.'
+			},
+			{
+				hash: '#choose-wallet',
+				label: 'Please select the wallet you wish to restore.'
+			},
+			{
+				hash: '#enter-passphrase',
+				label: 'Please enter backup passphrase.'
+			}
+		],
+		[]
+	);
 
 	const { setWallet } = useContext(AppContext);
 	const [loading, setLoading] = useState(null);
@@ -52,12 +55,15 @@ export default function GoogleRestore() {
 
 	const [currentAction, setCurrentAction] = useState({});
 
-	const changeAction = hash => {
-		setErrorMsg(null);
-		let selectedAction = Actions.find(a => a.hash === hash);
-		if (!selectedAction) setCurrentAction(Actions.find(a => a.hash === '#choose-account'));
-		else setCurrentAction(selectedAction);
-	};
+	const changeAction = useCallback(
+		hash => {
+			setErrorMsg(null);
+			let selectedAction = Actions().find(a => a.hash === hash);
+			if (!selectedAction) setCurrentAction(Actions().find(a => a.hash === '#choose-account'));
+			else setCurrentAction(selectedAction);
+		},
+		[Actions]
+	);
 
 	const loadGapiClient = () => {
 		history.listen(location => {
@@ -67,7 +73,21 @@ export default function GoogleRestore() {
 		gapi.load('client:auth2', initClient);
 	};
 
-	const initClient = () => {
+	const updateSigninStatus = useCallback(isSignedIn => {
+		let user = null;
+		if (isSignedIn) {
+			user = gapi.auth2.getAuthInstance().currentUser.get();
+			const profile = user.getBasicProfile();
+			setGUser({
+				id: profile.getId(),
+				name: profile.getName(),
+				email: profile.getEmail(),
+				image: profile.getImageUrl()
+			});
+		} else user = handleUserSignIn();
+	}, []);
+
+	const initClient = useCallback(() => {
 		gapi.client
 			.init({
 				clientId: CLIENT_ID,
@@ -90,21 +110,7 @@ export default function GoogleRestore() {
 					history.push('/');
 				});
 			});
-	};
-
-	const updateSigninStatus = isSignedIn => {
-		let user = null;
-		if (isSignedIn) {
-			user = gapi.auth2.getAuthInstance().currentUser.get();
-			const profile = user.getBasicProfile();
-			setGUser({
-				id: profile.getId(),
-				name: profile.getName(),
-				email: profile.getEmail(),
-				image: profile.getImageUrl()
-			});
-		} else user = handleUserSignIn();
-	};
+	}, [history, updateSigninStatus]);
 
 	const handleUserSignIn = () => {
 		return gapi.auth2.getAuthInstance().signIn();
@@ -194,7 +200,7 @@ export default function GoogleRestore() {
 		history.goBack();
 	};
 
-	useEffect(loadGapiClient, []);
+	useEffect(loadGapiClient, [changeAction, history, initClient]);
 
 	return (
 		<div id="appCapsule">
