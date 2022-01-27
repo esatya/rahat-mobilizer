@@ -52,7 +52,6 @@ export default function Main(props) {
 						return { ...details.metadata, name: details.name };
 					})
 				);
-				console.log({ packagList });
 				setPackages(packagList);
 			} catch (err) {
 				console.log({ err });

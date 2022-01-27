@@ -1,15 +1,12 @@
 import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { useHistory, Redirect, Link } from 'react-router-dom';
-
 import * as Service from '../../services';
 import { AppContext } from '../../contexts/AppContext';
 import { RegisterBeneficiaryContext } from '../../contexts/registerBeneficiaryContext';
-
 import TransactionList from '../transactions/list';
 import DataService from '../../services/db';
 import { RahatAdminService } from '../../services/chain';
 import { getAuthSignature } from '../../utils';
-import { Spinner } from 'react-bootstrap';
 
 export default function Main() {
 	const history = useHistory();
