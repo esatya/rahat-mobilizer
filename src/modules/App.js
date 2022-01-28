@@ -14,7 +14,7 @@ import GoogleRestore from '../modules/misc/googleRestore';
 import CreateWallet from '../modules/wallet/create';
 import ResetWallet from '../modules/misc/reset';
 import RestoreFromMnemonic from '../modules/wallet/restoreMnemonic';
-
+import GoogleBackup from '../modules/misc/googleBackup';
 import { AppContextProvider } from '../contexts/AppContext';
 import { ActionSheetContextProvider } from '../contexts/ActionSheetContext';
 import { RegisterBeneficiaryContextProvider } from '../contexts/registerBeneficiaryContext';
@@ -38,6 +38,7 @@ function App() {
 								<Route exact path="/wallet/backup" component={BackupWallet} />
 								<Route exact path="/mnemonic/restore" component={RestoreFromMnemonic} />
 								<Route exact path="/reset" component={ResetWallet} />
+								<Route exact path="/google/backup" component={GoogleBackup} />
 								<Route path="/" component={Home} />
 								<Route path="*" component={Home} />
 							</Switch>

@@ -3,14 +3,13 @@ import { Link, useHistory } from 'react-router-dom';
 import { gapi } from 'gapi-script';
 import { IoChevronBackOutline, IoHomeOutline, IoCloseCircle } from 'react-icons/io5';
 import EthCrypto from 'eth-crypto';
-
 import { BACKUP } from '../../constants';
 import { AppContext } from '../../contexts/AppContext';
 import DataService from '../../services/db';
 import UserImg from '../../assets/images/user.svg';
-
 import { GFile, GFolder } from '../../utils/google';
 import Swal from 'sweetalert2';
+import Wallet from '../../utils/blockchain/wallet';
 
 const DISCOVERY_DOCS = ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'];
 const GOOGLE_REDIRECT_URL = process.env.REACT_APP_GOOGLE_REDIRECT_URL;
@@ -37,7 +36,9 @@ export default function GoogleBackup() {
 		[]
 	);
 
-	const { wallet, toggleFooter, hideFooter } = useContext(AppContext);
+	const { toggleFooter, hideFooter } = useContext(AppContext);
+	const [wallet, setWallet] = useState(null);
+	const [isFetchingWallet, setFetchingWallet] = useState(true);
 	const passphraseRef = useRef(null);
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [gUser, setGUser] = useState({
@@ -119,6 +120,15 @@ export default function GoogleBackup() {
 		setPassphrase(value);
 	};
 
+	const getWallet = useCallback(async () => {
+		const profile = await DataService.get('profile');
+		const encryptedWallet = await DataService.getWallet();
+		const wlt = await Wallet.loadFromJson(profile.phone, encryptedWallet);
+
+		setWallet(wlt);
+		setFetchingWallet(false);
+	}, []);
+
 	const prepareBackupData = async password => {
 		let backupData = { name: 'rumsan-wallet', type: 'ethersjs' };
 		let data = await DataService.list();
@@ -141,10 +151,8 @@ export default function GoogleBackup() {
 		setErrorMsg(null);
 		try {
 			history.push('#process');
-
 			const gFolder = new GFolder(gapi);
 			const gFile = new GFile(gapi);
-
 			setProgress({ ...progress, percent: 5, message: 'Preparing data to backup...' });
 			let backupData = await prepareBackupData(passphrase);
 			//encrypt and store backup passphrase
@@ -167,6 +175,8 @@ export default function GoogleBackup() {
 			});
 			await DataService.save('backup_googleFile', newFile.id);
 			await DataService.save('backup_wallet', backupData.wallet);
+			await DataService.saveHasBackedUp(true);
+
 			setProgress({ ...progress, percent: 80, message: 'Cleaning up and finalizing...' });
 			if (file.exists) await gFile.deleteFile(file.firstFile.id);
 			setProgress({
@@ -175,10 +185,17 @@ export default function GoogleBackup() {
 				showHome: true,
 				message: 'Wallet backed up successfully. Backup file named ' + wallet.address + ' has been created.'
 			});
+
+			Swal.fire({
+				icon: 'success',
+				title: 'Successful',
+				text: 'Successfully backed up wallet in your google drive .'
+			}).then(() => window.location.replace('/'));
 		} catch (e) {
-			console.log(e.message);
 			setPassphrase('');
-			passphraseRef.current.focus();
+			passphraseRef.current?.focus();
+			await DataService.saveHasBackedUp(false);
+
 			setErrorMsg('Backup passphrase is incorrect. Please try again.');
 		}
 	};
@@ -194,7 +211,7 @@ export default function GoogleBackup() {
 			return;
 		}
 
-		const isConfirm = await Swal.fire({
+		const { isConfirmed } = await Swal.fire({
 			title: 'Important',
 			icon: 'warning',
 			html: `You MUST write this passphrase and store it safely. It is used to encrypt your wallet. If you forget it there is no way to retrieve your wallet. It will be gone forever. <br /> Your passphrase is: ${passphrase}`,
@@ -204,7 +221,7 @@ export default function GoogleBackup() {
 			confirmButtonText: 'Yes, I have written it down',
 			cancelButtonText: 'No, I want choose another'
 		});
-		if (isConfirm.value) {
+		if (isConfirmed) {
 			backupWallet();
 		}
 	};
@@ -215,7 +232,7 @@ export default function GoogleBackup() {
 	};
 
 	useEffect(loadGapiClient, [changeAction, history, initClient]);
-
+	useEffect(getWallet, [getWallet]);
 	useEffect(() => {
 		toggleFooter(true);
 
@@ -272,7 +289,11 @@ export default function GoogleBackup() {
 						</div>
 						{gUser.id && (
 							<div className="text-center mt-3">
-								<button className="btn btn-primary" onClick={e => history.push('#enter-passphrase')}>
+								<button
+									className="btn btn-primary"
+									onClick={e => history.push('#enter-passphrase')}
+									disabled={isFetchingWallet}
+								>
 									Continue with this Google account
 								</button>
 							</div>
