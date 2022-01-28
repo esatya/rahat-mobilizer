@@ -36,7 +36,7 @@ export default function GoogleBackup() {
 		[]
 	);
 
-	const { toggleFooter, hideFooter } = useContext(AppContext);
+	const { toggleFooter } = useContext(AppContext);
 	const [wallet, setWallet] = useState(null);
 	const [isFetchingWallet, setFetchingWallet] = useState(true);
 	const passphraseRef = useRef(null);
