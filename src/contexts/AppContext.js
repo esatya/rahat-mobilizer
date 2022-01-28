@@ -61,7 +61,6 @@ export const AppContextProvider = ({ children }) => {
 
 		dispatch({ type: APP_ACTIONS.INIT_APP, data });
 		toggleLoading(false);
-		return true;
 	}, [toggleLoading, initialize_index_db]);
 
 	async function setAgency(agency) {

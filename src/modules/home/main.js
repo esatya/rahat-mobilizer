@@ -21,13 +21,12 @@ export default function Main() {
 		toggleFooter,
 		contextLoading
 	} = useContext(AppContext);
-	console.log({ hasBackedUp });
+
 	const { resetBeneficiary } = useContext(RegisterBeneficiaryContext);
 	const [erc20, setErc20] = useState();
 	const [erc1155, setErc1155] = useState([]);
 	const [project, setProject] = useState(null);
 	const [recentTx, setRecentTx] = useState(null);
-	const [showPageLoader, setPageLoader] = useState(true);
 	const checkRecentTnx = useCallback(async () => {
 		let txs = await DataService.listTx();
 		if (txs && Array.isArray(txs)) {
@@ -52,6 +51,7 @@ export default function Main() {
 		async (agencies = []) => {
 			if (!agencies.length) return history.push('/setup/idcard');
 			let status = agencies[0].status;
+			console.log({ status });
 			if (status !== 'active') {
 				let dagency = Object.assign(agency, { isApproved: false });
 				await DataService.updateAgency(dagency.address, dagency);
@@ -90,21 +90,19 @@ export default function Main() {
 	const checkMobilizerStatus = useCallback(async () => {
 		const signature = await getAuthSignature(wallet);
 		const { projects, agencies } = await Service.getMobilizerByWallet(wallet.address);
+		console.log({ agencies });
 		return { projects, agencies, signature };
 	}, [wallet]);
 
 	const getInfoState = useCallback(async () => {
 		try {
-			let isMounted = true;
-			if (isMounted) {
-				if (!wallet) return;
-				if (hideFooter) toggleFooter(false);
-				await checkRecentTnx();
-				const { projects, agencies, signature } = await checkMobilizerStatus();
-				await checkAgencyApproval(agencies);
-				await checkProject(projects, signature);
-				resetBeneficiary();
-			}
+			if (!wallet) return;
+			if (hideFooter) toggleFooter(false);
+			await checkRecentTnx();
+			const { projects, agencies, signature } = await checkMobilizerStatus();
+			await checkAgencyApproval(agencies);
+			await checkProject(projects, signature);
+			resetBeneficiary();
 		} catch (err) {
 			console.error({ err });
 		}
@@ -121,7 +119,6 @@ export default function Main() {
 
 	useEffect(() => {
 		getInfoState();
-
 		return () => {
 			resetPage();
 		};

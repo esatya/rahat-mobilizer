@@ -8,7 +8,6 @@ const AppReducer = (state, action) => {
 				contextLoading: action.data
 			};
 		case APP_ACTIONS.INIT_APP:
-			console.log('Init app reducer', action.data);
 			return {
 				...state,
 				address: action.data.address,

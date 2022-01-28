@@ -11,12 +11,7 @@ import * as Service from '../../services';
 
 export default function LockedFooter() {
 	let history = useHistory();
-	const {
-		setWallet,
-		// setProject,
-		setTotalBeneficiaries,
-		agency
-	} = useContext(AppContext);
+	const { setWallet, setTotalBeneficiaries, agency } = useContext(AppContext);
 	const [loadingModal, setLoadingModal] = useState(false);
 
 	const checkProjectBeneficiaries = useCallback(async () => {
@@ -30,25 +25,17 @@ export default function LockedFooter() {
 			if (!wallet) return;
 
 			const data = await Service.getMobilizerByWallet(wallet.address);
-			// let defaultAgency = await DataService.getDefaultAgency();
+			console.log({ data });
 			if (data && data.projects.length) {
 				//	setProject({ name: data.projects[0].project.name, id: data.projects[0].project.id });
 				await checkProjectBeneficiaries(wallet, data.projects[0].project.id);
-				// RahatService(defaultAgency.address, wallet)
-				// 	.getProjectBalance(data.projects[0].project.id)
-				// 	.then(bal => {
-				// 		setProject({
-				// 			name: data.projects[0].project.name,
-				// 			id: data.projects[0].project.id,
-				// 			balance: bal
-				// 		});
-				// 	});
 			}
 			if (!data.agencies.length) return history.push('/setup/idcard');
 			let status = data.agencies[0].status;
 
 			if (status !== 'active') {
 				let dagency = Object.assign(agency, { isApproved: false });
+				console.log({ dagency });
 				await DataService.updateAgency(dagency.address, dagency);
 				history.push('/setup/pending');
 			}
@@ -64,9 +51,7 @@ export default function LockedFooter() {
 	const handleUnlockClick = useCallback(async () => {
 		setLoadingModal(true);
 		let profile = await DataService.get('profile');
-		// const wallet = await Wallet.loadFromPrivateKey(
-		// 	'0x387e176cf5a5016a38f552abc0c3370a733a4f232061957d76d8f5e9a8b0b729'
-		// );
+
 		if (profile) {
 			let encryptedWallet = await DataService.getWallet();
 			const wallet = await Wallet.loadFromJson(profile.phone, encryptedWallet);
