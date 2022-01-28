@@ -37,7 +37,7 @@ export default function GoogleBackup() {
 		[]
 	);
 
-	const { wallet } = useContext(AppContext);
+	const { wallet, toggleFooter, hideFooter } = useContext(AppContext);
 	const passphraseRef = useRef(null);
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [gUser, setGUser] = useState({
@@ -215,6 +215,14 @@ export default function GoogleBackup() {
 	};
 
 	useEffect(loadGapiClient, [changeAction, history, initClient]);
+
+	useEffect(() => {
+		toggleFooter(true);
+
+		return () => {
+			toggleFooter(false);
+		};
+	}, [toggleFooter]);
 
 	return (
 		<div id="appCapsule">

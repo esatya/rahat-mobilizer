@@ -6,7 +6,7 @@ import LockedFooter from './LockedFooter';
 import UnlockedFooter from './UnlockedFooter';
 
 export default function Footer() {
-	const { hasWallet, wallet } = useContext(AppContext);
+	const { hasWallet, wallet, contextLoading, hasBackedUp } = useContext(AppContext);
 
 	// useEffect(() => {
 	// 	var idle = new idleJs({
@@ -23,6 +23,7 @@ export default function Footer() {
 	// 	});
 	// 	idle.start();
 	// }, [setWallet]);
+	if (contextLoading || !hasBackedUp) return <></>;
 
 	return (
 		<>

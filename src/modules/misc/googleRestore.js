@@ -186,12 +186,19 @@ export default function GoogleRestore() {
 	const showInfo = msg => {
 		if (loading) return <div className="text-center p3">Loading...</div>;
 		return (
-			<div className="text-center p-3">
-				{/* {isLoading && (
+			<>
+				<div className="text-center p-3">
+					{/* {isLoading && (
 					<span className="spinner-border spinner-border-sm mr-05" role="status" aria-hidden="true"></span>
 				)} */}
-				{msg}
-			</div>
+					{msg}
+				</div>
+				<div className="text-center">
+					<Link to="/" className="btn btn-primary ml-1 mb-2 ">
+						Go Back
+					</Link>
+				</div>
+			</>
 		);
 	};
 

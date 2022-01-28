@@ -10,14 +10,24 @@ import { getAuthSignature } from '../../utils';
 
 export default function Main() {
 	const history = useHistory();
-	const { hasWallet, wallet, agency, beneficiaryCount, setTotalBeneficiaries, hideFooter, toggleFooter } =
-		useContext(AppContext);
+	const {
+		hasWallet,
+		hasBackedUp,
+		wallet,
+		agency,
+		beneficiaryCount,
+		setTotalBeneficiaries,
+		hideFooter,
+		toggleFooter,
+		contextLoading
+	} = useContext(AppContext);
+	console.log({ hasBackedUp });
 	const { resetBeneficiary } = useContext(RegisterBeneficiaryContext);
 	const [erc20, setErc20] = useState();
 	const [erc1155, setErc1155] = useState([]);
 	const [project, setProject] = useState(null);
 	const [recentTx, setRecentTx] = useState(null);
-
+	const [showPageLoader, setPageLoader] = useState(true);
 	const checkRecentTnx = useCallback(async () => {
 		let txs = await DataService.listTx();
 		if (txs && Array.isArray(txs)) {
@@ -25,6 +35,13 @@ export default function Main() {
 			setRecentTx(arr);
 		}
 	}, []);
+
+	const resetPage = () => {
+		setErc20();
+		setErc1155([]);
+		setProject(null);
+		setRecentTx(null);
+	};
 
 	const checkProjectBeneficiaries = useCallback(async () => {
 		const totalBen = await DataService.listBeneficiaries();
@@ -88,9 +105,6 @@ export default function Main() {
 				await checkProject(projects, signature);
 				resetBeneficiary();
 			}
-			return () => {
-				isMounted = false;
-			};
 		} catch (err) {
 			console.error({ err });
 		}
@@ -106,16 +120,27 @@ export default function Main() {
 	]);
 
 	useEffect(() => {
-		let isMounted = true;
-		if (isMounted) getInfoState();
+		getInfoState();
 
 		return () => {
-			isMounted = false;
+			resetPage();
 		};
 	}, [getInfoState]);
 
+	if (contextLoading) {
+		return (
+			<div id="loader">
+				<img src="/assets/img/brand/icon-white-128.png" alt="icon" className="loading-icon" />
+			</div>
+		);
+	}
+
 	if (!hasWallet) {
 		return <Redirect to="/setup" />;
+	}
+
+	if (!hasBackedUp) {
+		return <Redirect to="/wallet/backup" />;
 	}
 	if (agency && !agency.isApproved) {
 		return <Redirect to="/setup/pending" />;
@@ -123,12 +148,11 @@ export default function Main() {
 
 	return (
 		<>
+			{/* {showPageLoader && <Spinner />} */}
+
 			<div id="appCapsule">
 				<div className="section wallet-card-section pt-1">
 					<div className="wallet-card">
-						{/* {isLoading && <Spinner animation="border" />}
-						{!isLoading && (
-							<> */}
 						<div className="mobilizer-header">{project ? project.name : '...'}</div>
 						<div className="balance mt-2">
 							<div className="left">

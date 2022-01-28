@@ -2,14 +2,21 @@ import APP_ACTIONS from '../actions/appActions';
 
 const AppReducer = (state, action) => {
 	switch (action.type) {
+		case APP_ACTIONS.SET_LOADING:
+			return {
+				...state,
+				contextLoading: action.data
+			};
 		case APP_ACTIONS.INIT_APP:
+			console.log('Init app reducer', action.data);
 			return {
 				...state,
 				address: action.data.address,
 				network: action.data.network,
 				hasWallet: action.data.hasWallet,
 				tokenBalance: action.data.balance,
-				agency: action.data.agency
+				agency: action.data.agency,
+				hasBackedUp: action.data.hasBackedUp
 			};
 
 		case APP_ACTIONS.SET_AGENCY:
@@ -34,6 +41,12 @@ const AppReducer = (state, action) => {
 			return {
 				...state,
 				hasWallet: action.data
+			};
+
+		case APP_ACTIONS.SET_HASBACKUP:
+			return {
+				...state,
+				hasBackedUp: action.data
 			};
 
 		case APP_ACTIONS.SET_BALANCE:

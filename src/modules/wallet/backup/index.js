@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Swal from 'sweetalert2';
 
 import AppHeader from '../../layouts/AppHeader';
@@ -7,6 +7,7 @@ import { APP_CONSTANTS } from '../../../constants';
 import Wallet from '../../../utils/blockchain/wallet';
 import Loading from '../../global/Loading';
 import BackupInfo from './info';
+import DataService from '../../../services/db';
 
 const { PASSCODE_LENGTH } = APP_CONSTANTS;
 
@@ -59,6 +60,16 @@ export default function Index() {
 	const handlePhraseSaveClick = () => {
 		resetStates();
 	};
+
+	// const getPhone = useCallback(async () => {
+	// 	try {
+	// 		const { phone } = await DataService.getProfile();
+	// 		if(!phone) throw 'Unable to get passcode';
+	// 		setPasscode(phone)
+	// 	} catch (err) {
+	// 		console.log({ err });
+	// 	}
+	// }, []);
 
 	return (
 		<>

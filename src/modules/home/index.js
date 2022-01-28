@@ -30,7 +30,17 @@ import IssueToken from '../issue/token';
 function App() {
 	const { initApp, wallet } = useContext(AppContext);
 
-	useEffect(initApp, [initApp]);
+	useEffect(() => {
+		let hasMounted = false;
+
+		initApp().then(() => {
+			if (hasMounted) return;
+		});
+
+		return () => {
+			hasMounted = true;
+		};
+	}, [initApp]);
 
 	return (
 		<>

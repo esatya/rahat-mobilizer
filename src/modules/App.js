@@ -6,6 +6,8 @@ import Setup from '../modules/setup';
 import SetupProfile from '../modules/setup/profile';
 import SetupSelfie from '../modules/setup/selfie';
 import SetupIdCard from '../modules/setup/idCard';
+import BackupWallet from '../modules/setup/backupWallet';
+
 import SetupPending from '../modules/setup/pendingApproval';
 import UnlockWallet from '../modules/wallet/unlock';
 import GoogleRestore from '../modules/misc/googleRestore';
@@ -33,6 +35,7 @@ function App() {
 								<Route exact path="/create" component={CreateWallet} />
 								<Route exact path="/unlock" component={UnlockWallet} />
 								<Route exact path="/google/restore" component={GoogleRestore} />
+								<Route exact path="/wallet/backup" component={BackupWallet} />
 								<Route exact path="/mnemonic/restore" component={RestoreFromMnemonic} />
 								<Route exact path="/reset" component={ResetWallet} />
 								<Route path="/" component={Home} />
