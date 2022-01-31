@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { gapi } from 'gapi-script';
-import { IoChevronBackOutline, IoHomeOutline, IoCloseCircle } from 'react-icons/io5';
-import EthCrypto from 'eth-crypto';
+import { IoChevronBackOutline, IoHomeOutline } from 'react-icons/io5';
 import { BACKUP } from '../../constants';
 import { AppContext } from '../../contexts/AppContext';
 import DataService from '../../services/db';
@@ -38,6 +37,8 @@ export default function GoogleBackup() {
 
 	const { toggleFooter } = useContext(AppContext);
 	const [wallet, setWallet] = useState(null);
+	const [encWallet, setEncWallet] = useState(null);
+
 	const [isFetchingWallet, setFetchingWallet] = useState(true);
 	const passphraseRef = useRef(null);
 	const [errorMsg, setErrorMsg] = useState(null);
@@ -47,8 +48,7 @@ export default function GoogleBackup() {
 		email: null,
 		image: UserImg
 	});
-	const [passphrase, setPassphrase] = useState('');
-	const [passphraseStrength, setPassphraseStrength] = useState('None');
+
 	const [progress, setProgress] = useState({ message: 'Processing...', percent: 0, showHome: false });
 
 	const [currentAction, setCurrentAction] = useState({});
@@ -103,38 +103,39 @@ export default function GoogleBackup() {
 		return gapi.auth2.getAuthInstance().signIn();
 	};
 
-	const checkAndSetPassphrase = value => {
-		setErrorMsg(null);
-		var strongRegex = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{10,})');
-		var mediumRegex = new RegExp(
-			'^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})'
-		);
+	// const checkAndSetPassphrase = value => {
+	// 	setErrorMsg(null);
+	// 	var strongRegex = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{10,})');
+	// 	var mediumRegex = new RegExp(
+	// 		'^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})'
+	// 	);
 
-		if (strongRegex.test(value)) {
-			setPassphraseStrength('Strong');
-		} else if (mediumRegex.test(value)) {
-			setPassphraseStrength('Medium');
-		} else {
-			setPassphraseStrength('Weak');
-		}
-		setPassphrase(value);
-	};
+	// 	if (strongRegex.test(value)) {
+	// 		setPassphraseStrength('Strong');
+	// 	} else if (mediumRegex.test(value)) {
+	// 		setPassphraseStrength('Medium');
+	// 	} else {
+	// 		setPassphraseStrength('Weak');
+	// 	}
+	// 	setPassphrase(value);
+	// };
 
 	const getWallet = useCallback(async () => {
 		const profile = await DataService.get('profile');
 		const encryptedWallet = await DataService.getWallet();
+		setEncWallet(encryptedWallet);
 		const wlt = await Wallet.loadFromJson(profile.phone, encryptedWallet);
 		setWallet(wlt);
 		setFetchingWallet(false);
 	}, []);
 
-	const prepareBackupData = async password => {
+	const prepareBackupData = async () => {
 		let backupData = { name: 'rumsan-wallet', type: 'ethersjs' };
 		let data = await DataService.list();
 		data.forEach(d => {
 			backupData[d.name] = d.data;
 		});
-		backupData.wallet = await wallet.encrypt(password.toString());
+		backupData.wallet = encWallet;
 		delete backupData.backup_googleFile;
 		delete backupData.backup_wallet;
 		backupData.documents = await DataService.listDocuments();
@@ -153,15 +154,7 @@ export default function GoogleBackup() {
 			const gFolder = new GFolder(gapi);
 			const gFile = new GFile(gapi);
 			setProgress({ ...progress, percent: 5, message: 'Preparing data to backup...' });
-			let backupData = await prepareBackupData(passphrase);
-			//encrypt and store backup passphrase
-			const encrypted = await EthCrypto.encryptWithPublicKey(
-				EthCrypto.publicKeyByPrivateKey(wallet.privateKey),
-				passphrase
-			);
-			const encryptedPassphrase = EthCrypto.cipher.stringify(encrypted);
-			await DataService.save('backup_passphrase', encryptedPassphrase);
-
+			let backupData = await prepareBackupData();
 			setProgress({ ...progress, percent: 30, message: 'Checking if previous backup exists...' });
 			const folder = await gFolder.ensureExists(BACKUP.GDRIVE_FOLDERNAME);
 			setProgress({ ...progress, percent: 50, message: 'Backing up encrypted wallet to Google Drive...' });
@@ -200,29 +193,7 @@ export default function GoogleBackup() {
 	};
 
 	const confirmBackup = async () => {
-		var passPhraseRegex = new RegExp('^(?=.*[a-zA-Z])(?=.*[0-9])(?=.{10,})');
-		if (!passPhraseRegex.test(passphrase)) {
-			Swal.fire(
-				'Passphrase incorrect',
-				'Passphrase must be 10 characters and have at least one number.',
-				'error'
-			);
-			return;
-		}
-
-		const { isConfirmed } = await Swal.fire({
-			title: 'Important',
-			icon: 'warning',
-			html: `You MUST write this passphrase and store it safely. It is used to encrypt your wallet. If you forget it there is no way to retrieve your wallet. It will be gone forever. <br /> Your passphrase is: ${passphrase}`,
-			showCancelButton: true,
-			confirmButtonColor: '#3085d6',
-			cancelButtonColor: '#d33',
-			confirmButtonText: 'Yes, I have written it down',
-			cancelButtonText: 'No, I want choose another'
-		});
-		if (isConfirmed) {
-			backupWallet();
-		}
+		backupWallet();
 	};
 
 	const handleBackButton = e => {
@@ -290,7 +261,7 @@ export default function GoogleBackup() {
 							<div className="text-center mt-3">
 								<button
 									className="btn btn-primary"
-									onClick={e => history.push('#enter-passphrase')}
+									onClick={e => confirmBackup()}
 									disabled={isFetchingWallet}
 								>
 									Continue with this Google account
@@ -300,9 +271,8 @@ export default function GoogleBackup() {
 					</div>
 				)}
 
-				{currentAction.hash === '#enter-passphrase' && (
+				{/* {currentAction.hash === '#enter-passphrase' && (
 					<div className="section full mt-2 mb-3">
-						{/* {!selectedWallet.id && <Redirect to="/google/restore#choose-account" />} */}
 						<div className="wide-block p-2">
 							<div className="section full">
 								<div className="form-group boxed">
@@ -340,7 +310,7 @@ export default function GoogleBackup() {
 							)}
 						</div>
 					</div>
-				)}
+				)} */}
 
 				{currentAction.hash === '#process' && (
 					<div className="section full mt-2">

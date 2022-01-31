@@ -49,9 +49,9 @@ export default function Main() {
 				</p>
 				<div className="p-3">
 					{loading ? (
-						<button class="btn btn-lg btn-block btn-primary" type="button" disabled="">
+						<button className="btn btn-lg btn-block btn-primary" type="button" disabled="">
 							<span
-								class="spinner-border spinner-border-sm me-05"
+								className="spinner-border spinner-border-sm me-05"
 								role="status"
 								aria-hidden="true"
 							></span>

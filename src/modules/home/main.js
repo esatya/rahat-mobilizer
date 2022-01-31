@@ -19,7 +19,8 @@ export default function Main() {
 		setTotalBeneficiaries,
 		hideFooter,
 		toggleFooter,
-		contextLoading
+		contextLoading,
+		isSynchronizing
 	} = useContext(AppContext);
 
 	const { resetBeneficiary } = useContext(RegisterBeneficiaryContext);
@@ -51,7 +52,6 @@ export default function Main() {
 		async (agencies = []) => {
 			if (!agencies.length) return history.push('/setup/idcard');
 			let status = agencies[0].status;
-			console.log({ status });
 			if (status !== 'active') {
 				let dagency = Object.assign(agency, { isApproved: false });
 				await DataService.updateAgency(dagency.address, dagency);
@@ -90,14 +90,17 @@ export default function Main() {
 	const checkMobilizerStatus = useCallback(async () => {
 		const signature = await getAuthSignature(wallet);
 		const { projects, agencies } = await Service.getMobilizerByWallet(wallet.address);
-		console.log({ agencies });
 		return { projects, agencies, signature };
 	}, [wallet]);
 
 	const getInfoState = useCallback(async () => {
 		try {
+			if (!contextLoading && isSynchronizing) {
+				return history.push('/sync');
+			}
 			if (!wallet) return;
 			if (hideFooter) toggleFooter(false);
+
 			await checkRecentTnx();
 			const { projects, agencies, signature } = await checkMobilizerStatus();
 			await checkAgencyApproval(agencies);
@@ -114,7 +117,10 @@ export default function Main() {
 		hideFooter,
 		toggleFooter,
 		checkProject,
-		checkAgencyApproval
+		checkAgencyApproval,
+		isSynchronizing,
+		contextLoading,
+		history
 	]);
 
 	useEffect(() => {
@@ -139,6 +145,7 @@ export default function Main() {
 	if (!hasBackedUp) {
 		return <Redirect to="/wallet/backup" />;
 	}
+
 	if (agency && !agency.isApproved) {
 		return <Redirect to="/setup/pending" />;
 	}

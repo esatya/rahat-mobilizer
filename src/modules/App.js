@@ -11,6 +11,8 @@ import UnlockWallet from '../modules/wallet/unlock';
 import GoogleRestore from '../modules/misc/googleRestore';
 import CreateWallet from '../modules/wallet/create';
 import ResetWallet from '../modules/misc/reset';
+import SyncDb from '../modules/syncDb';
+
 import RestoreFromMnemonic from '../modules/wallet/restoreMnemonic';
 import GoogleBackup from '../modules/misc/googleBackup';
 import { AppContextProvider } from '../contexts/AppContext';
@@ -26,6 +28,7 @@ function App() {
 						<BrowserRouter>
 							<Switch>
 								<Route exact path="/setup" component={Setup} />
+								<Route exact path="/sync" component={SyncDb} />
 								<Route exact path="/setup/profile" component={SetupProfile} />
 								<Route exact path="/setup/selfie" component={SetupSelfie} />
 								<Route exact path="/setup/idcard" component={SetupIdCard} />

@@ -1,16 +1,17 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
-import { Link, useHistory, Redirect } from 'react-router-dom';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import { gapi } from 'gapi-script';
-import { IoChevronBackOutline, IoHomeOutline, IoCloseCircle } from 'react-icons/io5';
-
+import { IoChevronBackOutline, IoHomeOutline } from 'react-icons/io5';
 import Wallet from '../../utils/blockchain/wallet';
 import UserImg from '../../assets/images/user.svg';
-import { AppContext } from '../../contexts/AppContext';
 import DataService from '../../services/db';
 import { BACKUP } from '../../constants';
 import { GFile, GFolder } from '../../utils/google';
 import Loading from '../global/Loading';
 import Swal from 'sweetalert2';
+import SetPasscodeModal from '../global/SetPasscodeModal';
+import { AppContext } from '../../contexts/AppContext';
+import { getMobilizerByWallet } from '../../services';
 
 //const { PASSCODE_LENGTH } = APP_CONSTANTS;
 
@@ -21,7 +22,7 @@ const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 export default function GoogleRestore() {
 	const history = useHistory();
 	let currentWallet = null;
-
+	const { setWallet } = useContext(AppContext);
 	const Actions = useCallback(
 		() => [
 			{
@@ -40,7 +41,10 @@ export default function GoogleRestore() {
 		[]
 	);
 
-	const { setWallet } = useContext(AppContext);
+	const [passcodeModal, setPasscodeModal] = useState(false);
+	const [passcodeIncorrect, setPasscodeInorrect] = useState(false);
+	const togglePasscodeModal = () => setPasscodeModal(prev => !prev);
+
 	const [loading, setLoading] = useState(null);
 	const [errorMsg, setErrorMsg] = useState(null);
 	const [gUser, setGUser] = useState({
@@ -49,7 +53,6 @@ export default function GoogleRestore() {
 		email: null,
 		image: UserImg
 	});
-	const [passphrase, setPassphrase] = useState('');
 	const [walletList, setWalletList] = useState([]);
 	const [selectedWallet, setSelectedWallet] = useState({});
 
@@ -73,7 +76,7 @@ export default function GoogleRestore() {
 		gapi.load('client:auth2', initClient);
 	};
 
-	const updateSigninStatus = useCallback(isSignedIn => {
+	const updateSigninStatus = useCallback(async isSignedIn => {
 		let user = null;
 		if (isSignedIn) {
 			user = gapi.auth2.getAuthInstance().currentUser.get();
@@ -116,6 +119,11 @@ export default function GoogleRestore() {
 		return gapi.auth2.getAuthInstance().signIn();
 	};
 
+	const handlePasscodeSave = () => {
+		setErrorMsg(null);
+		togglePasscodeModal();
+		restoreWallet();
+	};
 	const fetchWalletList = async () => {
 		let existingWallet = await DataService.getWallet();
 		if (existingWallet) {
@@ -147,7 +155,7 @@ export default function GoogleRestore() {
 			currentWallet = JSON.parse(walletData);
 			if (!currentWallet.name) throw Error('Not a valid wallet. Please select another wallet.');
 			setSelectedWallet(Object.assign(selectedWallet, { data: currentWallet }));
-			history.push('#enter-passphrase');
+			restoreWallet();
 		} catch (e) {
 			setErrorMsg(
 				e.message === 'Not a valid wallet. Please select another wallet.'
@@ -159,29 +167,46 @@ export default function GoogleRestore() {
 		setLoading(null);
 	};
 
+	const unlockWallet = async () => {
+		try {
+			const passcode = await DataService.get('temp_passcode');
+			const wallet = await Wallet.loadFromJson(passcode, selectedWallet?.data?.wallet);
+			return wallet;
+		} catch (err) {
+			setErrorMsg('Backup passphrase is incorrect. Please try again.');
+			setPasscodeInorrect(true);
+		}
+	};
+
+	const checkWalletRegistered = async walletAddress => {
+		try {
+			setLoading('Checking if wallet is registered');
+
+			const walletReg = await getMobilizerByWallet(walletAddress);
+			return walletReg;
+		} catch (err) {
+			setErrorMsg('Wallet not registered, Redirecting to home screen.');
+			await DataService.clearAll();
+
+			setTimeout(() => {
+				history.push('/');
+			}, [1500]);
+		}
+	};
+
 	const restoreWallet = async () => {
 		setErrorMsg(null);
 		setLoading('Unlocking and restoring wallet.');
-		try {
-			const passcode = await DataService.get('temp_passcode');
-			console.log({ passcode });
-			const wallet = await Wallet.loadFromJson(passphrase, selectedWallet.data.wallet);
-			console.log({ wallet });
-			const passcodeWallet = await wallet.encrypt(passcode);
-			await DataService.clearAll();
-			await DataService.saveWallet(passcodeWallet);
+		const wallet = await unlockWallet();
+		const walletReged = await checkWalletRegistered(wallet?.address);
+		if (walletReged) {
+			await DataService.saveWallet(selectedWallet?.data?.wallet);
+			await DataService.saveHasBackedUp(true);
 			await DataService.saveAddress(wallet.address);
-			await DataService.save('backup_wallet', selectedWallet.data.wallet);
-			if (selectedWallet.data.documents) await DataService.saveDocuments(selectedWallet.data.documents);
-			if (selectedWallet.data.assets) await DataService.addMultiAssets(selectedWallet.data.assets);
 			setWallet(wallet);
-			await DataService.remove('temp_passcode');
-			history.push('/');
-		} catch (e) {
-			console.log(e);
-			setPassphrase('');
-			setErrorMsg('Backup passphrase is incorrect. Please try again.');
+			history.push('/sync');
 		}
+
 		setLoading(null);
 	};
 
@@ -213,6 +238,11 @@ export default function GoogleRestore() {
 
 	return (
 		<div id="appCapsule">
+			<SetPasscodeModal
+				showModal={passcodeModal}
+				togglePasscodeModal={togglePasscodeModal}
+				handlePasscodeSave={handlePasscodeSave}
+			/>
 			<Loading message={loading} showModal={loading} />
 			<div className="appHeader bg-success text-light">
 				<div className="left">
@@ -240,7 +270,7 @@ export default function GoogleRestore() {
 					<div className="text-center section full mt-2 mb-3">
 						<div className="text-center wide-block p-3">
 							<div className="avatar">
-								<img src={gUser.image} alt="avatar" className="imaged w64 rounded" />
+								<img src={gUser?.image} alt="avatar" className="imaged w64 rounded" />
 							</div>
 							<div className="in mt-1">
 								<h3 className="name">{gUser.name}</h3>
@@ -317,50 +347,22 @@ export default function GoogleRestore() {
 						</div>
 					</div>
 				)}
-
-				{currentAction.hash === '#enter-passphrase' && (
-					<div className="section full mt-2 mb-3">
-						{!selectedWallet.id && <Redirect to="/google/restore#choose-account" />}
-						<div className="wide-block p-2">
-							<div className="section full">
-								<div className="form-group boxed">
-									<div className="input-wrapper">
-										<input
-											type="text"
-											value={passphrase}
-											onChange={e => setPassphrase(e.target.value)}
-											className="form-control pwd"
-											placeholder="Backup Passpharse"
-										/>
-										<i className="clear-input">
-											<IoCloseCircle className="ion-icon" />
-										</i>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div className="text-center mt-3">
-							{passphrase.length > 4 && (
-								<button
-									className="btn btn-primary"
-									id="btnMnemonic"
-									onClick={e => restoreWallet()}
-									disabled={loading ? 'true' : ''}
-								>
-									Unlock and restore wallet
-								</button>
-							)}
-						</div>
-					</div>
-				)}
 			</div>
 
 			{errorMsg && (
+				<>
+					<div className="text-center">
+						<span className="text-danger">
+							<b>Error</b>: {errorMsg}
+						</span>
+					</div>
+				</>
+			)}
+			{passcodeIncorrect && (
 				<div className="text-center">
-					<span className="text-danger">
-						<b>Error</b>: {errorMsg}
-					</span>
+					<button onClick={() => togglePasscodeModal()} className="btn btn-danger">
+						Set Phone
+					</button>
 				</div>
 			)}
 		</div>
