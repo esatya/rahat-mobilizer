@@ -15,7 +15,8 @@ const AppReducer = (state, action) => {
 				hasWallet: action.data.hasWallet,
 				tokenBalance: action.data.balance,
 				agency: action.data.agency,
-				hasBackedUp: action.data.hasBackedUp
+				hasBackedUp: action.data.hasBackedUp,
+				isSynchronizing: action.data.isSynchronizing
 			};
 
 		case APP_ACTIONS.SET_AGENCY:

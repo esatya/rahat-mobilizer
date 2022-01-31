@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { gapi } from 'gapi-script';
-import { IoChevronBackOutline, IoHomeOutline, IoCloseCircle } from 'react-icons/io5';
-import EthCrypto from 'eth-crypto';
+import { IoChevronBackOutline, IoHomeOutline } from 'react-icons/io5';
 import { BACKUP } from '../../constants';
 import { AppContext } from '../../contexts/AppContext';
 import DataService from '../../services/db';
@@ -49,8 +48,7 @@ export default function GoogleBackup() {
 		email: null,
 		image: UserImg
 	});
-	const [passphrase, setPassphrase] = useState('');
-	const [passphraseStrength, setPassphraseStrength] = useState('None');
+
 	const [progress, setProgress] = useState({ message: 'Processing...', percent: 0, showHome: false });
 
 	const [currentAction, setCurrentAction] = useState({});

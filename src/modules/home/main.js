@@ -51,7 +51,6 @@ export default function Main() {
 		async (agencies = []) => {
 			if (!agencies.length) return history.push('/setup/idcard');
 			let status = agencies[0].status;
-			console.log({ status });
 			if (status !== 'active') {
 				let dagency = Object.assign(agency, { isApproved: false });
 				await DataService.updateAgency(dagency.address, dagency);
@@ -90,7 +89,6 @@ export default function Main() {
 	const checkMobilizerStatus = useCallback(async () => {
 		const signature = await getAuthSignature(wallet);
 		const { projects, agencies } = await Service.getMobilizerByWallet(wallet.address);
-		console.log({ agencies });
 		return { projects, agencies, signature };
 	}, [wallet]);
 
@@ -139,6 +137,7 @@ export default function Main() {
 	if (!hasBackedUp) {
 		return <Redirect to="/wallet/backup" />;
 	}
+
 	if (agency && !agency.isApproved) {
 		return <Redirect to="/setup/pending" />;
 	}

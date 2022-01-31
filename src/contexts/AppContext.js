@@ -21,7 +21,8 @@ const initialState = {
 	project: null,
 	beneficiaryCount: 0,
 	hideFooter: false,
-	recentTx: []
+	recentTx: [],
+	isSynchronizing: false
 };
 
 export const AppContext = createContext(initialState);
@@ -42,7 +43,6 @@ export const AppContextProvider = ({ children }) => {
 		let data = await DataService.initAppData();
 		data.profile = await DataService.getProfile();
 		data.hasWallet = data.wallet === null ? false : true;
-
 		if (!data.hasWallet) {
 			localStorage.removeItem('address');
 		} else {
@@ -130,6 +130,7 @@ export const AppContextProvider = ({ children }) => {
 				beneficiaryCount: state.beneficiaryCount,
 				recentTx: state.recentTx,
 				contextLoading: state.contextLoading,
+				isSynchronizing: state.isSynchronizing,
 				initApp,
 				setAgency,
 				toggleFooter,

@@ -47,7 +47,7 @@ function SetPasscodeModal({ showModal, togglePasscodeModal = () => {}, handlePas
 
 	return (
 		<ModalWrapper
-			title="First, let's setup your passcode"
+			title="Enter your registered phone number."
 			showModal={showModal}
 			handleModal={togglePasscodeModal}
 			onHide={() => {
@@ -58,15 +58,15 @@ function SetPasscodeModal({ showModal, togglePasscodeModal = () => {}, handlePas
 		>
 			<div className="row mb-5">
 				<div className="col">
-					<p>Choose a {PASSCODE_LENGTH}-digit passcode.</p>
+					<p>Enter your registered phone number.</p>
 					{passcode.length < PASSCODE_LENGTH && (
 						<input
 							onChange={handlePasscodeChange}
 							type="text"
 							pattern="[0-9]*"
 							inputMode="numeric"
-							className="form-control verify-input passcode pwd"
-							placeholder="------"
+							className="form-control  passcode pwd"
+							placeholder="----------"
 							maxLength={PASSCODE_LENGTH}
 							autoComplete="false"
 							value={passcode}
@@ -80,17 +80,19 @@ function SetPasscodeModal({ showModal, togglePasscodeModal = () => {}, handlePas
 								type="password"
 								pattern="[0-9]*"
 								inputMode="numeric"
-								className="form-control verify-input passcode"
-								placeholder="------"
+								className="form-control passcode pwd"
+								placeholder="----------"
 								maxLength={PASSCODE_LENGTH}
 								autoComplete="false"
 								value={confirmPasscode}
 							/>
 							<div className="text-center">
 								{passCodeMatch === true ? (
-									<small className="message">Please enter passcode again</small>
+									<small className="message">Please enter phone number again</small>
 								) : (
-									<small className="text-danger message">Please type correct confirm passcode</small>
+									<small className="text-danger message">
+										Confirm-Phone number didnot match the previous one .
+									</small>
 								)}
 							</div>
 						</>
