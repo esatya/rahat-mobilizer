@@ -1,13 +1,11 @@
 import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-
 import Home from '../modules/home';
 import Setup from '../modules/setup';
 import SetupProfile from '../modules/setup/profile';
 import SetupSelfie from '../modules/setup/selfie';
 import SetupIdCard from '../modules/setup/idCard';
 import BackupWallet from '../modules/setup/backupWallet';
-
 import SetupPending from '../modules/setup/pendingApproval';
 import UnlockWallet from '../modules/wallet/unlock';
 import GoogleRestore from '../modules/misc/googleRestore';

@@ -4,10 +4,24 @@ import { IoWalletOutline } from 'react-icons/io5';
 import { FaGoogleDrive, FaKey } from 'react-icons/fa';
 import DataService from '../../services/db';
 import PackageJson from '../../../package.json';
+import PasscodeModal from '../global/SetPasscodeModal';
+
+const RESTORE_METHOD = {
+	GOOGLE: 'google',
+	MNEMOMICS: 'mnemonics'
+};
+
+const RESTORE_LINK = {
+	[RESTORE_METHOD.GOOGLE]: '/google/restore',
+	[RESTORE_METHOD.MNEMOMICS]: '/mnemonic/restore'
+};
 
 export default function Main() {
 	const history = useHistory();
 	const [restorePage, setRestorePage] = useState(false);
+	const [showModal, setModal] = useState(false);
+	const [restoreMethod, setRestoreMethod] = useState(null);
+	const togglePasscodeModal = () => setModal(prev => !prev);
 
 	const hasWallet = useCallback(async () => {
 		const wallet = await DataService.getWallet();
@@ -17,6 +31,11 @@ export default function Main() {
 	}, [history]);
 
 	const toggleRestore = () => setRestorePage(prev => !prev);
+	const setRestoreMthd = mthd => setRestoreMethod(mthd);
+	const handlePasscodeSave = () => {
+		togglePasscodeModal();
+		restoreMethod && history.push(RESTORE_LINK[restoreMethod]);
+	};
 
 	useEffect(hasWallet, [hasWallet]);
 
@@ -34,6 +53,11 @@ export default function Main() {
 					App को माध्यमबाट तपाइले राहत वितरण गर्नु सक्नुहुने छ।
 				</p>
 				<p>आउनुहोस तपाईंलाई Register गरौ। </p>
+				<PasscodeModal
+					showModal={showModal}
+					togglePasscodeModal={togglePasscodeModal}
+					handlePasscodeSave={handlePasscodeSave}
+				/>
 				{!restorePage && (
 					<div className="p-2">
 						<Link
@@ -57,15 +81,27 @@ export default function Main() {
 				)}
 				{restorePage && (
 					<div className="p-2">
-						<Link to="/google/restore" className="btn btn-lg w-100 btn-warning mb-2">
+						<button
+							onClick={() => {
+								setRestoreMthd(RESTORE_METHOD.GOOGLE);
+								togglePasscodeModal();
+							}}
+							className="btn btn-lg w-100 btn-warning mb-2"
+						>
 							<FaGoogleDrive className="mr-2" size={'1.3em'} />
 							Restore from Google Drive
-						</Link>
+						</button>
 
-						<Link to="/mnemonic/restore" className="btn btn-lg w-100  btn-primary ">
+						<button
+							onClick={() => {
+								setRestoreMthd(RESTORE_METHOD.MNEMOMICS);
+								togglePasscodeModal();
+							}}
+							className="btn btn-lg w-100  btn-primary "
+						>
 							<FaKey className="mr-2" size={'1.3em'} />
 							Restore from Mnemonics
-						</Link>
+						</button>
 						<div className="form-links mt-2">
 							<div className="text-center w-100">
 								<button className="btn btn-text" onClick={toggleRestore}>

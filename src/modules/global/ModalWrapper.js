@@ -3,10 +3,10 @@ import { Modal, Button } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 
 export default function ModalWrapper(props) {
-	const { btnText, handleSubmit, modalSize, showModal, title, onHide, onShow } = props;
+	const { btnText, handleSubmit, modalSize, showModal, title, onHide, onShow, ...rest } = props;
 	return (
 		<>
-			<Modal size={modalSize || 'md'} show={showModal || false} onHide={onHide} onShow={onShow}>
+			<Modal size={modalSize || 'md'} show={showModal || false} onHide={onHide} onShow={onShow} {...rest}>
 				{title && (
 					<Modal.Header>
 						<Modal.Title style={{ fontSize: 14 }}>{title}</Modal.Title>

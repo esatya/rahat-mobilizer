@@ -124,7 +124,6 @@ export default function GoogleBackup() {
 		const profile = await DataService.get('profile');
 		const encryptedWallet = await DataService.getWallet();
 		const wlt = await Wallet.loadFromJson(profile.phone, encryptedWallet);
-
 		setWallet(wlt);
 		setFetchingWallet(false);
 	}, []);

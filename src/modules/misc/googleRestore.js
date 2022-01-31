@@ -164,7 +164,9 @@ export default function GoogleRestore() {
 		setLoading('Unlocking and restoring wallet.');
 		try {
 			const passcode = await DataService.get('temp_passcode');
+			console.log({ passcode });
 			const wallet = await Wallet.loadFromJson(passphrase, selectedWallet.data.wallet);
+			console.log({ wallet });
 			const passcodeWallet = await wallet.encrypt(passcode);
 			await DataService.clearAll();
 			await DataService.saveWallet(passcodeWallet);
