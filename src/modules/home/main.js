@@ -19,7 +19,8 @@ export default function Main() {
 		setTotalBeneficiaries,
 		hideFooter,
 		toggleFooter,
-		contextLoading
+		contextLoading,
+		isSynchronizing
 	} = useContext(AppContext);
 
 	const { resetBeneficiary } = useContext(RegisterBeneficiaryContext);
@@ -94,8 +95,12 @@ export default function Main() {
 
 	const getInfoState = useCallback(async () => {
 		try {
+			if (!contextLoading && isSynchronizing) {
+				return history.push('/sync');
+			}
 			if (!wallet) return;
 			if (hideFooter) toggleFooter(false);
+
 			await checkRecentTnx();
 			const { projects, agencies, signature } = await checkMobilizerStatus();
 			await checkAgencyApproval(agencies);
@@ -112,7 +117,10 @@ export default function Main() {
 		hideFooter,
 		toggleFooter,
 		checkProject,
-		checkAgencyApproval
+		checkAgencyApproval,
+		isSynchronizing,
+		contextLoading,
+		history
 	]);
 
 	useEffect(() => {
