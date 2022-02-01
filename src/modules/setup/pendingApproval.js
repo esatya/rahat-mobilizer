@@ -11,25 +11,29 @@ export default function Main() {
 	const [loading, setLoading] = useState(null);
 
 	const checkForApproval = useCallback(async () => {
-		setLoading('Redirecting to homepage...');
-		let encryptedWallet = await DataService.getWallet();
+		try {
+			setLoading('Redirecting to homepage...');
+			let encryptedWallet = await DataService.getWallet();
+			if (!encryptedWallet) history.push('/setup');
+			let wallet = JSON.parse(encryptedWallet);
+			let dagency = await DataService.getDefaultAgency();
+			if (!dagency) history.push('/setup');
+			setAgencyName(dagency.name);
+			const data = await Service.getMobilizerByWallet(`0x${wallet.address}`);
+			if (!data.agencies.length) return history.push('/setup/idcard');
+			let status = data.agencies[0].status;
+			if (status === 'active') {
+				dagency.isApproved = true;
+				await DataService.updateAgency(dagency.address, dagency);
+				await DataService.addProject({ id: data.projects[0].project.id, name: data.projects[0].project.name });
+				return history.push('/');
+			}
+			setLoading(null);
+		} catch (err) {
+			setLoading(null);
 
-		if (!encryptedWallet) history.push('/setup');
-		let wallet = JSON.parse(encryptedWallet);
-		let dagency = await DataService.getDefaultAgency();
-		if (!dagency) history.push('/setup');
-		setAgencyName(dagency.name);
-		const data = await Service.getMobilizerByWallet(`0x${wallet.address}`);
-		if (!data.agencies.length) return history.push('/setup/idcard');
-		let status = data.agencies[0].status;
-		if (status === 'active') {
-			dagency.isApproved = true;
-			await DataService.updateAgency(dagency.address, dagency);
-			await DataService.addProject({ id: data.projects[0].project.id, name: data.projects[0].project.name });
-
-			return history.push('/');
+			console.log({ err });
 		}
-		setLoading(null);
 	}, [history]);
 
 	useEffect(() => {
