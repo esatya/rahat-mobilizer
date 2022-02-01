@@ -43,6 +43,13 @@ export default function Index() {
 							</div>
 						</Link>
 					</li>
+					<li>
+						<Link to="/google/backup" className="item">
+							<div className="in">
+								<div>Backup With Google</div>
+							</div>
+						</Link>
+					</li>
 					{/* <li>
 						<Link to="/backup" className="item">
 							<div className="in">
