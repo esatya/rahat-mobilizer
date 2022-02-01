@@ -21,6 +21,9 @@ export default function Index() {
 			await getProfile();
 			setProfileImage(await DataService.get('profileImage'));
 		})();
+		return () => {
+			setProfile({ name: '', phone: '' });
+		};
 	}, []);
 
 	return (

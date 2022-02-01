@@ -6,12 +6,12 @@ import Avatar from '../../assets/images/Man.png';
 import * as io5 from 'react-icons/io5';
 
 const BenList = ({ limit, beneficiaries = [] }) => {
-	const [ben, setBen] = useState([]);
+	const [ben, setBen] = useState(null);
 	const [searchOpen, setSearchOpen] = useState(false);
 
-	function toggleSearch() {
-		setSearchOpen(!searchOpen);
-	}
+	const toggleSearch = () => {
+		setSearchOpen(prev > !prev);
+	};
 
 	function searchProduct(name) {
 		// let params = {
@@ -21,9 +21,12 @@ const BenList = ({ limit, beneficiaries = [] }) => {
 	}
 
 	const listBeneficiearies = useCallback(async () => {
-		let bens = beneficiaries.length ? beneficiaries : await DataService.listBeneficiaries();
-		if (limit) bens = bens.slice(0, limit);
-		setBen(bens);
+		let beneficiayList;
+		if (beneficiaries?.length > 0) {
+			beneficiayList = await DataService.listBeneficiaries();
+		}
+		if (limit) beneficiayList = beneficiayList.slice(0, limit);
+		setBen(beneficiayList);
 	}, [beneficiaries, limit]);
 
 	useEffect(listBeneficiearies, [listBeneficiearies]);
@@ -45,7 +48,7 @@ const BenList = ({ limit, beneficiaries = [] }) => {
 					<div className="right">
 						<button
 							className="btn btn-text headerButton toggle-searchbox"
-							onClick={() => toggleSearch()}
+							onClick={toggleSearch}
 							style={{ marginRight: '0px', color: 'white' }}
 						>
 							<IoSearchOutline className="ion-icon" />
@@ -71,7 +74,7 @@ const BenList = ({ limit, beneficiaries = [] }) => {
 				</div>
 			)}
 			<ul className="listview image-listview flush">
-				{ben.length > 0 &&
+				{ben?.length > 0 &&
 					ben.map(ben => {
 						return (
 							<li key={ben.phone}>

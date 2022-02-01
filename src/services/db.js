@@ -17,6 +17,7 @@ db.version(DB.VERSION).stores({
 });
 
 const DataService = {
+	dbInstance: db,
 	save(name, data) {
 		return db.data.put({ name, data });
 	},
