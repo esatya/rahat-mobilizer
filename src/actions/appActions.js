@@ -3,6 +3,7 @@ module.exports = {
 	SET_AGENCY: 'set_agency',
 	SET_NETWORK: 'set_network',
 	SET_HASWALLET: 'set_haswallet',
+	SET_HASBACKUP: 'set_hasBackup',
 	SET_WALLET: 'set_wallet',
 	SET_SCANNED_DATA: 'set_scanned_eth_address',
 	SET_APP_PASSCODE: 'set_app_passcode',
@@ -10,5 +11,6 @@ module.exports = {
 	ADD_RECENT_TX: 'add_recent_tx',
 	SET_PROJECT: 'set_project',
 	SET_TOTAL_BENEFICIARIES: 'set_total_beneficiaries',
-	TOGGLE_FOOTER: 'toggle_footer'
+	TOGGLE_FOOTER: 'toggle_footer',
+	SET_LOADING: 'set_loading'
 };

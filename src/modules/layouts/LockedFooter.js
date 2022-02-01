@@ -1,22 +1,15 @@
 import React, { useContext, useState, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { IoLockClosed } from 'react-icons/io5';
-
 import Loading from '../global/Loading';
 import Wallet from '../../utils/blockchain/wallet';
 import DataService from '../../services/db';
 import { AppContext } from '../../contexts/AppContext';
 import * as Service from '../../services';
-// import { RahatService } from '../../services/chain';
 
 export default function LockedFooter() {
 	let history = useHistory();
-	const {
-		setWallet,
-		// setProject,
-		setTotalBeneficiaries,
-		agency
-	} = useContext(AppContext);
+	const { setWallet, setTotalBeneficiaries, agency } = useContext(AppContext);
 	const [loadingModal, setLoadingModal] = useState(false);
 
 	const checkProjectBeneficiaries = useCallback(async () => {
@@ -28,21 +21,9 @@ export default function LockedFooter() {
 		async wallet => {
 			//update API to only query relevant agency.
 			if (!wallet) return;
-
 			const data = await Service.getMobilizerByWallet(wallet.address);
-			// let defaultAgency = await DataService.getDefaultAgency();
 			if (data && data.projects.length) {
-				//	setProject({ name: data.projects[0].project.name, id: data.projects[0].project.id });
 				await checkProjectBeneficiaries(wallet, data.projects[0].project.id);
-				// RahatService(defaultAgency.address, wallet)
-				// 	.getProjectBalance(data.projects[0].project.id)
-				// 	.then(bal => {
-				// 		setProject({
-				// 			name: data.projects[0].project.name,
-				// 			id: data.projects[0].project.id,
-				// 			balance: bal
-				// 		});
-				// 	});
 			}
 			if (!data.agencies.length) return history.push('/setup/idcard');
 			let status = data.agencies[0].status;
@@ -53,40 +34,32 @@ export default function LockedFooter() {
 				history.push('/setup/pending');
 			}
 		},
-		[
-			agency,
-			checkProjectBeneficiaries,
-			history
-			// setProject
-		]
+		[agency, checkProjectBeneficiaries, history]
 	);
 
 	const handleUnlockClick = useCallback(async () => {
-		setLoadingModal(true);
-		let profile = await DataService.get('profile');
-		// const wallet = await Wallet.loadFromPrivateKey(
-		// 	'0x387e176cf5a5016a38f552abc0c3370a733a4f232061957d76d8f5e9a8b0b729'
-		// );
-		if (profile) {
-			let encryptedWallet = await DataService.getWallet();
-			const wallet = await Wallet.loadFromJson(profile.phone, encryptedWallet);
-			setWallet(wallet);
-			await checkMobilizerStatus(wallet);
+		try {
+			setLoadingModal(true);
+			let profile = await DataService.get('profile');
+			if (profile) {
+				let encryptedWallet = await DataService.getWallet();
+				const wallet = await Wallet.loadFromJson(profile.phone, encryptedWallet);
+				setWallet(wallet);
+				await checkMobilizerStatus(wallet);
+			}
+			history.push('/');
+			setLoadingModal(false);
+		} catch (err) {
+			setLoadingModal(false);
+			console.error({ err });
 		}
-		history.push('/');
-		setLoadingModal(false);
 	}, [checkMobilizerStatus, setWallet, history]);
 
 	useEffect(() => {
-		let isMounted = true;
+		handleUnlockClick();
 
-		const unlock = () => handleUnlockClick();
-
-		return async () => {
-			if (isMounted) {
-				await unlock();
-			}
-			isMounted = false;
+		return () => {
+			setLoadingModal(false);
 		};
 	}, [handleUnlockClick]);
 

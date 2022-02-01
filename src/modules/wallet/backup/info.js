@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default function Info({ togglePasscodeModal }) {
+export default function Info({ togglePasscodeModal, disabled }) {
 	return (
 		<div id="appCapsule">
 			<div className="section full mt-2">
@@ -26,7 +26,12 @@ export default function Info({ togglePasscodeModal }) {
 					careful where you restore your wallet. There a lot of scammers out there.
 				</div>
 				<div className="text-center mt-3">
-					<button className="btn btn-success btn-lg" id="btnMnemonic" onClick={togglePasscodeModal}>
+					<button
+						className="btn btn-success btn-lg"
+						id="btnMnemonic"
+						onClick={togglePasscodeModal}
+						disabled={disabled}
+					>
 						Backup Secret Words
 					</button>
 				</div>
@@ -40,7 +45,7 @@ export default function Info({ togglePasscodeModal }) {
 				</div>
 				<div className="text-center mt-3">
 					<Link to="/google/backup">
-						<button className="btn btn-danger btn-lg" id="btnDrive">
+						<button className="btn btn-danger btn-lg" id="btnDrive" disabled={disabled}>
 							Backup to Google Drive
 						</button>
 					</Link>

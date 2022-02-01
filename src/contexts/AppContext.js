@@ -1,35 +1,45 @@
 import React, { createContext, useReducer, useCallback } from 'react';
+import { ethers } from 'ethers';
 import appReduce from '../reducers/appReducer';
 import APP_ACTIONS from '../actions/appActions';
 import DataService from '../services/db';
 import { TokenService } from '../services/chain';
 import * as Service from '../services';
 import { APP_CONSTANTS, DEFAULT_TOKEN } from '../constants';
-
 const initialState = {
+	contextLoading: true,
 	address: null,
 	agency: null,
 	network: null,
 	wallet: null,
 	profile: null,
 	hasWallet: true,
+	hasBackedUp: true,
 	tokenBalance: 0,
 	scannedEthAddress: '',
 	scannedAmount: null,
 	project: null,
 	beneficiaryCount: 0,
 	hideFooter: false,
-	recentTx: []
+	recentTx: [],
+	isSynchronizing: false
 };
 
 export const AppContext = createContext(initialState);
 export const AppContextProvider = ({ children }) => {
 	const [state, dispatch] = useReducer(appReduce, initialState);
 
+	const toggleLoading = useCallback((loading = false) => {
+		dispatch({ type: APP_ACTIONS.SET_LOADING, data: loading });
+	}, []);
+
+	const initialize_index_db = useCallback(async () => {
+		await DataService.addDefaultAsset(DEFAULT_TOKEN.SYMBOL, DEFAULT_TOKEN.NAME);
+		await DataService.save('version', APP_CONSTANTS.VERSION);
+	}, []);
+
 	const initApp = useCallback(async () => {
-		DataService.addDefaultAsset(DEFAULT_TOKEN.SYMBOL, DEFAULT_TOKEN.NAME);
-		//TODO: in future check version and add action if the version is different.
-		DataService.save('version', APP_CONSTANTS.VERSION);
+		await initialize_index_db();
 		let data = await DataService.initAppData();
 		data.profile = await DataService.getProfile();
 		data.hasWallet = data.wallet === null ? false : true;
@@ -37,13 +47,21 @@ export const AppContextProvider = ({ children }) => {
 			localStorage.removeItem('address');
 		} else {
 			let agency = await DataService.getDefaultAgency();
-			if (!agency) return;
-			const balance = await TokenService(agency.address).getBalance();
+			let balance;
+			try {
+				if (!agency) throw Error('No agency');
+				const blcs = await TokenService(agency.address).getBalance();
+				balance = blcs;
+			} catch (err) {
+				balance = ethers.BigNumber.from(0);
+			}
 			data.balance = balance.toNumber();
 			data.agency = agency;
 		}
+
 		dispatch({ type: APP_ACTIONS.INIT_APP, data });
-	}, []);
+		toggleLoading(false);
+	}, [toggleLoading, initialize_index_db]);
 
 	async function setAgency(agency) {
 		if (!agency) agency = await DataService.getDefaultAgency();
@@ -60,6 +78,9 @@ export const AppContextProvider = ({ children }) => {
 
 	function setHasWallet(hasWallet) {
 		dispatch({ type: APP_ACTIONS.SET_HASWALLET, data: hasWallet });
+	}
+	function setHasBackedUp(hasBackup) {
+		dispatch({ type: APP_ACTIONS.SET_HASWALLET, data: hasBackup });
 	}
 
 	function setWallet(wallet) {
@@ -105,8 +126,11 @@ export const AppContextProvider = ({ children }) => {
 				wallet: state.wallet,
 				project: state.project,
 				hideFooter: state.hideFooter,
+				hasBackedUp: state.hasBackedUp,
 				beneficiaryCount: state.beneficiaryCount,
 				recentTx: state.recentTx,
+				contextLoading: state.contextLoading,
+				isSynchronizing: state.isSynchronizing,
 				initApp,
 				setAgency,
 				toggleFooter,
@@ -120,7 +144,8 @@ export const AppContextProvider = ({ children }) => {
 				addRecentTx,
 				setTotalBeneficiaries,
 				listNftPackages,
-				getNftPackages
+				getNftPackages,
+				setHasBackedUp
 			}}
 		>
 			{children}

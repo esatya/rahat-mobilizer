@@ -43,22 +43,32 @@ const DataService = {
 		if (profile) profile.img = await this.get('profileImage');
 		return profile;
 	},
-
 	saveProfileImage(img) {
 		return this.save('profileImage', img);
 	},
-
 	saveProfileIdCard(img) {
 		return this.save('profileIdCard', img);
 	},
-
+	saveHasBackedUp(hasBackedUp) {
+		return this.save('hasBackedUp', hasBackedUp);
+	},
 	async initAppData() {
 		let network = await this.getNetwork();
 		let address = await this.getAddress();
 		let wallet = await this.getWallet();
-		return { network, address, wallet };
+		let hasBackedUp = await this.get('hasBackedUp');
+		let isSynchronizing = await this.get('synchronizing');
+		return {
+			network,
+			address,
+			wallet,
+			hasBackedUp: hasBackedUp ? true : false,
+			isSynchronizing: isSynchronizing ? true : false
+		};
 	},
-
+	setSynchronizing(val) {
+		return this.save('synchronizing', val);
+	},
 	async clearAll() {
 		await db.data.clear();
 		await db.assets.clear();

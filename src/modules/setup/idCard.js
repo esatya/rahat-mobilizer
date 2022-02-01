@@ -102,7 +102,7 @@ export default function Main() {
 				setWallet(wallet);
 				setHasWallet(true);
 				showLoading(null);
-				history.push('/pending');
+				history.push('/wallet/backup');
 			}
 		} catch (err) {
 			Swal.fire('ERROR', err.message, 'error');

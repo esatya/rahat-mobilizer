@@ -23,14 +23,23 @@ import TxDetails from '../transactions/details';
 import PackageTxDetails from '../transactions/Package';
 
 import AllTransactions from '../transactions/allTransactions';
-import GoogleBackup from '../misc/googleBackup';
 import IssuePackage from '../issue/package';
 import IssueToken from '../issue/token';
 
 function App() {
 	const { initApp, wallet } = useContext(AppContext);
 
-	useEffect(initApp, [initApp]);
+	useEffect(() => {
+		let hasMounted = false;
+
+		initApp().then(() => {
+			if (hasMounted) return;
+		});
+
+		return () => {
+			hasMounted = true;
+		};
+	}, [initApp]);
 
 	return (
 		<>
@@ -56,7 +65,7 @@ function App() {
 				<PrivateRoute exact path="/profile" component={Profile} wallet={wallet} />
 				<PrivateRoute exact path="/transfer" component={Transfer} wallet={wallet} />
 				<PrivateRoute exact path="/transfer/:address" component={Transfer} wallet={wallet} />
-				<PrivateRoute exact path="/google/backup" component={GoogleBackup} wallet={wallet} />
+
 				<PrivateRoute exact path="/issue/token" component={IssueToken} wallet={wallet} />
 				<PrivateRoute
 					exact
