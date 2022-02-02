@@ -22,14 +22,21 @@ const BenList = ({ limit, beneficiaries = [] }) => {
 
 	const listBeneficiearies = useCallback(async () => {
 		let beneficiayList;
-		if (beneficiaries?.length > 0) {
+		if (!beneficiaries?.length) {
 			beneficiayList = await DataService.listBeneficiaries();
 		}
 		if (limit) beneficiayList = beneficiayList.slice(0, limit);
 		setBen(beneficiayList);
 	}, [beneficiaries, limit]);
 
-	useEffect(listBeneficiearies, [listBeneficiearies]);
+	useEffect(() => {
+		listBeneficiearies();
+
+		return () => {
+			setBen([]);
+			setSearchOpen(false);
+		};
+	}, [listBeneficiearies]);
 
 	return (
 		<>
