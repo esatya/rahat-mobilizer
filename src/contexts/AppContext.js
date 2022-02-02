@@ -34,33 +34,46 @@ export const AppContextProvider = ({ children }) => {
 	}, []);
 
 	const initialize_index_db = useCallback(async () => {
-		await DataService.addDefaultAsset(DEFAULT_TOKEN.SYMBOL, DEFAULT_TOKEN.NAME);
-		await DataService.save('version', APP_CONSTANTS.VERSION);
+		DataService.dbInstance
+			.open()
+			.then(async () => {
+				console.log('Dexie succesfully opened');
+				await DataService.addDefaultAsset(DEFAULT_TOKEN.SYMBOL, DEFAULT_TOKEN.NAME);
+				await DataService.save('version', APP_CONSTANTS.VERSION);
+			})
+			.catch(err => {
+				console.log('Cannot open dexie', err);
+			});
 	}, []);
 
 	const initApp = useCallback(async () => {
-		await initialize_index_db();
-		let data = await DataService.initAppData();
-		data.profile = await DataService.getProfile();
-		data.hasWallet = data.wallet === null ? false : true;
-		if (!data.hasWallet) {
-			localStorage.removeItem('address');
-		} else {
-			let agency = await DataService.getDefaultAgency();
-			let balance;
-			try {
-				if (!agency) throw Error('No agency');
-				const blcs = await TokenService(agency.address).getBalance();
-				balance = blcs;
-			} catch (err) {
-				balance = ethers.BigNumber.from(0);
+		try {
+			await initialize_index_db();
+			let data = await DataService.initAppData();
+			data.profile = await DataService.getProfile();
+			data.hasWallet = data.wallet === null ? false : true;
+			if (!data.hasWallet) {
+				localStorage.removeItem('address');
+			} else {
+				let agency = await DataService.getDefaultAgency();
+				let balance;
+				try {
+					if (!agency) throw Error('No agency');
+					const blcs = await TokenService(agency.address).getBalance();
+					balance = blcs;
+				} catch (err) {
+					balance = ethers.BigNumber.from(0);
+				}
+				data.balance = balance.toNumber();
+				data.agency = agency;
 			}
-			data.balance = balance.toNumber();
-			data.agency = agency;
-		}
 
-		dispatch({ type: APP_ACTIONS.INIT_APP, data });
-		toggleLoading(false);
+			dispatch({ type: APP_ACTIONS.INIT_APP, data });
+			toggleLoading(false);
+		} catch (err) {
+			console.log('App init error', err);
+			toggleLoading(false);
+		}
 	}, [toggleLoading, initialize_index_db]);
 
 	async function setAgency(agency) {

@@ -21,6 +21,9 @@ export default function Index() {
 			await getProfile();
 			setProfileImage(await DataService.get('profileImage'));
 		})();
+		return () => {
+			setProfile({ name: '', phone: '' });
+		};
 	}, []);
 
 	return (
@@ -40,6 +43,13 @@ export default function Index() {
 						<Link to="/profile" className="item">
 							<div className="in">
 								<div>Update Profile</div>
+							</div>
+						</Link>
+					</li>
+					<li>
+						<Link to="/google/backup" className="item">
+							<div className="in">
+								<div>Backup With Google</div>
 							</div>
 						</Link>
 					</li>
