@@ -20,7 +20,7 @@ export default function Main() {
 		hideFooter,
 		toggleFooter,
 		contextLoading,
-		isSynchronizing
+		hasSynchronized
 	} = useContext(AppContext);
 
 	const { resetBeneficiary } = useContext(RegisterBeneficiaryContext);
@@ -94,10 +94,12 @@ export default function Main() {
 	}, [wallet]);
 
 	const getInfoState = useCallback(async () => {
+		if (contextLoading) return;
+		if (!hasWallet) return history.push('/setup');
+		if (!hasBackedUp) return history.push('/wallet/backup');
+		if (!hasSynchronized) return history.push('/sync');
+		if (agency && !agency.isApproved) return history.push('/setup/pending');
 		try {
-			if (!contextLoading && isSynchronizing) {
-				return history.push('/sync');
-			}
 			if (!wallet) return;
 			if (hideFooter) toggleFooter(false);
 
@@ -118,14 +120,20 @@ export default function Main() {
 		toggleFooter,
 		checkProject,
 		checkAgencyApproval,
-		isSynchronizing,
 		contextLoading,
-		history
+		history,
+		hasWallet,
+		hasBackedUp,
+		hasSynchronized,
+		agency
 	]);
 
 	useEffect(() => {
-		getInfoState();
+		let isMounted = true;
+
+		if (isMounted) getInfoState();
 		return () => {
+			isMounted = false;
 			resetPage();
 		};
 	}, [getInfoState]);

@@ -7,14 +7,14 @@ import { TokenService } from '../services/chain';
 import * as Service from '../services';
 import { APP_CONSTANTS, DEFAULT_TOKEN } from '../constants';
 const initialState = {
-	contextLoading: true,
+	contextLoading: false,
 	address: null,
 	agency: null,
 	network: null,
 	wallet: null,
 	profile: null,
-	hasWallet: true,
-	hasBackedUp: true,
+	hasWallet: false,
+	hasBackedUp: false,
 	tokenBalance: 0,
 	scannedEthAddress: '',
 	scannedAmount: null,
@@ -22,7 +22,7 @@ const initialState = {
 	beneficiaryCount: 0,
 	hideFooter: false,
 	recentTx: [],
-	isSynchronizing: false
+	hasSynchronized: false
 };
 
 export const AppContext = createContext(initialState);
@@ -48,6 +48,8 @@ export const AppContextProvider = ({ children }) => {
 
 	const initApp = useCallback(async () => {
 		try {
+			toggleLoading(true);
+
 			await initialize_index_db();
 			let data = await DataService.initAppData();
 			data.profile = await DataService.getProfile();
@@ -143,7 +145,7 @@ export const AppContextProvider = ({ children }) => {
 				beneficiaryCount: state.beneficiaryCount,
 				recentTx: state.recentTx,
 				contextLoading: state.contextLoading,
-				isSynchronizing: state.isSynchronizing,
+				hasSynchronized: state.hasSynchronized,
 				initApp,
 				setAgency,
 				toggleFooter,

@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import QrReader from 'react-qr-reader';
 import { useHistory } from 'react-router-dom';
-
 import Swal from 'sweetalert2';
 
 import { AppContext } from '../../contexts/AppContext';
@@ -38,7 +37,6 @@ export default function Camera(props) {
 				if (amount) setBeneficiaryToken(amount);
 				const signature = await getAuthSignature(wallet);
 				const beneficiary = await Service.getBeneficiaryById(signature, phone);
-				console.log({ beneficiary });
 				if (beneficiary) {
 					setActiveSheet(null);
 					setBeneficiaryToken(null);

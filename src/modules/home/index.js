@@ -30,14 +30,11 @@ function App() {
 	const { initApp, wallet } = useContext(AppContext);
 
 	useEffect(() => {
-		let hasMounted = false;
+		let hasMounted = true;
 
-		initApp().then(() => {
-			if (hasMounted) return;
-		});
-
+		if (hasMounted) initApp();
 		return () => {
-			hasMounted = true;
+			hasMounted = false;
 		};
 	}, [initApp]);
 
