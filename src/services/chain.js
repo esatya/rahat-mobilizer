@@ -47,7 +47,6 @@ const RahatService = (agencyAddress, wallet) => {
 		async getProjectBalance(projectId) {
 			const contract = await this.getContract();
 
-			console.log({ contract });
 			const hashId = ethers.utils.solidityKeccak256(['string'], [projectId]);
 			const balance = await contract.getProjectBalance(hashId);
 			return balance.toNumber();

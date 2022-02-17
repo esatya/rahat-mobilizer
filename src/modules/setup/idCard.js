@@ -98,7 +98,8 @@ export default function Main() {
 					govt_id_image: previewImage
 				});
 				await DataService.saveWallet(encryptedWallet);
-				DataService.saveAddress(wallet.address);
+				await DataService.saveAddress(wallet.address);
+				await DataService.setSynchronized(true);
 				setWallet(wallet);
 				setHasWallet(true);
 				showLoading(null);

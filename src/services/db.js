@@ -58,17 +58,18 @@ const DataService = {
 		let address = await this.getAddress();
 		let wallet = await this.getWallet();
 		let hasBackedUp = await this.get('hasBackedUp');
-		let isSynchronizing = await this.get('synchronizing');
+		let hasSynchronized = await this.get('hasSynchronized');
+
 		return {
 			network,
 			address,
 			wallet,
 			hasBackedUp: hasBackedUp ? true : false,
-			isSynchronizing: isSynchronizing ? true : false
+			hasSynchronized: hasSynchronized ? true : false
 		};
 	},
-	setSynchronizing(val) {
-		return this.save('synchronizing', val);
+	setSynchronized(val) {
+		return this.save('hasSynchronized', val);
 	},
 	async clearAll() {
 		await db.data.clear();
