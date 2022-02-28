@@ -13,8 +13,6 @@ export default function Main(props) {
 		(async () => {
 			const t = await DataService.getTx(hash);
 			const ben = await DataService.getBeneficiary(t.to);
-			console.log(ben);
-
 			t.hash = `${t.hash.slice(0, 10)}....`;
 			t.beneficiaryName = ben.name;
 			setTx(t);

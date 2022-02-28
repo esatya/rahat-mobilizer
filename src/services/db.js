@@ -9,12 +9,15 @@ db.version(DB.VERSION).stores({
 	documents: 'hash,type,name,file,encryptedFile,createdAt,inIpfs',
 	beneficiaries: 'phone,name,address,createdAt,photo,govt_id_image',
 	assets: 'address,type,name,symbol,decimal,balance,network',
-	agencies: 'address,name,api,network,rahatAddress,tokenAddress,adminAddress,phone,email,logo,isApproved',
-	transactions: 'hash,type,timestamp,amount,to,from,status,image',
-	projects: 'id,name'
+	agencies:
+		'address,name,api,network,rahatAddress,tokenAddress,erc20Address,erc1155Address,adminAddress,phone,email,logo,isApproved',
+	transactions: 'hash,type,timestamp,amount,to,from,status,image,tokenId',
+	projects: 'id,name',
+	nfts: 'tokenId,name,symbol,description,imageUri,metadataUri,value,amount'
 });
 
 const DataService = {
+	dbInstance: db,
 	save(name, data) {
 		return db.data.put({ name, data });
 	},
@@ -41,22 +44,33 @@ const DataService = {
 		if (profile) profile.img = await this.get('profileImage');
 		return profile;
 	},
-
 	saveProfileImage(img) {
 		return this.save('profileImage', img);
 	},
-
 	saveProfileIdCard(img) {
 		return this.save('profileIdCard', img);
 	},
-
+	saveHasBackedUp(hasBackedUp) {
+		return this.save('hasBackedUp', hasBackedUp);
+	},
 	async initAppData() {
 		let network = await this.getNetwork();
 		let address = await this.getAddress();
 		let wallet = await this.getWallet();
-		return { network, address, wallet };
-	},
+		let hasBackedUp = await this.get('hasBackedUp');
+		let hasSynchronized = await this.get('hasSynchronized');
 
+		return {
+			network,
+			address,
+			wallet,
+			hasBackedUp: hasBackedUp ? true : false,
+			hasSynchronized: hasSynchronized ? true : false
+		};
+	},
+	setSynchronized(val) {
+		return this.save('hasSynchronized', val);
+	},
 	async clearAll() {
 		await db.data.clear();
 		await db.assets.clear();

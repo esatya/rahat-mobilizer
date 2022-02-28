@@ -1,7 +1,6 @@
 import React, { useState, useContext, useRef } from 'react';
 import Swal from 'sweetalert2';
 import { useHistory, Link } from 'react-router-dom';
-
 import ModalWrapper from '../global/ModalWrapper';
 import Wallet from '../../utils/blockchain/wallet';
 import DataService from '../../services/db';

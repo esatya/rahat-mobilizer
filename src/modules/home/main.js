@@ -1,84 +1,157 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { useHistory, Redirect, Link } from 'react-router-dom';
-
 import * as Service from '../../services';
 import { AppContext } from '../../contexts/AppContext';
 import { RegisterBeneficiaryContext } from '../../contexts/registerBeneficiaryContext';
-
 import TransactionList from '../transactions/list';
 import DataService from '../../services/db';
-import { RahatService } from '../../services/chain';
+import { RahatAdminService } from '../../services/chain';
+import { getAuthSignature } from '../../utils';
 
 export default function Main() {
 	const history = useHistory();
 	const {
 		hasWallet,
+		hasBackedUp,
 		wallet,
-		recentTx,
-		addRecentTx,
-		setProject,
 		agency,
-		project,
 		beneficiaryCount,
-		setTotalBeneficiaries
+		setTotalBeneficiaries,
+		hideFooter,
+		toggleFooter,
+		contextLoading,
+		hasSynchronized
 	} = useContext(AppContext);
+
 	const { resetBeneficiary } = useContext(RegisterBeneficiaryContext);
-	const [showPageLoader, setShowPageLoader] = useState(true);
-
-	const checkMobilizerStatus = async () => {
-		//update API to only query relevant agency.
-		if (!wallet) return;
-		const data = await Service.getMobilizerByWallet(wallet.address);
-		let defaultAgency = await DataService.getDefaultAgency();
-		if (data && data.projects.length) {
-			await checkProjectBeneficiaries(wallet, data.projects[0].project.id);
-			RahatService(defaultAgency.address, wallet)
-				.getProjectBalance(data.projects[0].project.id)
-				.then(bal => {
-					setProject({ name: data.projects[0].project.name, id: data.projects[0].project.id, balance: bal });
-				});
+	const [erc20, setErc20] = useState();
+	const [erc1155, setErc1155] = useState([]);
+	const [project, setProject] = useState(null);
+	const [recentTx, setRecentTx] = useState(null);
+	const checkRecentTnx = useCallback(async () => {
+		let txs = await DataService.listTx();
+		if (txs && Array.isArray(txs)) {
+			const arr = txs.slice(0, 3);
+			setRecentTx(arr);
 		}
-		if (!data.agencies.length) return history.push('/setup/idcard');
-		let status = data.agencies[0].status;
+	}, []);
 
-		if (status !== 'active') {
-			let dagency = Object.assign(agency, { isApproved: false });
-			await DataService.updateAgency(dagency.address, dagency);
-			history.push('/setup/pending');
-		}
+	const resetPage = () => {
+		setErc20();
+		setErc1155([]);
+		setProject(null);
+		setRecentTx(null);
 	};
 
-	const checkProjectBeneficiaries = async projectId => {
+	const checkProjectBeneficiaries = useCallback(async () => {
 		const totalBen = await DataService.listBeneficiaries();
 		setTotalBeneficiaries(totalBen.length);
-	};
+	}, [setTotalBeneficiaries]);
+
+	const checkAgencyApproval = useCallback(
+		async (agencies = []) => {
+			if (!agencies.length) return history.push('/setup/idcard');
+			let status = agencies[0].status;
+			if (status !== 'active') {
+				let dagency = Object.assign(agency, { isApproved: false });
+				await DataService.updateAgency(dagency.address, dagency);
+				history.push('/setup/pending');
+			}
+		},
+		[history, agency]
+	);
+
+	const checkProject = useCallback(
+		async (projects = [], signature) => {
+			if (projects && projects.length > 0 && signature) {
+				setProject({
+					name: projects[0]?.project.name,
+					id: projects[0]?.project.id
+				});
+				await checkProjectBeneficiaries(wallet, projects[0].project.id);
+				const defaultAgency = await DataService.getDefaultAgency();
+				const rahat = RahatAdminService(defaultAgency.address, wallet);
+				const projectERC1155Balances = await rahat.getProjectERC1155Balances(projects[0].project.id);
+				if (projectERC1155Balances) {
+					const tokenIds = projectERC1155Balances.tokenIds.map(t => t.toNumber());
+					const tokenQtys = projectERC1155Balances.balances.map(b => b.toNumber());
+					const totalPackageBalance = await Service.calculateTotalPackageBalance(
+						{ tokenIds, tokenQtys },
+						signature
+					);
+					setErc1155(totalPackageBalance);
+				}
+				const projectERC20Balance = await rahat.getProjecERC20Balance(projects[0].project.id);
+				setErc20(projectERC20Balance.toNumber());
+			}
+		},
+		[checkProjectBeneficiaries, wallet]
+	);
+	const checkMobilizerStatus = useCallback(async () => {
+		const signature = await getAuthSignature(wallet);
+		const { projects, agencies } = await Service.getMobilizerByWallet(wallet.address);
+		return { projects, agencies, signature };
+	}, [wallet]);
+
+	const getInfoState = useCallback(async () => {
+		if (contextLoading) return;
+		if (!hasWallet) return history.push('/setup');
+		if (!hasBackedUp) return history.push('/wallet/backup');
+		if (!hasSynchronized) return history.push('/sync');
+		if (agency && !agency.isApproved) return history.push('/setup/pending');
+		try {
+			if (!wallet) return;
+			if (hideFooter) toggleFooter(false);
+
+			await checkRecentTnx();
+			const { projects, agencies, signature } = await checkMobilizerStatus();
+			await checkAgencyApproval(agencies);
+			await checkProject(projects, signature);
+			resetBeneficiary();
+		} catch (err) {
+			console.error({ err });
+		}
+	}, [
+		wallet,
+		checkMobilizerStatus,
+		resetBeneficiary,
+		checkRecentTnx,
+		hideFooter,
+		toggleFooter,
+		checkProject,
+		checkAgencyApproval,
+		contextLoading,
+		history,
+		hasWallet,
+		hasBackedUp,
+		hasSynchronized,
+		agency
+	]);
 
 	useEffect(() => {
-		checkMobilizerStatus();
-		resetBeneficiary();
+		let isMounted = true;
 
-		let timer1 = null;
-		(async () => {
-			let txs = await DataService.listTx();
-			if (txs) addRecentTx(txs.slice(0, 3));
-			const timer = setTimeout(() => {
-				setShowPageLoader(false);
-			}, 300);
-			timer1 = setTimeout(async () => {
-				await checkMobilizerStatus();
-			}, 3000);
-			return () => {
-				clearTimeout(timer);
-				clearTimeout(timer1);
-			};
-		})();
-		return function cleanup() {
-			if (timer1) clearTimeout(timer1);
+		if (isMounted) getInfoState();
+		return () => {
+			isMounted = false;
+			resetPage();
 		};
-	}, []);
+	}, [getInfoState]);
+
+	if (contextLoading) {
+		return (
+			<div id="loader">
+				<img src="/assets/img/brand/icon-white-128.png" alt="icon" className="loading-icon" />
+			</div>
+		);
+	}
 
 	if (!hasWallet) {
 		return <Redirect to="/setup" />;
+	}
+
+	if (!hasBackedUp) {
+		return <Redirect to="/wallet/backup" />;
 	}
 
 	if (agency && !agency.isApproved) {
@@ -87,25 +160,32 @@ export default function Main() {
 
 	return (
 		<>
-			{showPageLoader && (
-				<div id="loader">
-					<img src="/assets/img/brand/icon-white-128.png" alt="icon" className="loading-icon" />
-				</div>
-			)}
+			{/* {showPageLoader && <Spinner />} */}
+
 			<div id="appCapsule">
 				<div className="section wallet-card-section pt-1">
 					<div className="wallet-card">
 						<div className="mobilizer-header">{project ? project.name : '...'}</div>
-						<div className="balance">
+						<div className="balance mt-2">
 							<div className="left">
-								<h1 className="total">{project ? project.balance : 0}</h1>
-								<span className="mobilizer-title">Project Balance</span>
+								{erc20 && <h2 className="total">{erc20}</h2>}
+								{!erc20 && <h2 className="total loading_text"> 0</h2>}
+								<span className="mobilizer-title">Project Token</span>
 							</div>
 							<div className="right">
-								<h1 className="total">{beneficiaryCount}</h1>
-								<span className="mobilizer-title">Beneficiaries</span>
+								{erc1155?.grandTotal && <h2 className="total">{erc1155.grandTotal}</h2>}
+								{!erc1155?.grandTotal && <h2 className="total loading_text">{0}</h2>}
+
+								<span className="mobilizer-title">Project Packages</span>
 							</div>
 						</div>
+						<div className="mt-1">
+							<h2 className="total">{beneficiaryCount}</h2>
+
+							<span className="mobilizer-title">Beneficiaries</span>
+						</div>
+						{/* </>
+						)} */}
 					</div>
 				</div>
 
@@ -136,7 +216,7 @@ export default function Main() {
 								paddingTop: '0px'
 							}}
 						>
-							<TransactionList limit="3" transactions={recentTx} />
+							<TransactionList limit="3" transactions={recentTx || []} />
 						</div>
 					</div>
 				</div>

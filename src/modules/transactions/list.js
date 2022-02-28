@@ -4,9 +4,9 @@ import { IoArrowDownOutline, IoArrowForwardOutline } from 'react-icons/io5';
 import { GiTwoCoins } from 'react-icons/gi';
 import { BiError } from 'react-icons/bi';
 import Moment from 'react-moment';
-
 import DataService from '../../services/db';
-
+import { TRANSACTION_TYPES } from '../../constants';
+import { RiCoupon2Fill } from 'react-icons/ri';
 const TxList = ({ limit, transactions = [] }) => {
 	const [tx, setTx] = useState([]);
 
@@ -16,12 +16,21 @@ const TxList = ({ limit, transactions = [] }) => {
 			let txs = transactions.length ? transactions : await DataService.listTx();
 			if (limit) txs = txs.slice(0, limit);
 			for (let t of txs) {
-				if (t.type === 'issued') {
+				if (t.type === TRANSACTION_TYPES.TOKEN) {
 					t.name = `Token sent to:`;
 					t.phone = `${t.to}`;
 					t.icon = (
 						<div className="icon-box bg-success">
 							<GiTwoCoins className="ion-icon" />
+						</div>
+					);
+				}
+				if (t.type === TRANSACTION_TYPES.NFT) {
+					t.name = `Package sent to:`;
+					t.phone = `${t.to}`;
+					t.icon = (
+						<div className="icon-box bg-success">
+							<RiCoupon2Fill className="ion-icon" />
 						</div>
 					);
 				}
@@ -76,7 +85,10 @@ const TxList = ({ limit, transactions = [] }) => {
 					tx.map(tx => {
 						return (
 							<li key={tx.hash}>
-								<Link to={`/tx/${tx.hash}`} className="item">
+								<Link
+									to={`/tx/${tx.hash}${tx.tokenId ? `/package/${tx.tokenId}` : ''}`}
+									className="item"
+								>
 									{tx.icon}
 									<div className="in">
 										<div>

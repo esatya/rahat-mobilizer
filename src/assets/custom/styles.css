@@ -1,126 +1,143 @@
 .circleSelfie {
-  border-radius: 50%!important;
-  width : 300px;
-  height: 300px;
-  object-fit: cover;
-  border: 2px solid #958d9e;
-  padding: 5px;
+	border-radius: 50% !important;
+	width: 300px;
+	height: 300px;
+	object-fit: cover;
+	border: 2px solid #958d9e;
+	padding: 5px;
+}
+
+.def_background {
+	background: #ededf5;
 }
 
 .selfie {
-  border-radius: 50%!important;
-  width : 150px;
-  height: 150px;
-  object-fit: cover;
-  border: 2px solid #958d9e;
-  padding: 2px;
+	border-radius: 50% !important;
+	width: 150px;
+	height: 150px;
+	object-fit: cover;
+	border: 2px solid #958d9e;
+	padding: 2px;
 }
 
 .beneficiaryPic {
-  border-radius: 50%!important;
-  width : 40px;
-  height: 40px;
-  object-fit: cover;
-  margin-right: 20px;
+	border-radius: 50% !important;
+	width: 40px;
+	height: 40px;
+	object-fit: cover;
+	margin-right: 20px;
 }
 
 .beneficiaryList {
 	display: flex;
 	align-items: center;
-	width: 100%
+	width: 100%;
 }
 
 .selfieWrapper {
-  width: 100%;
-  height: auto;
+	width: 100%;
+	height: auto;
 }
 
 .idCardWrapper {
-  width: 100%;
-  height: 350px;
+	width: 100%;
+	height: 350px;
 }
 
 .idCardSnapper {
-  border-radius: 10px;
-  width: 100%;
-  height: 350px;
-  object-fit: cover;
-  border: 3px solid #958d9e;
+	border-radius: 10px;
+	width: 100%;
+	height: 350px;
+	object-fit: cover;
+	border: 3px solid #958d9e;
 }
 
-.btn-shutter{
-  width: 80px;
-  height: 80px;
-  /* border: 2px solid #958d9e; */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%;
-  background-color: #2b7ec1;
+.btn-shutter {
+	width: 80px;
+	height: 80px;
+	/* border: 2px solid #958d9e; */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+	background-color: #2b7ec1;
 }
-.btn-shutter-icon{
-  width: 40px;
-  height: 40px;
-  color: white;
+
+.loading_text {
+	color: #e27a2a;
 }
-.btn-faceChange{
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background-color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.btn-shutter-icon {
+	width: 40px;
+	height: 40px;
+	color: white;
 }
-.btn-flipcamera{
-  width: 30px;
-  height: 30px;
-  color: #958d9e;
+.btn-faceChange {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	background-color: white;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
-.btn-skip{
-  width: 30px;
-  height: 30px;
-  color: #958d9e;
+.btn-flipcamera {
+	width: 30px;
+	height: 30px;
+	color: #958d9e;
+}
+.btn-skip {
+	width: 30px;
+	height: 30px;
+	color: #958d9e;
 }
 
 .button-link {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline;
-  margin: 0;
-  padding: 0;
+	background-color: transparent;
+	border: none;
+	cursor: pointer;
+	text-decoration: none;
+	display: inline;
+	margin: 0;
+	padding: 0;
 }
 
-  .button-link:hover,
-  .button-link:focus {
-    text-decoration: none;
-  }
+.button-link:hover,
+.button-link:focus {
+	text-decoration: none;
+}
 
-  .wallet-card .balance{
-    margin-bottom: 0px;
-  }
+.wallet-card .balance {
+	margin-bottom: 0px;
+}
 
-  .mobilizer-header{
-    font-weight: 550;
-    font-size: 18px;
-    /* color: #2b7ec1 ; */
-  }
-  .mobilizer-title{
-    font-weight: 500;
-  }
-  .profileImage{
-    width: 100px; 
-    height: 100px; 
-    border-radius: 50px;
-  }
+.mobilizer-header {
+	font-weight: 550;
+	font-size: 18px;
+	/* color: #2b7ec1 ; */
+}
+.mobilizer-title {
+	font-weight: 500;
+}
+.profileImage {
+	width: 100px;
+	height: 100px;
+	border-radius: 50px;
+}
 
-  .modal-header {
-    align-items: center;
-  }
-  .modal-header .close{
-    padding: 0rem;
-    margin: 0rem;
-  }
+.modal-header {
+	align-items: center;
+}
+.modal-header .close {
+	padding: 0rem;
+	margin: 0rem;
+}
 
+.package-img {
+	width: 36px;
+	height: 36px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	margin-right: 16px;
+}

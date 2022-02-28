@@ -1,3 +1,12 @@
+<p align="center">
+  <a href="https://github.com/esatya/rahat-mobilizer/blob/master/CONTRIBUTING.md">
+    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs welcome!" />
+  </a>
+  <a href="https://github.com/esatya/rahat-mobilizer/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/License-AGPL_v3-blue.svg" alt="License" />
+  </a>
+</p>
+
 # Mobilizer App
 
 This is a mobile friendly mobilizer user interface that can onboard beneficiries to the agency. It is a fully functioning mobile wallet that mobilizer can use to register beneficiaries and issue token to them.
@@ -64,7 +73,6 @@ To deploy this software on production
 This repository uses eslint to enforce air-bnb coding styles.
 
 # Contributing
+Everyone is very welcome to contribute on the codebase of Rahat. Please reach us in [Discord](https://discord.gg/Xe59EVBs5N), **DEVELOPMENT Channel> #contribute** in case of any query/feedback/suggestion.
 
-Everyone is very welcome to contribute on the codebase of Rahat. Please reach us in Gitter in case of any query/feedback/suggestion.
-
-For more information on the contributing procedure, see [Contribution](https://github.com/esatya/rahat-mobilizer/blob/master/CONTRIBUTING.md)
+For more information on the contributing procedure, see [Contribution](https://docs.rahat.io/docs/next/Contribution-Guidelines).
