@@ -5,7 +5,7 @@ import DataService from '../../services/db';
 import Avatar from '../../assets/images/Man.png';
 import * as io5 from 'react-icons/io5';
 
-const BenList = ({ limit, beneficiaries = [] }) => {
+const BenList = ({ limit }) => {
 	const [ben, setBen] = useState(null);
 	const [searchOpen, setSearchOpen] = useState(false);
 
@@ -21,22 +21,13 @@ const BenList = ({ limit, beneficiaries = [] }) => {
 	}
 
 	const listBeneficiearies = useCallback(async () => {
-		let beneficiayList;
-		if (!beneficiaries?.length) {
-			beneficiayList = await DataService.listBeneficiaries();
-		}
+		let beneficiayList = await DataService.listBeneficiaries();
 		if (limit) beneficiayList = beneficiayList.slice(0, limit);
 		setBen(beneficiayList);
-	}, [beneficiaries, limit]);
+		console.log('sa');
+	}, [limit]);
 
-	useEffect(() => {
-		listBeneficiearies();
-
-		return () => {
-			setBen([]);
-			setSearchOpen(false);
-		};
-	}, [listBeneficiearies]);
+	useEffect(listBeneficiearies, [listBeneficiearies]);
 
 	return (
 		<>
