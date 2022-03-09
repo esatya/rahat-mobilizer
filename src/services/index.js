@@ -172,6 +172,19 @@ export async function smsPackageIssuance(signature, payload) {
 	}
 }
 
+export async function checkEmail(payload) {
+	try {
+		const { data } = await axios({
+			url: `${API.USER}/email`,
+			method: 'post',
+			data: payload
+		});
+		return data;
+	} catch (e) {
+		throw Error(e);
+	}
+}
+
 export const getDefautAgency = async () => {
 	let appData = await fetch(`${process.env.REACT_APP_DEFAULT_AGENCY_API}/app/settings`).then(async r => {
 		if (!r.ok) throw Error(r.message);
