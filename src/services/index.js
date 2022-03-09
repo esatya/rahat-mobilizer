@@ -140,6 +140,38 @@ export async function getBeneficiaryPackageBalance(phone, signature) {
 	}
 }
 
+export async function smsTokenIssue(signature, payload) {
+	try {
+		const data = await axios({
+			url: `${API.SMS}/token`,
+			method: 'post',
+			headers: {
+				auth_signature: signature
+			},
+			data: payload
+		});
+		return data;
+	} catch (e) {
+		throw Error(e);
+	}
+}
+
+export async function smsPackageIssuance(signature, payload) {
+	try {
+		const data = await axios({
+			url: `${API.SMS}/package`,
+			method: 'post',
+			headers: {
+				auth_signature: signature
+			},
+			data: payload
+		});
+		return data;
+	} catch (e) {
+		throw Error(e);
+	}
+}
+
 export const getDefautAgency = async () => {
 	let appData = await fetch(`${process.env.REACT_APP_DEFAULT_AGENCY_API}/app/settings`).then(async r => {
 		if (!r.ok) throw Error(r.message);

@@ -8,10 +8,11 @@ import { Link } from 'react-router-dom';
 import { IoHomeOutline } from 'react-icons/io5';
 import { useHistory } from 'react-router-dom';
 import Swal from 'sweetalert2';
-// import { getAuthSignature } from '../../../utils';
+import { getAuthSignature } from '../../../utils';
 // import * as Service from '../../../services';
 import DataService from '../../../services/db';
 import { RahatService } from '../../../services/chain';
+import * as Services from '../../../services';
 import { TRANSACTION_TYPES } from '../../../constants';
 import Spinner from '../../spinner';
 
@@ -42,7 +43,7 @@ const Index = () => {
 		e.preventDefault();
 		showLoading('Issuing Tokens..');
 		try {
-			// const signature = await getAuthSignature(wallet);
+			const signature = await getAuthSignature(wallet);
 			// const benExists = await Service.getBeneficiaryById(signature, phone);
 			const agency = await DataService.getDefaultAgency();
 			const project = await DataService.getDefaultProject();
@@ -80,6 +81,7 @@ const Index = () => {
 			};
 
 			await DataService.addTx(tx);
+			await Services.smsTokenIssue(signature, { token, phone });
 			if (receipt) showLoading(null);
 			Swal.fire('Success', 'Tokens Issued to Beneficiary', 'success');
 			resetBeneficiary();
