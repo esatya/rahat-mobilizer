@@ -4,6 +4,8 @@ import { IoCloseCircle } from 'react-icons/io5';
 import { Form, Button } from 'react-bootstrap';
 
 import DataService from '../../services/db';
+import * as Service from '../../services';
+import Swal from 'sweetalert2';
 
 export default function Main() {
 	const history = useHistory();
@@ -12,6 +14,15 @@ export default function Main() {
 	const save = async event => {
 		event.preventDefault();
 		await DataService.saveProfile(profile);
+		const emailExists = await Service.checkEmail({ email: profile.email });
+		if (emailExists?.data)
+			return Swal.fire({
+				icon: 'error',
+				title: 'Error',
+				text: 'Email already taken in Rahat System',
+				footer: 'NOTE: Try using different email'
+			});
+
 		history.push('/setup/selfie');
 	};
 
@@ -123,6 +134,7 @@ export default function Main() {
 										placeholder="Enter email"
 										value={profile.email}
 										onChange={updateProfile}
+										required
 									/>
 									<i className="clear-input">
 										<IoCloseCircle className="ion-icon" />
