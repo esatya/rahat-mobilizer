@@ -173,7 +173,7 @@ export default function Main() {
 								<span className="mobilizer-title">Project Token</span>
 							</div>
 							<div className="right">
-								{erc1155?.grandTotal && <h2 className="total">{erc1155.grandTotal}</h2>}
+								{erc1155?.grandTotal && <h2 className="total">{`NPR ${erc1155.grandTotal}`}</h2>}
 								{!erc1155?.grandTotal && <h2 className="total loading_text">{0}</h2>}
 
 								<span className="mobilizer-title">Project Packages</span>

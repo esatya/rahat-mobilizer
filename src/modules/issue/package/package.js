@@ -8,6 +8,7 @@ import DataService from '../../../services/db';
 import { RegisterBeneficiaryContext } from '../../../contexts/registerBeneficiaryContext';
 import * as Service from '../../../services';
 import { TRANSACTION_TYPES } from '../../../constants';
+import { getAuthSignature } from '../../../utils';
 import Spinner from '../../spinner';
 import Swal from 'sweetalert2';
 import { useHistory } from 'react-router-dom';
@@ -27,7 +28,9 @@ export default function ChargePackage(props) {
 			const agency = await DataService.getDefaultAgency();
 			const data = await Service.getMobilizerByWallet(wallet.address);
 			const projectId = data.projects[0].project.id;
+			const { name: packageName } = nft;
 			showLoading('Issuing Package...');
+			const signature = await getAuthSignature(wallet);
 			const rahat = RahatService(agency.address, wallet);
 			const amount = amountToIssue;
 
@@ -43,14 +46,15 @@ export default function ChargePackage(props) {
 				status: 'success'
 			};
 			await DataService.addTx(tx);
+			await Service.smsPackageIssuance(signature, { packageName, phone });
 			showLoading(null);
-			Swal.fire('Success', 'Tokens Issued to Beneficiary', 'success');
+			Swal.fire('Success', `${packageName} Package Issued to Beneficiary Phone: ${phone} `, 'success');
 			history.push('/');
 		} catch (err) {
 			showLoading(null);
 			Swal.fire('Error', 'Unable To Issue Token', 'error');
 		}
-	}, [phone, wallet, tokenId, history]);
+	}, [phone, wallet, tokenId, history, nft]);
 
 	useEffect(() => {
 		async function getDetails() {
