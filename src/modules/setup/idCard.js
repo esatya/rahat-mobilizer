@@ -156,7 +156,7 @@ export default function Main() {
 										alt="preview"
 										src={previewImage}
 										style={{
-											borderRadius: '10%',
+											borderRadius: '10px',
 											width: '100%',
 											border: '3px solid #958d9e'
 										}}
@@ -178,7 +178,7 @@ export default function Main() {
 								)}
 							</div>
 						</div>
-						<div className="pl-5 pr-5">
+						<div className="pl-4 pr-4">
 							{previewImage ? (
 								<div className="text-center">
 									<button
@@ -190,8 +190,8 @@ export default function Main() {
 									</button>
 									<button
 										type="button"
-										className="btn btn btn-block btn-outline-secondary mt-5"
-										style={{ width: 200 }}
+										className="btn btn btn-block btn-outline-secondary mt-3"
+										style={{ height: '50px' }}
 										onClick={() => setPreviewImage(null)}
 									>
 										<BiReset className="ion-icon" />
@@ -205,6 +205,13 @@ export default function Main() {
 								</button>
 							)}
 						</div>
+						<p className="text-privacy">
+							By signing up you acknowledge the{' '}
+							<a href="https://docs.rahat.io/privacy-policy" className="privacy-policy">
+								Privacy Policy
+							</a>{' '}
+							.
+						</p>
 					</div>
 				</>
 			)}

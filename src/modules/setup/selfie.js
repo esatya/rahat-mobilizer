@@ -80,7 +80,7 @@ export default function Main() {
 						)}
 					</div>
 				</div>
-				<div className="pl-5 pr-5">
+				<div className="pl-4 pr-4">
 					{previewImage ? (
 						<div className="text-center">
 							<button type="button" className="btn btn-lg btn-block btn-success mt-1" onClick={save}>
@@ -88,8 +88,8 @@ export default function Main() {
 							</button>
 							<button
 								type="button"
-								className="btn btn btn-block btn-outline-secondary mt-5"
-								style={{ width: 200 }}
+								className="btn btn btn-block btn-outline-secondary mt-3"
+								style={{ height: '50px' }}
 								onClick={() => setPreviewImage(null)}
 							>
 								<BiReset className="ion-icon" />
